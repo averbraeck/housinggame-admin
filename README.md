@@ -1,2 +1,2 @@
 # housinggame-admin
-Administraton app for the Housing Game
+Administrator app for the Housing Game.
