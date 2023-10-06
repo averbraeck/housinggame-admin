@@ -143,9 +143,8 @@ html, body {
   <div class="hg-login-page">
     <div class="hg-login-header">
       <div class="hg-login-header-right">
-        <img src="images/nwo.png" />
         <img src="images/tudelft.png" />
-        <span style="font-size: 12px; padding-left: 20px; position:relative; top:-4px; color:black;">v0.0.2</span>
+        <span style="font-size: 12px; padding-left: 20px; position:relative; top:-4px; color:black;">v0.1.0</span>
       </div>
     </div>
   

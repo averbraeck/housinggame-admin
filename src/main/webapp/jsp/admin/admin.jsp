@@ -31,12 +31,13 @@
   <body onload="initPage()">
     <div class="hg-page">
       <div class="hg-header">
-        <span class="hg-freightbooking">Housing Game</span>
+        <span class="hg-game-heading">Housing Game</span>
         <span class="hg-slogan">Game Administration</span>
       </div>
       <div class="hg-header-right">
         <img src="images/tudelft.png" />
         <p><a href="/housinggame-admin">LOGOUT</a></p>
+        <span style="font-size: 12px; padding-left: 20px; position:relative; top:-4px; color:black;">v0.1.0</span>
       </div>
       <div class="hg-header-game-user">
         <p>&nbsp;</p>
