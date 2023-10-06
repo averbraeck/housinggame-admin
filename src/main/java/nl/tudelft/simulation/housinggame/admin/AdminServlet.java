@@ -189,6 +189,25 @@ public class AdminServlet extends HttpServlet
                 MaintainHouse.handleMenu(request, click, recordNr);
                 break;
 
+            // User - Facilitator
+            case "user":
+            case "viewUser":
+            case "editUser":
+            case "saveUser":
+            case "deleteUser":
+            case "deleteUserOk":
+            case "newUser":
+
+            case "viewFacilitator":
+            case "editFacilitator":
+            case "saveFacilitator":
+            case "deleteFacilitator":
+            case "deleteFacilitatorOk":
+            case "newFacilitator":
+                data.setMenuChoice("user");
+                MaintainUser.handleMenu(request, click, recordNr);
+                break;
+
             default:
                 break;
         }
