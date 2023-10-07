@@ -88,9 +88,9 @@ public class Gamesession extends TableImpl<GamesessionRecord> {
     public final TableField<GamesessionRecord, LocalDate> DATE = createField(DSL.name("date"), SQLDataType.LOCALDATE.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.LOCALDATE)), this, "");
 
     /**
-     * The column <code>housinggame.gamesession.scenario_id</code>.
+     * The column <code>housinggame.gamesession.gameversion_id</code>.
      */
-    public final TableField<GamesessionRecord, UInteger> SCENARIO_ID = createField(DSL.name("scenario_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+    public final TableField<GamesessionRecord, UInteger> GAMEVERSION_ID = createField(DSL.name("gameversion_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
     private Gamesession(Name alias, Table<GamesessionRecord> aliased) {
         this(alias, aliased, null);
@@ -132,7 +132,7 @@ public class Gamesession extends TableImpl<GamesessionRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.GAMESESSION_FK_GAMESESSION_SCENARIO1_IDX);
+        return Arrays.asList(Indexes.GAMESESSION_FK_GAMESESSION_GAMEVERSION1_IDX);
     }
 
     @Override
@@ -152,20 +152,20 @@ public class Gamesession extends TableImpl<GamesessionRecord> {
 
     @Override
     public List<ForeignKey<GamesessionRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_GAMESESSION_SCENARIO1);
+        return Arrays.asList(Keys.FK_GAMESESSION_GAMEVERSION1);
     }
 
-    private transient Scenario _scenario;
+    private transient Gameversion _gameversion;
 
     /**
-     * Get the implicit join path to the <code>housinggame.scenario</code>
+     * Get the implicit join path to the <code>housinggame.gameversion</code>
      * table.
      */
-    public Scenario scenario() {
-        if (_scenario == null)
-            _scenario = new Scenario(this, Keys.FK_GAMESESSION_SCENARIO1);
+    public Gameversion gameversion() {
+        if (_gameversion == null)
+            _gameversion = new Gameversion(this, Keys.FK_GAMESESSION_GAMEVERSION1);
 
-        return _scenario;
+        return _gameversion;
     }
 
     @Override

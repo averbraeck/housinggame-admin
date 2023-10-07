@@ -4,6 +4,8 @@
 package nl.tudelft.simulation.housinggame.data.tables.records;
 
 
+import java.time.LocalDateTime;
+
 import nl.tudelft.simulation.housinggame.data.tables.Playerround;
 
 import org.jooq.Record1;
@@ -292,59 +294,73 @@ public class PlayerroundRecord extends UpdatableRecordImpl<PlayerroundRecord> {
     }
 
     /**
+     * Setter for <code>housinggame.playerround.create_time</code>.
+     */
+    public void setCreateTime(LocalDateTime value) {
+        set(19, value);
+    }
+
+    /**
+     * Getter for <code>housinggame.playerround.create_time</code>.
+     */
+    public LocalDateTime getCreateTime() {
+        return (LocalDateTime) get(19);
+    }
+
+    /**
      * Setter for <code>housinggame.playerround.house_id</code>.
      */
     public void setHouseId(UInteger value) {
-        set(19, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>housinggame.playerround.house_id</code>.
      */
     public UInteger getHouseId() {
-        return (UInteger) get(19);
+        return (UInteger) get(20);
     }
 
     /**
      * Setter for <code>housinggame.playerround.player_id</code>.
      */
     public void setPlayerId(UInteger value) {
-        set(20, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>housinggame.playerround.player_id</code>.
      */
     public UInteger getPlayerId() {
-        return (UInteger) get(20);
+        return (UInteger) get(21);
     }
 
     /**
      * Setter for <code>housinggame.playerround.groupround_id</code>.
      */
     public void setGrouproundId(UInteger value) {
-        set(21, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>housinggame.playerround.groupround_id</code>.
      */
     public UInteger getGrouproundId() {
-        return (UInteger) get(21);
+        return (UInteger) get(22);
     }
 
     /**
      * Setter for <code>housinggame.playerround.group_id</code>.
      */
     public void setGroupId(UInteger value) {
-        set(22, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>housinggame.playerround.group_id</code>.
      */
     public UInteger getGroupId() {
-        return (UInteger) get(22);
+        return (UInteger) get(23);
     }
 
     // -------------------------------------------------------------------------
@@ -370,7 +386,7 @@ public class PlayerroundRecord extends UpdatableRecordImpl<PlayerroundRecord> {
     /**
      * Create a detached, initialised PlayerroundRecord
      */
-    public PlayerroundRecord(UInteger id, UInteger satisfaction, UInteger saving, UInteger mortgage, UInteger livingCosts, UInteger income, UInteger debt, Integer currentWealth, UInteger preferredHouseRating, UInteger satisfactionCostPerPoint, UInteger housePriceSold, UInteger housePriceBought, UInteger spentSavingsForBuyingHouse, UInteger paidOffDebt, UInteger measureBought, UInteger pluvialDamage, UInteger fluvialDamage, UInteger repairedDamage, UInteger satisfactionPointBought, UInteger houseId, UInteger playerId, UInteger grouproundId, UInteger groupId) {
+    public PlayerroundRecord(UInteger id, UInteger satisfaction, UInteger saving, UInteger mortgage, UInteger livingCosts, UInteger income, UInteger debt, Integer currentWealth, UInteger preferredHouseRating, UInteger satisfactionCostPerPoint, UInteger housePriceSold, UInteger housePriceBought, UInteger spentSavingsForBuyingHouse, UInteger paidOffDebt, UInteger measureBought, UInteger pluvialDamage, UInteger fluvialDamage, UInteger repairedDamage, UInteger satisfactionPointBought, LocalDateTime createTime, UInteger houseId, UInteger playerId, UInteger grouproundId, UInteger groupId) {
         super(Playerround.PLAYERROUND);
 
         setId(id);
@@ -392,6 +408,7 @@ public class PlayerroundRecord extends UpdatableRecordImpl<PlayerroundRecord> {
         setFluvialDamage(fluvialDamage);
         setRepairedDamage(repairedDamage);
         setSatisfactionPointBought(satisfactionPointBought);
+        setCreateTime(createTime);
         setHouseId(houseId);
         setPlayerId(playerId);
         setGrouproundId(grouproundId);

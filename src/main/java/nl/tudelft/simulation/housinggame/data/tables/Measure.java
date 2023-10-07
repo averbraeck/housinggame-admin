@@ -66,9 +66,9 @@ public class Measure extends TableImpl<MeasureRecord> {
     public final TableField<MeasureRecord, Double> VALUE = createField(DSL.name("value"), SQLDataType.FLOAT.nullable(false).defaultValue(DSL.field(DSL.raw("1"), SQLDataType.FLOAT)), this, "");
 
     /**
-     * The column <code>housinggame.measure.PlayerRound_id</code>.
+     * The column <code>housinggame.measure.playerround_id</code>.
      */
-    public final TableField<MeasureRecord, UInteger> PLAYERROUND_ID = createField(DSL.name("PlayerRound_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+    public final TableField<MeasureRecord, UInteger> PLAYERROUND_ID = createField(DSL.name("playerround_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
     /**
      * The column <code>housinggame.measure.house_id</code>.

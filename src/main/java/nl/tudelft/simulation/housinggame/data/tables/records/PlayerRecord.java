@@ -51,44 +51,44 @@ public class PlayerRecord extends UpdatableRecordImpl<PlayerRecord> implements R
     }
 
     /**
-     * Setter for <code>housinggame.player.scenario_id</code>.
-     */
-    public void setScenarioId(UInteger value) {
-        set(2, value);
-    }
-
-    /**
-     * Getter for <code>housinggame.player.scenario_id</code>.
-     */
-    public UInteger getScenarioId() {
-        return (UInteger) get(2);
-    }
-
-    /**
      * Setter for <code>housinggame.player.user_id</code>.
      */
     public void setUserId(UInteger value) {
-        set(3, value);
+        set(2, value);
     }
 
     /**
      * Getter for <code>housinggame.player.user_id</code>.
      */
     public UInteger getUserId() {
-        return (UInteger) get(3);
+        return (UInteger) get(2);
     }
 
     /**
      * Setter for <code>housinggame.player.group_id</code>.
      */
     public void setGroupId(UInteger value) {
-        set(4, value);
+        set(3, value);
     }
 
     /**
      * Getter for <code>housinggame.player.group_id</code>.
      */
     public UInteger getGroupId() {
+        return (UInteger) get(3);
+    }
+
+    /**
+     * Setter for <code>housinggame.player.welfaretype_id</code>.
+     */
+    public void setWelfaretypeId(UInteger value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>housinggame.player.welfaretype_id</code>.
+     */
+    public UInteger getWelfaretypeId() {
         return (UInteger) get(4);
     }
 
@@ -127,17 +127,17 @@ public class PlayerRecord extends UpdatableRecordImpl<PlayerRecord> implements R
 
     @Override
     public Field<UInteger> field3() {
-        return Player.PLAYER.SCENARIO_ID;
-    }
-
-    @Override
-    public Field<UInteger> field4() {
         return Player.PLAYER.USER_ID;
     }
 
     @Override
-    public Field<UInteger> field5() {
+    public Field<UInteger> field4() {
         return Player.PLAYER.GROUP_ID;
+    }
+
+    @Override
+    public Field<UInteger> field5() {
+        return Player.PLAYER.WELFARETYPE_ID;
     }
 
     @Override
@@ -152,17 +152,17 @@ public class PlayerRecord extends UpdatableRecordImpl<PlayerRecord> implements R
 
     @Override
     public UInteger component3() {
-        return getScenarioId();
-    }
-
-    @Override
-    public UInteger component4() {
         return getUserId();
     }
 
     @Override
-    public UInteger component5() {
+    public UInteger component4() {
         return getGroupId();
+    }
+
+    @Override
+    public UInteger component5() {
+        return getWelfaretypeId();
     }
 
     @Override
@@ -177,17 +177,17 @@ public class PlayerRecord extends UpdatableRecordImpl<PlayerRecord> implements R
 
     @Override
     public UInteger value3() {
-        return getScenarioId();
-    }
-
-    @Override
-    public UInteger value4() {
         return getUserId();
     }
 
     @Override
-    public UInteger value5() {
+    public UInteger value4() {
         return getGroupId();
+    }
+
+    @Override
+    public UInteger value5() {
+        return getWelfaretypeId();
     }
 
     @Override
@@ -204,19 +204,19 @@ public class PlayerRecord extends UpdatableRecordImpl<PlayerRecord> implements R
 
     @Override
     public PlayerRecord value3(UInteger value) {
-        setScenarioId(value);
-        return this;
-    }
-
-    @Override
-    public PlayerRecord value4(UInteger value) {
         setUserId(value);
         return this;
     }
 
     @Override
-    public PlayerRecord value5(UInteger value) {
+    public PlayerRecord value4(UInteger value) {
         setGroupId(value);
+        return this;
+    }
+
+    @Override
+    public PlayerRecord value5(UInteger value) {
+        setWelfaretypeId(value);
         return this;
     }
 
@@ -244,14 +244,14 @@ public class PlayerRecord extends UpdatableRecordImpl<PlayerRecord> implements R
     /**
      * Create a detached, initialised PlayerRecord
      */
-    public PlayerRecord(UInteger id, String code, UInteger scenarioId, UInteger userId, UInteger groupId) {
+    public PlayerRecord(UInteger id, String code, UInteger userId, UInteger groupId, UInteger welfaretypeId) {
         super(Player.PLAYER);
 
         setId(id);
         setCode(code);
-        setScenarioId(scenarioId);
         setUserId(userId);
         setGroupId(groupId);
+        setWelfaretypeId(welfaretypeId);
         resetChangedOnNotNull();
     }
 }

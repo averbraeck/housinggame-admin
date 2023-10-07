@@ -4,6 +4,7 @@
 package nl.tudelft.simulation.housinggame.data.tables;
 
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -147,6 +148,11 @@ public class Playerround extends TableImpl<PlayerroundRecord> {
      * <code>housinggame.playerround.satisfaction_point_bought</code>.
      */
     public final TableField<PlayerroundRecord, UInteger> SATISFACTION_POINT_BOUGHT = createField(DSL.name("satisfaction_point_bought"), SQLDataType.INTEGERUNSIGNED.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.INTEGERUNSIGNED)), this, "");
+
+    /**
+     * The column <code>housinggame.playerround.create_time</code>.
+     */
+    public final TableField<PlayerroundRecord, LocalDateTime> CREATE_TIME = createField(DSL.name("create_time"), SQLDataType.LOCALDATETIME(0).defaultValue(DSL.field(DSL.raw("current_timestamp()"), SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>housinggame.playerround.house_id</code>.

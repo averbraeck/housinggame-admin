@@ -51,14 +51,14 @@ public class MeasureRecord extends UpdatableRecordImpl<MeasureRecord> implements
     }
 
     /**
-     * Setter for <code>housinggame.measure.PlayerRound_id</code>.
+     * Setter for <code>housinggame.measure.playerround_id</code>.
      */
     public void setPlayerroundId(UInteger value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>housinggame.measure.PlayerRound_id</code>.
+     * Getter for <code>housinggame.measure.playerround_id</code>.
      */
     public UInteger getPlayerroundId() {
         return (UInteger) get(2);

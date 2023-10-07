@@ -110,16 +110,16 @@ public class GamesessionRecord extends UpdatableRecordImpl<GamesessionRecord> im
     }
 
     /**
-     * Setter for <code>housinggame.gamesession.scenario_id</code>.
+     * Setter for <code>housinggame.gamesession.gameversion_id</code>.
      */
-    public void setScenarioId(UInteger value) {
+    public void setGameversionId(UInteger value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>housinggame.gamesession.scenario_id</code>.
+     * Getter for <code>housinggame.gamesession.gameversion_id</code>.
      */
-    public UInteger getScenarioId() {
+    public UInteger getGameversionId() {
         return (UInteger) get(6);
     }
 
@@ -178,7 +178,7 @@ public class GamesessionRecord extends UpdatableRecordImpl<GamesessionRecord> im
 
     @Override
     public Field<UInteger> field7() {
-        return Gamesession.GAMESESSION.SCENARIO_ID;
+        return Gamesession.GAMESESSION.GAMEVERSION_ID;
     }
 
     @Override
@@ -213,7 +213,7 @@ public class GamesessionRecord extends UpdatableRecordImpl<GamesessionRecord> im
 
     @Override
     public UInteger component7() {
-        return getScenarioId();
+        return getGameversionId();
     }
 
     @Override
@@ -248,7 +248,7 @@ public class GamesessionRecord extends UpdatableRecordImpl<GamesessionRecord> im
 
     @Override
     public UInteger value7() {
-        return getScenarioId();
+        return getGameversionId();
     }
 
     @Override
@@ -289,7 +289,7 @@ public class GamesessionRecord extends UpdatableRecordImpl<GamesessionRecord> im
 
     @Override
     public GamesessionRecord value7(UInteger value) {
-        setScenarioId(value);
+        setGameversionId(value);
         return this;
     }
 
@@ -319,7 +319,7 @@ public class GamesessionRecord extends UpdatableRecordImpl<GamesessionRecord> im
     /**
      * Create a detached, initialised GamesessionRecord
      */
-    public GamesessionRecord(UInteger id, String name, String password, String location, LocalDateTime createTime, LocalDate date, UInteger scenarioId) {
+    public GamesessionRecord(UInteger id, String name, String password, String location, LocalDateTime createTime, LocalDate date, UInteger gameversionId) {
         super(Gamesession.GAMESESSION);
 
         setId(id);
@@ -328,7 +328,7 @@ public class GamesessionRecord extends UpdatableRecordImpl<GamesessionRecord> im
         setLocation(location);
         setCreateTime(createTime);
         setDate(date);
-        setScenarioId(scenarioId);
+        setGameversionId(gameversionId);
         resetChangedOnNotNull();
     }
 }

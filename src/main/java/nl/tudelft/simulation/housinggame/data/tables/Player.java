@@ -63,22 +63,22 @@ public class Player extends TableImpl<PlayerRecord> {
     /**
      * The column <code>housinggame.player.code</code>.
      */
-    public final TableField<PlayerRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(16).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
-
-    /**
-     * The column <code>housinggame.player.scenario_id</code>.
-     */
-    public final TableField<PlayerRecord, UInteger> SCENARIO_ID = createField(DSL.name("scenario_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+    public final TableField<PlayerRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(16).nullable(false), this, "");
 
     /**
      * The column <code>housinggame.player.user_id</code>.
      */
-    public final TableField<PlayerRecord, UInteger> USER_ID = createField(DSL.name("user_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+    public final TableField<PlayerRecord, UInteger> USER_ID = createField(DSL.name("user_id"), SQLDataType.INTEGERUNSIGNED.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.INTEGERUNSIGNED)), this, "");
 
     /**
      * The column <code>housinggame.player.group_id</code>.
      */
     public final TableField<PlayerRecord, UInteger> GROUP_ID = createField(DSL.name("group_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+
+    /**
+     * The column <code>housinggame.player.welfaretype_id</code>.
+     */
+    public final TableField<PlayerRecord, UInteger> WELFARETYPE_ID = createField(DSL.name("welfaretype_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
     private Player(Name alias, Table<PlayerRecord> aliased) {
         this(alias, aliased, null);
@@ -120,7 +120,7 @@ public class Player extends TableImpl<PlayerRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.PLAYER_FK_PLAYER_GROUP1_IDX, Indexes.PLAYER_FK_PLAYER_SCENARIO1_IDX, Indexes.PLAYER_FK_PLAYER_USER1_IDX);
+        return Arrays.asList(Indexes.PLAYER_FK_PLAYER_GROUP1_IDX, Indexes.PLAYER_FK_PLAYER_USER1_IDX, Indexes.PLAYER_FK_PLAYER_WELFARETYPE1_IDX);
     }
 
     @Override
@@ -140,23 +140,12 @@ public class Player extends TableImpl<PlayerRecord> {
 
     @Override
     public List<ForeignKey<PlayerRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_PLAYER_SCENARIO1, Keys.FK_PLAYER_USER1, Keys.FK_PLAYER_GROUP1);
+        return Arrays.asList(Keys.FK_PLAYER_USER1, Keys.FK_PLAYER_GROUP1, Keys.FK_PLAYER_WELFARETYPE1);
     }
 
-    private transient Scenario _scenario;
     private transient User _user;
     private transient Group _group;
-
-    /**
-     * Get the implicit join path to the <code>housinggame.scenario</code>
-     * table.
-     */
-    public Scenario scenario() {
-        if (_scenario == null)
-            _scenario = new Scenario(this, Keys.FK_PLAYER_SCENARIO1);
-
-        return _scenario;
-    }
+    private transient Welfaretype _welfaretype;
 
     /**
      * Get the implicit join path to the <code>housinggame.user</code> table.
@@ -176,6 +165,17 @@ public class Player extends TableImpl<PlayerRecord> {
             _group = new Group(this, Keys.FK_PLAYER_GROUP1);
 
         return _group;
+    }
+
+    /**
+     * Get the implicit join path to the <code>housinggame.welfaretype</code>
+     * table.
+     */
+    public Welfaretype welfaretype() {
+        if (_welfaretype == null)
+            _welfaretype = new Welfaretype(this, Keys.FK_PLAYER_WELFARETYPE1);
+
+        return _welfaretype;
     }
 
     @Override
