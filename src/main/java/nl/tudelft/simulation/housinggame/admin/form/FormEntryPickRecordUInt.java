@@ -41,13 +41,13 @@ public class FormEntryPickRecordUInt extends AbstractFormEntry<FormEntryPickReco
     }
 
     public FormEntryPickRecordUInt setPickTable(final AdminData data, final Table<?> table, final TableField<?, UInteger> id,
-            final TableField<?, String> name)
+            final TableField<?, ?> name)
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         List<? extends Record> tableRecords = dslContext.selectFrom(table).fetch();
         for (Record record : tableRecords)
         {
-            this.records.put(record.get(name), record.get(id));
+            this.records.put(record.get(name).toString(), record.get(id));
         }
         return this;
     }
