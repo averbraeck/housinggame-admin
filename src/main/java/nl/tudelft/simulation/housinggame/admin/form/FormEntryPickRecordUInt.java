@@ -37,6 +37,8 @@ public class FormEntryPickRecordUInt extends AbstractFormEntry<FormEntryPickReco
     @Override
     public UInteger codeForDatabase(final String s)
     {
+        if (s == null || s == "" || s == "null" || s == "0")
+            return null;
         return UInteger.valueOf(s);
     }
 

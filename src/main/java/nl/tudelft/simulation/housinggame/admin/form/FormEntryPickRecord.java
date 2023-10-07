@@ -19,13 +19,13 @@ public class FormEntryPickRecord extends AbstractFormEntry<FormEntryPickRecord, 
     /** Entries alphabetically sorted on pick name. */
     private SortedMap<String, Integer> records = new TreeMap<>();
 
-    public FormEntryPickRecord(TableField<?, Integer> tableField)
+    public FormEntryPickRecord(final TableField<?, Integer> tableField)
     {
         super(tableField);
     }
 
     @Override
-    public String codeForEdit(Integer value)
+    public String codeForEdit(final Integer value)
     {
         if (value != null)
             return value.toString();
@@ -33,13 +33,15 @@ public class FormEntryPickRecord extends AbstractFormEntry<FormEntryPickRecord, 
     }
 
     @Override
-    public Integer codeForDatabase(String s)
+    public Integer codeForDatabase(final String s)
     {
+        if (s == null || s == "" || s == "null" || s == "0")
+            return null;
         return Integer.valueOf(s);
     }
 
-    public FormEntryPickRecord setPickTable(AdminData data, Table<?> table, TableField<?, Integer> id,
-            TableField<?, String> name)
+    public FormEntryPickRecord setPickTable(final AdminData data, final Table<?> table, final TableField<?, Integer> id,
+            final TableField<?, String> name)
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         List<? extends Record> tableRecords = dslContext.selectFrom(table).fetch();
@@ -50,8 +52,8 @@ public class FormEntryPickRecord extends AbstractFormEntry<FormEntryPickRecord, 
         return this;
     }
 
-    public FormEntryPickRecord setPickTable(AdminData data, Table<?> table, TableField<?, Integer> id,
-            TableField<?, String> name, Condition condition)
+    public FormEntryPickRecord setPickTable(final AdminData data, final Table<?> table, final TableField<?, Integer> id,
+            final TableField<?, String> name, final Condition condition)
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         List<? extends Record> tableRecords = dslContext.selectFrom(table).where(condition).fetch();
