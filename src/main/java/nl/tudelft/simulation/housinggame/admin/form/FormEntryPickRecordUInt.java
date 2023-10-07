@@ -37,7 +37,7 @@ public class FormEntryPickRecordUInt extends AbstractFormEntry<FormEntryPickReco
     @Override
     public UInteger codeForDatabase(final String s)
     {
-        if (s == null || s == "" || s == "null" || s == "0")
+        if (s == null || s.length() == 0 || s.equals("null") || s.equals("0"))
             return null;
         return UInteger.valueOf(s);
     }
@@ -47,6 +47,8 @@ public class FormEntryPickRecordUInt extends AbstractFormEntry<FormEntryPickReco
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         List<? extends Record> tableRecords = dslContext.selectFrom(table).fetch();
+        if (!isRequired())
+            this.records.put("", null);
         for (Record record : tableRecords)
         {
             this.records.put(record.get(name).toString(), record.get(id));
@@ -59,6 +61,8 @@ public class FormEntryPickRecordUInt extends AbstractFormEntry<FormEntryPickReco
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         List<? extends Record> tableRecords = dslContext.selectFrom(table).where(condition).fetch();
+        if (!isRequired())
+            this.records.put("", null);
         for (Record record : tableRecords)
         {
             this.records.put(record.get(name), record.get(id));

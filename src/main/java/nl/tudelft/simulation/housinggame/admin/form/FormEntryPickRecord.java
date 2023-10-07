@@ -11,6 +11,7 @@ import org.jooq.SQLDialect;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.impl.DSL;
+
 import nl.tudelft.simulation.housinggame.admin.AdminData;
 
 public class FormEntryPickRecord extends AbstractFormEntry<FormEntryPickRecord, Integer>
@@ -35,7 +36,7 @@ public class FormEntryPickRecord extends AbstractFormEntry<FormEntryPickRecord, 
     @Override
     public Integer codeForDatabase(final String s)
     {
-        if (s == null || s == "" || s == "null" || s == "0")
+        if (s == null || s.length() == 0 || s.equals("null") || s.equals("0"))
             return null;
         return Integer.valueOf(s);
     }
@@ -45,6 +46,8 @@ public class FormEntryPickRecord extends AbstractFormEntry<FormEntryPickRecord, 
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         List<? extends Record> tableRecords = dslContext.selectFrom(table).fetch();
+        if (!isRequired())
+            this.records.put("", null);
         for (Record record : tableRecords)
         {
             this.records.put(record.get(name), record.get(id));
@@ -57,6 +60,8 @@ public class FormEntryPickRecord extends AbstractFormEntry<FormEntryPickRecord, 
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         List<? extends Record> tableRecords = dslContext.selectFrom(table).where(condition).fetch();
+        if (!isRequired())
+            this.records.put("", null);
         for (Record record : tableRecords)
         {
             this.records.put(record.get(name), record.get(id));
