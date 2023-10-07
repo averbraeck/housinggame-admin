@@ -45,8 +45,7 @@ public class Indexes {
     public static final Index GAMESESSION_FK_GAMESESSION_SCENARIO1_IDX = Internal.createIndex(DSL.name("fk_gamesession_scenario1_idx"), Gamesession.GAMESESSION, new OrderField[] { Gamesession.GAMESESSION.SCENARIO_ID }, false);
     public static final Index GROUP_FK_GROUP_FACILITATOR1_IDX = Internal.createIndex(DSL.name("fk_group_facilitator1_idx"), Group.GROUP, new OrderField[] { Group.GROUP.FACILITATOR_ID }, false);
     public static final Index GROUP_FK_GROUP_GAMESESSION1_IDX = Internal.createIndex(DSL.name("fk_group_gamesession1_idx"), Group.GROUP, new OrderField[] { Group.GROUP.GAMESESSION_ID }, false);
-    public static final Index GROUP_FK_GROUP_ROUND1_IDX = Internal.createIndex(DSL.name("fk_group_round1_idx"), Group.GROUP, new OrderField[] { Group.GROUP.ROUND_ID }, false);
-    public static final Index GROUP_FK_GROUP_SCENARIO1_IDX = Internal.createIndex(DSL.name("fk_group_scenario1_idx"), Group.GROUP, new OrderField[] { Group.GROUP.SCENARIO_ID }, false);
+    public static final Index GROUP_FK_GROUP_ROUND1_IDX = Internal.createIndex(DSL.name("fk_group_round1_idx"), Group.GROUP, new OrderField[] { Group.GROUP.CURRENT_ROUND_ID }, false);
     public static final Index GROUPROUND_FK_GROUPROUND_GROUP1_IDX = Internal.createIndex(DSL.name("fk_groupround_group1_idx"), Groupround.GROUPROUND, new OrderField[] { Groupround.GROUPROUND.GROUP_ID }, false);
     public static final Index GROUPROUND_FK_GROUPROUND_ROUND1_IDX = Internal.createIndex(DSL.name("fk_groupround_round1_idx"), Groupround.GROUPROUND, new OrderField[] { Groupround.GROUPROUND.ROUND_ID }, false);
     public static final Index HOUSE_FK_HOUSE_COMMUNITY1_IDX = Internal.createIndex(DSL.name("fk_house_community1_idx"), House.HOUSE, new OrderField[] { House.HOUSE.COMMUNITY_ID }, false);
