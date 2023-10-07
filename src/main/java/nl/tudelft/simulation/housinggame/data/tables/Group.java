@@ -83,7 +83,7 @@ public class Group extends TableImpl<GroupRecord> {
     /**
      * The column <code>housinggame.group.facilitator_id</code>.
      */
-    public final TableField<GroupRecord, UInteger> FACILITATOR_ID = createField(DSL.name("facilitator_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+    public final TableField<GroupRecord, UInteger> FACILITATOR_ID = createField(DSL.name("facilitator_id"), SQLDataType.INTEGERUNSIGNED.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.INTEGERUNSIGNED)), this, "");
 
     private Group(Name alias, Table<GroupRecord> aliased) {
         this(alias, aliased, null);
