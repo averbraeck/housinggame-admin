@@ -15,13 +15,13 @@ import nl.tudelft.simulation.housinggame.data.tables.records.FacilitatorRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function4;
+import org.jooq.Function3;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row4;
+import org.jooq.Row3;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -64,11 +64,6 @@ public class Facilitator extends TableImpl<FacilitatorRecord> {
      * The column <code>housinggame.facilitator.name</code>.
      */
     public final TableField<FacilitatorRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(16).nullable(false), this, "");
-
-    /**
-     * The column <code>housinggame.facilitator.gamesession_id</code>.
-     */
-    public final TableField<FacilitatorRecord, UInteger> GAMESESSION_ID = createField(DSL.name("gamesession_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
     /**
      * The column <code>housinggame.facilitator.user_id</code>.
@@ -115,7 +110,7 @@ public class Facilitator extends TableImpl<FacilitatorRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.FACILITATOR_FK_FACILITATOR_GAMESESSION1_IDX, Indexes.FACILITATOR_FK_FACILITATOR_USER1_IDX);
+        return Arrays.asList(Indexes.FACILITATOR_FK_FACILITATOR_USER1_IDX);
     }
 
     @Override
@@ -135,22 +130,10 @@ public class Facilitator extends TableImpl<FacilitatorRecord> {
 
     @Override
     public List<ForeignKey<FacilitatorRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_FACILITATOR_GAMESESSION1, Keys.FK_FACILITATOR_USER1);
+        return Arrays.asList(Keys.FK_FACILITATOR_USER1);
     }
 
-    private transient Gamesession _gamesession;
     private transient User _user;
-
-    /**
-     * Get the implicit join path to the <code>housinggame.gamesession</code>
-     * table.
-     */
-    public Gamesession gamesession() {
-        if (_gamesession == null)
-            _gamesession = new Gamesession(this, Keys.FK_FACILITATOR_GAMESESSION1);
-
-        return _gamesession;
-    }
 
     /**
      * Get the implicit join path to the <code>housinggame.user</code> table.
@@ -202,18 +185,18 @@ public class Facilitator extends TableImpl<FacilitatorRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row3 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<UInteger, String, UInteger, UInteger> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row3<UInteger, String, UInteger> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function4<? super UInteger, ? super String, ? super UInteger, ? super UInteger, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function3<? super UInteger, ? super String, ? super UInteger, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -221,7 +204,7 @@ public class Facilitator extends TableImpl<FacilitatorRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super UInteger, ? super String, ? super UInteger, ? super UInteger, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function3<? super UInteger, ? super String, ? super UInteger, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

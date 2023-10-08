@@ -169,11 +169,6 @@ public class Playerround extends TableImpl<PlayerroundRecord> {
      */
     public final TableField<PlayerroundRecord, UInteger> GROUPROUND_ID = createField(DSL.name("groupround_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
-    /**
-     * The column <code>housinggame.playerround.group_id</code>.
-     */
-    public final TableField<PlayerroundRecord, UInteger> GROUP_ID = createField(DSL.name("group_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
-
     private Playerround(Name alias, Table<PlayerroundRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -214,7 +209,7 @@ public class Playerround extends TableImpl<PlayerroundRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.PLAYERROUND_FK_PLAYERROUND_GROUP1_IDX, Indexes.PLAYERROUND_FK_PLAYERROUND_GROUPROUND1_IDX, Indexes.PLAYERROUND_FK_PLAYERROUND_HOUSE1_IDX, Indexes.PLAYERROUND_FK_PLAYERROUND_PLAYER1_IDX);
+        return Arrays.asList(Indexes.PLAYERROUND_FK_PLAYERROUND_GROUPROUND1_IDX, Indexes.PLAYERROUND_FK_PLAYERROUND_HOUSE1_IDX, Indexes.PLAYERROUND_FK_PLAYERROUND_PLAYER1_IDX);
     }
 
     @Override
@@ -234,13 +229,12 @@ public class Playerround extends TableImpl<PlayerroundRecord> {
 
     @Override
     public List<ForeignKey<PlayerroundRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_PLAYERROUND_HOUSE1, Keys.FK_PLAYERROUND_PLAYER1, Keys.FK_PLAYERROUND_GROUPROUND1, Keys.FK_PLAYERROUND_GROUP1);
+        return Arrays.asList(Keys.FK_PLAYERROUND_HOUSE1, Keys.FK_PLAYERROUND_PLAYER1, Keys.FK_PLAYERROUND_GROUPROUND1);
     }
 
     private transient House _house;
     private transient Player _player;
     private transient Groupround _groupround;
-    private transient Group _group;
 
     /**
      * Get the implicit join path to the <code>housinggame.house</code> table.
@@ -271,16 +265,6 @@ public class Playerround extends TableImpl<PlayerroundRecord> {
             _groupround = new Groupround(this, Keys.FK_PLAYERROUND_GROUPROUND1);
 
         return _groupround;
-    }
-
-    /**
-     * Get the implicit join path to the <code>housinggame.group</code> table.
-     */
-    public Group group() {
-        if (_group == null)
-            _group = new Group(this, Keys.FK_PLAYERROUND_GROUP1);
-
-        return _group;
     }
 
     @Override

@@ -15,13 +15,13 @@ import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function7;
+import org.jooq.Function6;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row7;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -63,7 +63,7 @@ public class Group extends TableImpl<GroupRecord> {
     /**
      * The column <code>housinggame.group.name</code>.
      */
-    public final TableField<GroupRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(16).nullable(false), this, "");
+    public final TableField<GroupRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(32).nullable(false), this, "");
 
     /**
      * The column <code>housinggame.group.password</code>.
@@ -84,11 +84,6 @@ public class Group extends TableImpl<GroupRecord> {
      * The column <code>housinggame.group.facilitator_id</code>.
      */
     public final TableField<GroupRecord, UInteger> FACILITATOR_ID = createField(DSL.name("facilitator_id"), SQLDataType.INTEGERUNSIGNED.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.INTEGERUNSIGNED)), this, "");
-
-    /**
-     * The column <code>housinggame.group.current_round_id</code>.
-     */
-    public final TableField<GroupRecord, UInteger> CURRENT_ROUND_ID = createField(DSL.name("current_round_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
     private Group(Name alias, Table<GroupRecord> aliased) {
         this(alias, aliased, null);
@@ -130,7 +125,7 @@ public class Group extends TableImpl<GroupRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.GROUP_FK_GROUP_FACILITATOR1_IDX, Indexes.GROUP_FK_GROUP_GAMESESSION1_IDX, Indexes.GROUP_FK_GROUP_ROUND1_IDX, Indexes.GROUP_FK_GROUP_SCENARIO1_IDX);
+        return Arrays.asList(Indexes.GROUP_FK_GROUP_FACILITATOR1_IDX, Indexes.GROUP_FK_GROUP_GAMESESSION1_IDX, Indexes.GROUP_FK_GROUP_SCENARIO1_IDX);
     }
 
     @Override
@@ -150,13 +145,12 @@ public class Group extends TableImpl<GroupRecord> {
 
     @Override
     public List<ForeignKey<GroupRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_GROUP_GAMESESSION1, Keys.FK_GROUP_SCENARIO1, Keys.FK_GROUP_FACILITATOR1, Keys.FK_GROUP_ROUND1);
+        return Arrays.asList(Keys.FK_GROUP_GAMESESSION1, Keys.FK_GROUP_SCENARIO1, Keys.FK_GROUP_FACILITATOR1);
     }
 
     private transient Gamesession _gamesession;
     private transient Scenario _scenario;
     private transient Facilitator _facilitator;
-    private transient Round _round;
 
     /**
      * Get the implicit join path to the <code>housinggame.gamesession</code>
@@ -189,16 +183,6 @@ public class Group extends TableImpl<GroupRecord> {
             _facilitator = new Facilitator(this, Keys.FK_GROUP_FACILITATOR1);
 
         return _facilitator;
-    }
-
-    /**
-     * Get the implicit join path to the <code>housinggame.round</code> table.
-     */
-    public Round round() {
-        if (_round == null)
-            _round = new Round(this, Keys.FK_GROUP_ROUND1);
-
-        return _round;
     }
 
     @Override
@@ -241,18 +225,18 @@ public class Group extends TableImpl<GroupRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<UInteger, String, String, UInteger, UInteger, UInteger, UInteger> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row6<UInteger, String, String, UInteger, UInteger, UInteger> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function7<? super UInteger, ? super String, ? super String, ? super UInteger, ? super UInteger, ? super UInteger, ? super UInteger, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function6<? super UInteger, ? super String, ? super String, ? super UInteger, ? super UInteger, ? super UInteger, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -260,7 +244,7 @@ public class Group extends TableImpl<GroupRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function7<? super UInteger, ? super String, ? super String, ? super UInteger, ? super UInteger, ? super UInteger, ? super UInteger, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function6<? super UInteger, ? super String, ? super String, ? super UInteger, ? super UInteger, ? super UInteger, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

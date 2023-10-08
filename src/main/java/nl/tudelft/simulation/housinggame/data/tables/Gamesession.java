@@ -65,7 +65,7 @@ public class Gamesession extends TableImpl<GamesessionRecord> {
     /**
      * The column <code>housinggame.gamesession.name</code>.
      */
-    public final TableField<GamesessionRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(16).nullable(false), this, "");
+    public final TableField<GamesessionRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(32).nullable(false), this, "");
 
     /**
      * The column <code>housinggame.gamesession.password</code>.

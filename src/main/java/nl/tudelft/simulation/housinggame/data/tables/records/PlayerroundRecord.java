@@ -349,20 +349,6 @@ public class PlayerroundRecord extends UpdatableRecordImpl<PlayerroundRecord> {
         return (UInteger) get(22);
     }
 
-    /**
-     * Setter for <code>housinggame.playerround.group_id</code>.
-     */
-    public void setGroupId(UInteger value) {
-        set(23, value);
-    }
-
-    /**
-     * Getter for <code>housinggame.playerround.group_id</code>.
-     */
-    public UInteger getGroupId() {
-        return (UInteger) get(23);
-    }
-
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -386,7 +372,7 @@ public class PlayerroundRecord extends UpdatableRecordImpl<PlayerroundRecord> {
     /**
      * Create a detached, initialised PlayerroundRecord
      */
-    public PlayerroundRecord(UInteger id, UInteger satisfaction, UInteger saving, UInteger mortgage, UInteger livingCosts, UInteger income, UInteger debt, Integer currentWealth, UInteger preferredHouseRating, UInteger satisfactionCostPerPoint, UInteger housePriceSold, UInteger housePriceBought, UInteger spentSavingsForBuyingHouse, UInteger paidOffDebt, UInteger measureBought, UInteger pluvialDamage, UInteger fluvialDamage, UInteger repairedDamage, UInteger satisfactionPointBought, LocalDateTime createTime, UInteger houseId, UInteger playerId, UInteger grouproundId, UInteger groupId) {
+    public PlayerroundRecord(UInteger id, UInteger satisfaction, UInteger saving, UInteger mortgage, UInteger livingCosts, UInteger income, UInteger debt, Integer currentWealth, UInteger preferredHouseRating, UInteger satisfactionCostPerPoint, UInteger housePriceSold, UInteger housePriceBought, UInteger spentSavingsForBuyingHouse, UInteger paidOffDebt, UInteger measureBought, UInteger pluvialDamage, UInteger fluvialDamage, UInteger repairedDamage, UInteger satisfactionPointBought, LocalDateTime createTime, UInteger houseId, UInteger playerId, UInteger grouproundId) {
         super(Playerround.PLAYERROUND);
 
         setId(id);
@@ -412,7 +398,6 @@ public class PlayerroundRecord extends UpdatableRecordImpl<PlayerroundRecord> {
         setHouseId(houseId);
         setPlayerId(playerId);
         setGrouproundId(grouproundId);
-        setGroupId(groupId);
         resetChangedOnNotNull();
     }
 }
