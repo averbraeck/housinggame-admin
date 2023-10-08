@@ -175,7 +175,9 @@ public class MaintainScenario
                         .setLabel("GameVersion id")
                         .setHidden(true))
                 .addEntry(new TableEntryPickRecordUInt(Tables.SCENARIO.SCENARIOPARAMETERS_ID)
-                        .setPickTable(data, Tables.SCENARIOPARAMETERS, Tables.SCENARIOPARAMETERS.ID, Tables.SCENARIOPARAMETERS.NAME)
+                        .setRequired()
+                        .setPickTable(data, Tables.SCENARIOPARAMETERS, Tables.SCENARIOPARAMETERS.ID,
+                                Tables.SCENARIOPARAMETERS.NAME)
                         .setInitialValue(scenario.getScenarioparametersId(), UInteger.valueOf(0))
                         .setLabel("Scenario parameters"))
                 .endForm();
