@@ -8,11 +8,11 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
-import nl.tudelft.simulation.housinggame.admin.form.AdminForm;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryDouble;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryInt;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryString;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryDouble;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryString;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryUInt;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.CommunityRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.TaxRecord;
@@ -132,7 +132,7 @@ public class MaintainCommunity
         UInteger gameVersionId =
                 communityId == 0 ? UInteger.valueOf(data.getColumn(0).getSelectedRecordId()) : community.getGameversionId();
         //@formatter:off
-        AdminForm form = new AdminForm()
+        TableForm form = new TableForm()
                 .setEdit(edit)
                 .setCancelMethod("community", data.getColumn(0).getSelectedRecordId())
                 .setEditMethod("editCommunity")
@@ -198,7 +198,7 @@ public class MaintainCommunity
                 : dslContext.selectFrom(Tables.TAX).where(Tables.TAX.ID.eq(UInteger.valueOf(taxId))).fetchOne();
         UInteger communityId = taxId == 0 ? UInteger.valueOf(data.getColumn(1).getSelectedRecordId()) : tax.getCommunityId();
         //@formatter:off
-        AdminForm form = new AdminForm()
+        TableForm form = new TableForm()
                 .setEdit(edit)
                 .setCancelMethod("community", data.getColumn(0).getSelectedRecordId())
                 .setEditMethod("editTax")

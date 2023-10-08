@@ -24,6 +24,11 @@ public class TableColumn extends AbstractColumn
         this.content = content;
     }
 
+    public void addContent(final String newContent)
+    {
+        this.content += newContent;
+    }
+
     public int getSelectedRecordId()
     {
         return this.selectedRecordId;

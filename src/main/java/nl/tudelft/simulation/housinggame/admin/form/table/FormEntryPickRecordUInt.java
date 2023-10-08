@@ -1,4 +1,4 @@
-package nl.tudelft.simulation.housinggame.admin.form;
+package nl.tudelft.simulation.housinggame.admin.form.table;
 
 import java.util.List;
 import java.util.SortedMap;
@@ -15,7 +15,7 @@ import org.jooq.types.UInteger;
 
 import nl.tudelft.simulation.housinggame.admin.AdminData;
 
-public class FormEntryPickRecordUInt extends AbstractFormEntry<FormEntryPickRecordUInt, UInteger>
+public class FormEntryPickRecordUInt extends AbstractTableEntry<FormEntryPickRecordUInt, UInteger>
 {
 
     /** Entries alphabetically sorted on pick name. */
@@ -35,7 +35,7 @@ public class FormEntryPickRecordUInt extends AbstractFormEntry<FormEntryPickReco
     }
 
     @Override
-    public UInteger codeForDatabase(final String s)
+    public UInteger codeForType(final String s)
     {
         if (s == null || s.length() == 0 || s.equals("null") || s.equals("0"))
             return null;

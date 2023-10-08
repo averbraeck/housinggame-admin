@@ -1,11 +1,11 @@
 package nl.tudelft.simulation.housinggame.admin.column;
 
-import nl.tudelft.simulation.housinggame.admin.form.AdminForm;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 
 public class FormColumn extends AbstractColumn
 {
 
-    private AdminForm form;
+    private TableForm form;
 
     private String htmlContents;
 
@@ -24,17 +24,17 @@ public class FormColumn extends AbstractColumn
         return "";
     }
 
-    public AdminForm getForm()
+    public TableForm getForm()
     {
         return form;
     }
 
-    public void setForm(AdminForm form)
+    public void setForm(TableForm form)
     {
         this.form = form;
     }
 
-    public void setHeaderForm(String header, AdminForm form)
+    public void setHeaderForm(String header, TableForm form)
     {
         setHeader(header);
         setForm(form);

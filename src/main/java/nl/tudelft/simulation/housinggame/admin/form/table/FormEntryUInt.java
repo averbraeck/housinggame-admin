@@ -1,9 +1,9 @@
-package nl.tudelft.simulation.housinggame.admin.form;
+package nl.tudelft.simulation.housinggame.admin.form.table;
 
 import org.jooq.TableField;
 import org.jooq.types.UInteger;
 
-public class FormEntryUInt extends AbstractFormEntry<FormEntryUInt, UInteger>
+public class FormEntryUInt extends AbstractTableEntry<FormEntryUInt, UInteger>
 {
 
     int min;
@@ -76,7 +76,7 @@ public class FormEntryUInt extends AbstractFormEntry<FormEntryUInt, UInteger>
     }
 
     @Override
-    public UInteger codeForDatabase(final String s)
+    public UInteger codeForType(final String s)
     {
         return UInteger.valueOf(s);
     }

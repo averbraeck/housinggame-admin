@@ -8,9 +8,9 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
-import nl.tudelft.simulation.housinggame.admin.form.AdminForm;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryDouble;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryString;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryDouble;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryString;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.ScenarioparametersRecord;
 
@@ -81,7 +81,7 @@ public class MaintainParameters
                 : dslContext.selectFrom(Tables.SCENARIOPARAMETERS)
                         .where(Tables.SCENARIOPARAMETERS.ID.eq(UInteger.valueOf(parametersId))).fetchOne();
         //@formatter:off
-        AdminForm form = new AdminForm()
+        TableForm form = new TableForm()
                 .setEdit(edit)
                 .setCancelMethod("parameters", data.getColumn(0).getSelectedRecordId())
                 .setEditMethod("editParameters")

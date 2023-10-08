@@ -1,4 +1,4 @@
-package nl.tudelft.simulation.housinggame.admin.form;
+package nl.tudelft.simulation.housinggame.admin.form.table;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +14,7 @@ import org.jooq.Record;
 
 import nl.tudelft.simulation.housinggame.admin.AdminData;
 
-public class AdminForm
+public class TableForm
 {
 
     private StringBuilder s;
@@ -41,18 +41,18 @@ public class AdminForm
 
     private List<String> additionalMethods = new ArrayList<>();
 
-    List<AbstractFormEntry<?, ?>> entries = new ArrayList<>();
+    List<AbstractTableEntry<?, ?>> entries = new ArrayList<>();
 
     private boolean multipart;
 
     private boolean edit;
 
-    public AdminForm()
+    public TableForm()
     {
         this.s = new StringBuilder();
     }
 
-    public AdminForm startMultipartForm()
+    public TableForm startMultipartForm()
     {
         this.multipart = true;
         this.s.append("<div class=\"hg-form\">\n");
@@ -72,7 +72,7 @@ public class AdminForm
 
     // Fieldset trick for read only:
     // https://stackoverflow.com/questions/3507958/how-can-i-make-an-entire-html-form-readonly
-    public AdminForm startForm()
+    public TableForm startForm()
     {
         this.multipart = false;
         this.s.append("<div class=\"hg-form\">\n");
@@ -89,7 +89,7 @@ public class AdminForm
         return this;
     }
 
-    public AdminForm endForm()
+    public TableForm endForm()
     {
         this.s.append("    </table>\n");
         this.s.append("    </fieldset>\n");
@@ -154,7 +154,7 @@ public class AdminForm
         }
     }
 
-    public AdminForm addEntry(AbstractFormEntry<?, ?> entry)
+    public TableForm addEntry(AbstractTableEntry<?, ?> entry)
     {
         this.entries.add(entry);
         entry.setForm(this);
@@ -162,13 +162,13 @@ public class AdminForm
         return this;
     }
 
-    public AdminForm setCancelMethod(String cancelMethod)
+    public TableForm setCancelMethod(String cancelMethod)
     {
         this.cancelMethod = cancelMethod;
         return this;
     }
 
-    public AdminForm setCancelMethod(String cancelMethod, int cancelRecordNr)
+    public TableForm setCancelMethod(String cancelMethod, int cancelRecordNr)
     {
         this.cancelMethod = cancelMethod;
         this.cancelRecordNr = cancelRecordNr;
@@ -180,26 +180,26 @@ public class AdminForm
         return this.cancelRecordNr;
     }
 
-    public AdminForm setSaveMethod(String saveMethod)
+    public TableForm setSaveMethod(String saveMethod)
     {
         this.saveMethod = saveMethod;
         return this;
     }
 
-    public AdminForm setSaveMethod(String saveMethod, String saveText)
+    public TableForm setSaveMethod(String saveMethod, String saveText)
     {
         this.saveMethod = saveMethod;
         this.saveText = saveText;
         return this;
     }
 
-    public AdminForm setEditMethod(String editMethod)
+    public TableForm setEditMethod(String editMethod)
     {
         this.editMethod = editMethod;
         return this;
     }
 
-    public AdminForm setDeleteMethod(String deleteeMethod)
+    public TableForm setDeleteMethod(String deleteeMethod)
     {
         this.deleteMethod = deleteeMethod;
         this.deleteButton = "Delete";
@@ -207,7 +207,7 @@ public class AdminForm
         return this;
     }
 
-    public AdminForm setDeleteMethod(String deleteMethod, String deleteButton)
+    public TableForm setDeleteMethod(String deleteMethod, String deleteButton)
     {
         this.deleteMethod = deleteMethod;
         this.deleteButton = deleteButton;
@@ -215,7 +215,7 @@ public class AdminForm
         return this;
     }
 
-    public AdminForm setDeleteMethod(String deleteMethod, String deleteButton, String deleteText)
+    public TableForm setDeleteMethod(String deleteMethod, String deleteButton, String deleteText)
     {
         this.deleteMethod = deleteMethod;
         this.deleteButton = deleteButton;
@@ -223,14 +223,14 @@ public class AdminForm
         return this;
     }
 
-    public AdminForm addAddtionalButton(String method, String buttonText)
+    public TableForm addAddtionalButton(String method, String buttonText)
     {
         this.additionalButtons.add(buttonText);
         this.additionalMethods.add(method);
         return this;
     }
 
-    public AdminForm setRecordNr(int recordNr)
+    public TableForm setRecordNr(int recordNr)
     {
         this.recordNr = recordNr;
         return this;
@@ -246,7 +246,7 @@ public class AdminForm
         return this.edit;
     }
 
-    public AdminForm setEdit(boolean edit)
+    public TableForm setEdit(boolean edit)
     {
         this.edit = edit;
         return this;
@@ -261,7 +261,7 @@ public class AdminForm
     public String setFields(Record record, HttpServletRequest request, AdminData data)
     {
         String errors = "";
-        for (AbstractFormEntry<?, ?> entry : this.entries)
+        for (AbstractTableEntry<?, ?> entry : this.entries)
         {
             if (isMultipart() && entry instanceof FormEntryImage)
             {

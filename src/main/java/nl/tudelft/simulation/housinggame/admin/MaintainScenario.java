@@ -8,11 +8,11 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
-import nl.tudelft.simulation.housinggame.admin.form.AdminForm;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryInt;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryPickRecordUInt;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryString;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryPickRecordUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryString;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryUInt;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.GameversionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.ScenarioRecord;
@@ -104,7 +104,7 @@ public class MaintainScenario
         GameversionRecord gameVersion = gameVersionId == 0 ? dslContext.newRecord(Tables.GAMEVERSION) : dslContext
                 .selectFrom(Tables.GAMEVERSION).where(Tables.GAMEVERSION.ID.eq(UInteger.valueOf(gameVersionId))).fetchOne();
         //@formatter:off
-        AdminForm form = new AdminForm()
+        TableForm form = new TableForm()
                 .setEdit(edit)
                 .setCancelMethod("scenario", data.getColumn(0).getSelectedRecordId())
                 .setEditMethod("editGameVersion")
@@ -151,7 +151,7 @@ public class MaintainScenario
         UInteger gameVersionId =
                 scenarioId == 0 ? UInteger.valueOf(data.getColumn(0).getSelectedRecordId()) : scenario.getGameversionId();
         //@formatter:off
-        AdminForm form = new AdminForm()
+        TableForm form = new TableForm()
                 .setEdit(edit)
                 .setCancelMethod("scenario", data.getColumn(0).getSelectedRecordId())
                 .setEditMethod("editScenario")

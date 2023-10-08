@@ -1,9 +1,9 @@
-package nl.tudelft.simulation.housinggame.admin.form;
+package nl.tudelft.simulation.housinggame.admin.form.table;
 
 import org.jooq.EnumType;
 import org.jooq.TableField;
 
-public class FormEntryEnum<T extends EnumType> extends AbstractFormEntry<FormEntryEnum<T>, T>
+public class FormEntryEnum<T extends EnumType> extends AbstractTableEntry<FormEntryEnum<T>, T>
 {
 
     private T[] pickListEntries;
@@ -22,7 +22,7 @@ public class FormEntryEnum<T extends EnumType> extends AbstractFormEntry<FormEnt
     }
 
     @Override
-    public T codeForDatabase(final String s)
+    public T codeForType(final String s)
     {
         for (T entry : this.pickListEntries)
         {

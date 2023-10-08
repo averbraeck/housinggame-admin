@@ -1,10 +1,10 @@
-package nl.tudelft.simulation.housinggame.admin.form;
+package nl.tudelft.simulation.housinggame.admin.form.table;
 
 import java.time.LocalDateTime;
 
 import org.jooq.TableField;
 
-public class FormEntryDateTime extends AbstractFormEntry<FormEntryDateTime, LocalDateTime>
+public class FormEntryDateTime extends AbstractTableEntry<FormEntryDateTime, LocalDateTime>
 {
 
     public FormEntryDateTime(final TableField<?, LocalDateTime> tableField)
@@ -21,7 +21,7 @@ public class FormEntryDateTime extends AbstractFormEntry<FormEntryDateTime, Loca
     }
 
     @Override
-    public LocalDateTime codeForDatabase(final String s)
+    public LocalDateTime codeForType(final String s)
     {
         if (s != null && s.length() > 10)
         {

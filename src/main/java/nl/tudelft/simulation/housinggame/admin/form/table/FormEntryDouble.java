@@ -1,8 +1,8 @@
-package nl.tudelft.simulation.housinggame.admin.form;
+package nl.tudelft.simulation.housinggame.admin.form.table;
 
 import org.jooq.TableField;
 
-public class FormEntryDouble extends AbstractFormEntry<FormEntryDouble, Double>
+public class FormEntryDouble extends AbstractTableEntry<FormEntryDouble, Double>
 {
 
     double min;
@@ -61,7 +61,7 @@ public class FormEntryDouble extends AbstractFormEntry<FormEntryDouble, Double>
     }
 
     @Override
-    public Double codeForDatabase(final String s)
+    public Double codeForType(final String s)
     {
         return Double.valueOf(s);
     }

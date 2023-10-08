@@ -8,9 +8,9 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
-import nl.tudelft.simulation.housinggame.admin.form.AdminForm;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryString;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryString;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryUInt;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.WelfaretypeRecord;
 
@@ -136,7 +136,7 @@ public class MaintainWelfareType
         UInteger scenarioId =
                 welfareTypeId == 0 ? UInteger.valueOf(data.getColumn(1).getSelectedRecordId()) : welfareType.getScenarioId();
         //@formatter:off
-        AdminForm form = new AdminForm()
+        TableForm form = new TableForm()
                 .setEdit(edit)
                 .setCancelMethod("welfaretype", data.getColumn(0).getSelectedRecordId())
                 .setEditMethod("editWelfareType")

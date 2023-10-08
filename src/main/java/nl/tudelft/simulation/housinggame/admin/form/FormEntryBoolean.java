@@ -1,13 +1,15 @@
-package nl.tudelft.simulation.housinggame.admin.form.table;
+package nl.tudelft.simulation.housinggame.admin.form;
 
 import org.jooq.Record;
 import org.jooq.TableField;
 
-public class TableEntryBoolean extends AbstractTableEntry<TableEntryBoolean, Byte>
+import nl.tudelft.simulation.housinggame.admin.form.table.AbstractTableEntry;
+
+public class FormEntryBoolean extends AbstractTableEntry<FormEntryBoolean, Byte>
 {
 
     // assumes boolean is coded as TINYINT
-    public TableEntryBoolean(final TableField<?, Byte> tableField)
+    public FormEntryBoolean(final TableField<?, Byte> tableField)
     {
         super(tableField);
     }

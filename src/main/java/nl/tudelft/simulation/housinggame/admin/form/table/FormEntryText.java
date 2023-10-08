@@ -1,8 +1,8 @@
-package nl.tudelft.simulation.housinggame.admin.form;
+package nl.tudelft.simulation.housinggame.admin.form.table;
 
 import org.jooq.TableField;
 
-public class FormEntryText extends AbstractFormEntry<FormEntryText, String>
+public class FormEntryText extends AbstractTableEntry<FormEntryText, String>
 {
 
     int maxChars;
@@ -57,7 +57,7 @@ public class FormEntryText extends AbstractFormEntry<FormEntryText, String>
     }
 
     @Override
-    public String codeForDatabase(final String s)
+    public String codeForType(final String s)
     {
         return s;
     }

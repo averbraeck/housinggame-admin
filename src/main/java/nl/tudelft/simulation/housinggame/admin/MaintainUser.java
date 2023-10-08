@@ -8,11 +8,11 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
-import nl.tudelft.simulation.housinggame.admin.form.AdminForm;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryBoolean;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryPickRecordUInt;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryString;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryPickRecordUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryString;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryBoolean;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.FacilitatorRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.UserRecord;
@@ -103,7 +103,7 @@ public class MaintainUser
         UserRecord user = userId == 0 ? dslContext.newRecord(Tables.USER)
                 : dslContext.selectFrom(Tables.USER).where(Tables.USER.ID.eq(UInteger.valueOf(userId))).fetchOne();
         //@formatter:off
-        AdminForm form = new AdminForm()
+        TableForm form = new TableForm()
                 .setEdit(edit)
                 .setCancelMethod("user", data.getColumn(0).getSelectedRecordId())
                 .setEditMethod("editUser")
@@ -127,7 +127,7 @@ public class MaintainUser
                         .setInitialValue(user.getPassword(), "")
                         .setLabel("Password")
                         .setMaxChars(32))
-                .addEntry(new FormEntryBoolean(Tables.USER.ADMINISTRATOR)
+                .addEntry(new TableEntryBoolean(Tables.USER.ADMINISTRATOR)
                         .setRequired()
                         .setInitialValue(user.getAdministrator(), Byte.valueOf((byte) 0))
                         .setLabel("Administrator"))
@@ -165,7 +165,7 @@ public class MaintainUser
         UInteger userId =
                 facilitatorId == 0 ? UInteger.valueOf(data.getColumn(0).getSelectedRecordId()) : facilitator.getUserId();
         //@formatter:off
-        AdminForm form = new AdminForm()
+        TableForm form = new TableForm()
                 .setEdit(edit)
                 .setCancelMethod("user", data.getColumn(0).getSelectedRecordId())
                 .setEditMethod("editFacilitator")

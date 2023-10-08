@@ -1,9 +1,9 @@
-package nl.tudelft.simulation.housinggame.admin.form;
+package nl.tudelft.simulation.housinggame.admin.form.table;
 
 import org.jooq.Record;
 import org.jooq.TableField;
 
-public class FormEntryImage extends AbstractFormEntry<FormEntryImage, byte[]>
+public class FormEntryImage extends AbstractTableEntry<FormEntryImage, byte[]>
 {
 
     /** the picture itself is going to/from the database; the String codes for the filename. */
@@ -47,7 +47,7 @@ public class FormEntryImage extends AbstractFormEntry<FormEntryImage, byte[]>
     }
 
     @Override
-    public byte[] codeForDatabase(String s)
+    public byte[] codeForType(String s)
     {
         this.filename = s;
         return this.image;

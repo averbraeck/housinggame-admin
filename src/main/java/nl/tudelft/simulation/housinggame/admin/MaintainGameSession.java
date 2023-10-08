@@ -8,11 +8,11 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
-import nl.tudelft.simulation.housinggame.admin.form.AdminForm;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryDate;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryPickRecordUInt;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryString;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryDate;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryPickRecordUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryString;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryUInt;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.GamesessionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
@@ -58,6 +58,11 @@ public class MaintainGameSession
                 if (click.startsWith("new"))
                     editGameSession(session, data, 0, true);
             }
+        }
+
+        else if (click.equals("generateGroupsParams"))
+        {
+            generateGroupsParams(session, data, recordId);
         }
 
         else if (click.contains("Group"))
@@ -148,6 +153,10 @@ public class MaintainGameSession
                     true);
             editGameSession(session, data, recordId, editRecord);
         }
+        if (editButton && recordId != 0)
+        {
+            data.getColumn(2).addContent(AdminTable.finalButton("Generate Greups + Players", "generateGroupsParams"));
+        }
     }
 
     public static void editGameSession(final HttpSession session, final AdminData data, final int gameSessionId,
@@ -159,7 +168,7 @@ public class MaintainGameSession
         UInteger gameVersionId =
                 gameSessionId == 0 ? UInteger.valueOf(data.getColumn(0).getSelectedRecordId()) : gameSession.getGameversionId();
         //@formatter:off
-        AdminForm form = new AdminForm()
+        TableForm form = new TableForm()
                 .setEdit(edit)
                 .setCancelMethod("gamesession", data.getColumn(0).getSelectedRecordId())
                 .setEditMethod("editGameSession")
@@ -229,7 +238,7 @@ public class MaintainGameSession
         UInteger sessionId =
                 groupId == 0 ? UInteger.valueOf(data.getColumn(1).getSelectedRecordId()) : group.getGamesessionId();
         //@formatter:off
-        AdminForm form = new AdminForm()
+        TableForm form = new TableForm()
                 .setEdit(edit)
                 .setCancelMethod("gamesession", data.getColumn(0).getSelectedRecordId())
                 .setEditMethod("editGroup")
@@ -303,7 +312,7 @@ public class MaintainGameSession
                 : dslContext.selectFrom(Tables.PLAYER).where(Tables.PLAYER.ID.eq(UInteger.valueOf(playerId))).fetchOne();
         UInteger groupId = playerId == 0 ? UInteger.valueOf(data.getColumn(2).getSelectedRecordId()) : player.getGroupId();
         //@formatter:off
-        AdminForm form = new AdminForm()
+        TableForm form = new TableForm()
                 .setEdit(edit)
                 .setCancelMethod("gamesession", data.getColumn(0).getSelectedRecordId())
                 .setEditMethod("editPlayer")
@@ -334,6 +343,123 @@ public class MaintainGameSession
                 .endForm();
         //@formatter:on
         data.getFormColumn().setHeaderForm("Edit Player", form);
+    }
+
+    /*
+     * *********************************************************************************************************
+     * ****************************************** GENERATE GROUPS **********************************************
+     * *********************************************************************************************************
+     */
+
+    public static void generateGroupsParams(final HttpSession session, final AdminData data, final int recordId)
+    {
+        data.showColumn("GameSessionGameVersion", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMEVERSION,
+                Tables.GAMEVERSION.NAME, "name", false);
+        data.showDependentColumn("GameSession", 1, data.getColumn(1).getSelectedRecordId(), true, Tables.GAMESESSION,
+                Tables.GAMESESSION.NAME, "name", Tables.GAMESESSION.GAMEVERSION_ID, true);
+        data.showDependentColumn("Group", 2, recordId, true, Tables.GROUP, Tables.GROUP.NAME, "name",
+                Tables.GROUP.GAMESESSION_ID, true);
+        data.resetColumn(3);
+        data.resetFormColumn();
+
+        StringBuilder s = new StringBuilder();
+        s.append("<p>Note: The group numbers will be generated at the places of the #-sign in the group name, \n"
+                + "user name and and password. The user number will be generated at the place of the % sign \n"
+                + "in the user name. The code will be randomly generated.</p>\n");
+
+        s.append("<div class=\"tg-form\">\n");
+        s.append("  <form id=\"editForm\" action=\"/housinggame-admin/admin\" method=\"POST\" >\n");
+        s.append("    <input id=\"editClick\" type=\"hidden\" name=\"editClick\" value=\"tobefilled\" />\n");
+        s.append("    <input id=\"editRecordNr\" type=\"hidden\" name=\"editRecordNr\" value=\"0\" />\n");
+        s.append(buttonRow(data));
+        s.append("    <fieldset>\n");
+        s.append("     <table width=\"100%\">\n");
+
+        s.append(makeStringField("Group names (with #)", true, "groupname", ""));
+        s.append(makeIntField("Group start number", true, "groupstartnr", 1));
+        s.append(makeIntField("Number of groups", true, "nrgroups", 6));
+        s.append(makeStringField("Group password", false, "password", ""));
+        s.append(makePickField("Group scenario", false, "scenario", ""));
+        s.append(makeStringField("Player names (with # and %)", true, "playername", ""));
+        s.append(makeIntField("Player start number", true, "playerstartnr", 1));
+        s.append(makeIntField("Number of players", true, "nrplayers", 8));
+
+        s.append("     </table>\n");
+        s.append("    </fieldset>\n");
+        s.append(buttonRow(data));
+        s.append("  </form>\n");
+        s.append("</div>\n");
+
+        data.getFormColumn().setHtmlContents(s.toString());
+        data.getFormColumn().setHeader("Generate User Batch");
+    }
+
+    private static String makeStringField(final String label, final boolean required, final String name,
+            final String initialValue)
+    {
+        StringBuilder s = new StringBuilder();
+        s.append("    <tr>\n");
+        s.append("      <td width=\"40%\">");
+        s.append(label);
+        s.append("      </td>");
+        s.append("      <td width=\"60%\">");
+        s.append("<input type=\"text\" style=\"width:97%;\" ");
+        if (required)
+            s.append("required name=\"");
+        else
+            s.append("name=\"");
+        s.append(name);
+        s.append("\" value=\"");
+        s.append(initialValue);
+        s.append("\" />");
+        s.append("</td>\n");
+        s.append("    </tr>\n");
+        return s.toString();
+    }
+
+    private static String makeIntField(final String label, final boolean required, final String name, final int initialValue)
+    {
+        StringBuilder s = new StringBuilder();
+        s.append("    <tr>\n");
+        s.append("      <td width=\"40%\">");
+        s.append(label);
+        s.append("      </td>");
+        s.append("      <td width=\"60%\">");
+        s.append("<input type=\"number\" style=\"width:97%;\" ");
+        if (required)
+            s.append("required name=\"");
+        else
+            s.append("name=\"");
+        s.append(name);
+        s.append("\" value=\"");
+        s.append(initialValue);
+        s.append("\" />");
+        s.append("</td>\n");
+        s.append("    </tr>\n");
+        return s.toString();
+    }
+
+    private static String buttonRow(final AdminData data)
+    {
+        StringBuilder s = new StringBuilder();
+        s.append("    <div class=\"tg-admin-form-buttons\">\n");
+
+        s.append("      <span class=\"tg-admin-form-button\" /><a href=\"#\" onClick=\"submitEditForm('");
+        s.append("showUsers");
+        s.append("', ");
+        s.append(data.getColumn(0).getSelectedRecordId());
+        s.append("); return false;\">Cancel</a></span>\n");
+
+        s.append("      <span class=\"tg-admin-form-button\" /><a href=\"#\" onClick=\"submitEditForm('");
+        s.append("generateUsers");
+        s.append("', ");
+        s.append(data.getColumn(0).getSelectedRecordId());
+        s.append("); return false;\">");
+        s.append("Generate");
+        s.append("</a></span>\n");
+
+        s.append("    </div>\n");
+        return s.toString();
     }
 
 }

@@ -8,11 +8,11 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
-import nl.tudelft.simulation.housinggame.admin.form.AdminForm;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryInt;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryString;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryText;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryString;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryText;
+import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryUInt;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.NewsitemRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.RoundRecord;
@@ -161,7 +161,7 @@ public class MaintainRound
                 : dslContext.selectFrom(Tables.ROUND).where(Tables.ROUND.ID.eq(UInteger.valueOf(roundId))).fetchOne();
         UInteger scenarioId = roundId == 0 ? UInteger.valueOf(data.getColumn(1).getSelectedRecordId()) : round.getScenarioId();
         //@formatter:off
-        AdminForm form = new AdminForm()
+        TableForm form = new TableForm()
                 .setEdit(edit)
                 .setCancelMethod("round", data.getColumn(0).getSelectedRecordId())
                 .setEditMethod("editRound")
@@ -215,7 +215,7 @@ public class MaintainRound
                 : dslContext.selectFrom(Tables.NEWSITEM).where(Tables.NEWSITEM.ID.eq(UInteger.valueOf(newsItemId))).fetchOne();
         UInteger roundId = newsItemId == 0 ? UInteger.valueOf(data.getColumn(2).getSelectedRecordId()) : newsItem.getRoundId();
         //@formatter:off
-        AdminForm form = new AdminForm()
+        TableForm form = new TableForm()
                 .setEdit(edit)
                 .setCancelMethod("round", data.getColumn(0).getSelectedRecordId())
                 .setEditMethod("editNewsItem")

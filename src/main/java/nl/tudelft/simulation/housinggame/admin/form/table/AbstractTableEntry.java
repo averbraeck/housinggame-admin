@@ -1,61 +1,25 @@
-package nl.tudelft.simulation.housinggame.admin.form;
+package nl.tudelft.simulation.housinggame.admin.form.table;
 
 import org.jooq.Record;
 import org.jooq.TableField;
 
-public abstract class AbstractFormEntry<F extends AbstractFormEntry<F, T>, T>
-{
+import nl.tudelft.simulation.housinggame.admin.form.AbstractFormEntry;
 
-    private AdminForm form;
+public abstract class AbstractTableEntry<F extends AbstractTableEntry<F, T>, T> extends AbstractFormEntry<F, T>
+{
 
     private final TableField<?, T> tableField;
 
-    private String label;
-
     private String type;
 
-    private boolean required;
-
-    private boolean readOnly;
-
-    private boolean hidden = false;
-
-    protected String errors; // cumulative error register
-
-    private T initialValue; // to be able to reset the form
-
-    private String lastEnteredValue; // to restore the form after error
-
-    public AbstractFormEntry(final TableField<?, T> tableField)
+    public AbstractTableEntry(final TableField<?, T> tableField)
     {
+        super(tableField.getName());
         this.tableField = tableField;
-        this.label = this.tableField.getName();
         this.type = this.tableField.getType().getName().toUpperCase();
-        this.required = false;
-        this.readOnly = false;
+        setRequired(false);
+        setReadOnly(false);
         this.errors = "";
-    }
-
-    public AdminForm getForm()
-    {
-        return this.form;
-    }
-
-    public void setForm(final AdminForm form)
-    {
-        this.form = form;
-    }
-
-    public String getLabel()
-    {
-        return this.label;
-    }
-
-    @SuppressWarnings("unchecked")
-    public F setLabel(final String label)
-    {
-        this.label = label;
-        return (F) this;
     }
 
     public String getType()
@@ -70,104 +34,14 @@ public abstract class AbstractFormEntry<F extends AbstractFormEntry<F, T>, T>
         return (F) this;
     }
 
-    public boolean isRequired()
-    {
-        return this.required;
-    }
-
-    @SuppressWarnings("unchecked")
-    public F setRequired(final boolean required)
-    {
-        this.required = required;
-        return (F) this;
-    }
-
-    public F setRequired()
-    {
-        return setRequired(true);
-    }
-
-    public boolean isHidden()
-    {
-        return this.hidden;
-    }
-
-    @SuppressWarnings("unchecked")
-    public F setHidden(final boolean hidden)
-    {
-        this.hidden = hidden;
-        return (F) this;
-    }
-
-    public F setHidden()
-    {
-        return setHidden(true);
-    }
-
     public TableField<?, ?> getTableField()
     {
         return this.tableField;
     }
 
-    public T getInitialValue()
-    {
-        return this.initialValue;
-    }
-
-    @SuppressWarnings("unchecked")
-    public F setInitialValue(final T initialValue, final T valueWhenNull)
-    {
-        this.initialValue = initialValue != null ? initialValue : valueWhenNull;
-        setLastEnteredValue(codeForEdit(this.initialValue));
-        return (F) this;
-    }
-
-    public String getLastEnteredValue()
-    {
-        return this.lastEnteredValue;
-    }
-
-    public void setLastEnteredValue(final String lastEnteredValue)
-    {
-        this.lastEnteredValue = lastEnteredValue;
-    }
-
-    public boolean isReadOnly()
-    {
-        return this.readOnly;
-    }
-
-    @SuppressWarnings("unchecked")
-    public F setReadOnly(final boolean readOnly)
-    {
-        this.readOnly = readOnly;
-        return (F) this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public F setReadOnly()
-    {
-        this.readOnly = true;
-        return (F) this;
-    }
-
-    public String getErrors()
-    {
-        return this.errors;
-    }
-
-    public abstract String codeForEdit(T value);
-
-    public abstract T codeForDatabase(String s);
-
-    protected void addError(final String error)
-    {
-        this.errors += "<p>Field: '" + getLabel() + "' " + error + "</p>\n";
-    }
-
     protected void validate(final String value)
     {
-        this.lastEnteredValue = value;
+        setLastEnteredValue(value);
         this.errors = "";
         if ((value == null || value.length() == 0) && (isRequired() || !this.tableField.getDataType().nullable()))
             addError("should not be empty");
@@ -180,7 +54,7 @@ public abstract class AbstractFormEntry<F extends AbstractFormEntry<F, T>, T>
         {
             try
             {
-                record.set((TableField<?, T>) this.tableField, codeForDatabase(value));
+                record.set((TableField<?, T>) this.tableField, codeForType(value));
             }
             catch (Exception exception)
             {
@@ -189,7 +63,5 @@ public abstract class AbstractFormEntry<F extends AbstractFormEntry<F, T>, T>
         }
         return this.errors;
     }
-
-    public abstract String makeHtml();
 
 }
