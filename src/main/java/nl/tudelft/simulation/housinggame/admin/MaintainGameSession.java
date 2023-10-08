@@ -1,9 +1,10 @@
 package nl.tudelft.simulation.housinggame.admin;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -14,8 +15,8 @@ import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
-import jakarta.xml.bind.DatatypeConverter;
 import nl.tudelft.simulation.housinggame.admin.form.FormEntryInt;
+import nl.tudelft.simulation.housinggame.admin.form.FormEntryPickRecordUInt;
 import nl.tudelft.simulation.housinggame.admin.form.FormEntryString;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDate;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecordUInt;
@@ -26,7 +27,7 @@ import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.GamesessionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.PlayerRecord;
-import nl.tudelft.simulation.housinggame.data.tables.records.UserRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.WelfaretypeRecord;
 
 public class MaintainGameSession
 {
@@ -196,7 +197,7 @@ public class MaintainGameSession
                         .setRequired()
                         .setInitialValue(gameSession.getName(), "")
                         .setLabel("GameSession name")
-                        .setMaxChars(16))
+                        .setMaxChars(32))
                 .addEntry(new TableEntryString(Tables.GAMESESSION.PASSWORD)
                         .setRequired()
                         .setInitialValue(gameSession.getPassword(), "")
@@ -250,6 +251,7 @@ public class MaintainGameSession
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         GroupRecord group = groupId == 0 ? dslContext.newRecord(Tables.GROUP)
                 : dslContext.selectFrom(Tables.GROUP).where(Tables.GROUP.ID.eq(UInteger.valueOf(groupId))).fetchOne();
+        UInteger gameVersionId = UInteger.valueOf(data.getColumn(0).getSelectedRecordId());
         UInteger sessionId =
                 groupId == 0 ? UInteger.valueOf(data.getColumn(1).getSelectedRecordId()) : group.getGamesessionId();
         //@formatter:off
@@ -266,7 +268,7 @@ public class MaintainGameSession
                         .setRequired()
                         .setInitialValue(group.getName(), "")
                         .setLabel("Group name")
-                        .setMaxChars(16))
+                        .setMaxChars(32))
                 .addEntry(new TableEntryString(Tables.GROUP.PASSWORD)
                         .setRequired()
                         .setInitialValue(group.getPassword(), "")
@@ -278,14 +280,10 @@ public class MaintainGameSession
                         .setHidden(true))
                 .addEntry(new TableEntryPickRecordUInt(Tables.GROUP.SCENARIO_ID)
                         .setRequired()
-                        .setPickTable(data, Tables.SCENARIO, Tables.SCENARIO.ID, Tables.SCENARIO.NAME)
+                        .setPickTable(data, Tables.SCENARIO.where(Tables.SCENARIO.GAMEVERSION_ID.eq(gameVersionId)),
+                                Tables.SCENARIO.ID, Tables.SCENARIO.NAME)
                         .setInitialValue(group.getScenarioId(), UInteger.valueOf(0))
                         .setLabel("Scenario to play"))
-                .addEntry(new TableEntryPickRecordUInt(Tables.GROUP.CURRENT_ROUND_ID)
-                        .setRequired()
-                        .setPickTable(data, Tables.ROUND, Tables.ROUND.ID, Tables.ROUND.ROUND_NUMBER)
-                        .setInitialValue(group.getCurrentRoundId(), UInteger.valueOf(0))
-                        .setLabel("Current (initial) round"))
                 .addEntry(new TableEntryPickRecordUInt(Tables.GROUP.FACILITATOR_ID)
                         .setRequired(false)
                         .setPickTable(data, Tables.FACILITATOR, Tables.FACILITATOR.ID, Tables.FACILITATOR.NAME)
@@ -380,7 +378,7 @@ public class MaintainGameSession
         StringBuilder s = new StringBuilder();
         s.append("<p>Note: The group numbers will be generated at the places of the #-sign in the group name, \n"
                 + "user name and and password. The user number will be generated at the place of the % sign \n"
-                + "in the user name. The code will be randomly generated.</p>\n");
+                + "in the user name. The welfare types will be randomized and rotated among the players.</p>\n");
 
         s.append("<div class=\"hg-form\">\n");
         s.append("  <form id=\"editForm\" action=\"/housinggame-admin/admin\" method=\"POST\" >\n");
@@ -390,13 +388,18 @@ public class MaintainGameSession
         s.append("    <fieldset>\n");
         s.append("     <table width=\"100%\">\n");
 
-        s.append(new FormEntryString("Group names (with #)", "groupname").setMaxChars(16).setRequired()
+        s.append(new FormEntryString("Group names (with #)", "groupname").setMaxChars(32).setRequired()
                 .setInitialValue("Table#", "Table#").makeHtml());
         s.append(new FormEntryInt("Group start number", "groupstartnr").setMin(1).setRequired().setInitialValue(1, 1)
                 .makeHtml());
         s.append(new FormEntryInt("Number of groups", "nrgroups").setMin(1).setRequired().setInitialValue(6, 1).makeHtml());
-        s.append(new FormEntryString("Group password (# allowed)", "password").setMaxChars(16).setRequired().makeHtml());
-        // s.append(makePickField("Group scenario", false, "scenario", ""));
+        s.append(new FormEntryString("Group password (# allowed)", "password").setMaxChars(32).setRequired().makeHtml());
+        s.append(new FormEntryPickRecordUInt("Scenario to play", "scenarioId").setRequired()
+                .setPickTable(data, Tables.SCENARIO, Tables.SCENARIO.ID, Tables.SCENARIO.NAME)
+                .setInitialValue(UInteger.valueOf(0), UInteger.valueOf(0)).makeHtml());
+        s.append(new FormEntryPickRecordUInt("Start round nr", "currentRoundId").setRequired()
+                .setPickTable(data, Tables.ROUND, Tables.ROUND.ID, Tables.ROUND.ROUND_NUMBER)
+                .setInitialValue(UInteger.valueOf(0), UInteger.valueOf(0)).makeHtml());
         s.append(new FormEntryString("Player names (with # and %)", "playername").setMaxChars(16).setRequired()
                 .setInitialValue("t#p%", "t#p%").makeHtml());
         s.append(new FormEntryInt("Player start number", "playerstartnr").setMin(1).setRequired().setInitialValue(1, 1)
@@ -448,14 +451,18 @@ public class MaintainGameSession
         String playerName = request.getParameter("playername");
         String sPlayerStartNr = request.getParameter("playerstartnr");
         String sNrPlayers = request.getParameter("nrplayers");
+        String sScenarioId = request.getParameter("scenarioId");
+        String sCurrentRoundId = request.getParameter("currentRoundId");
 
-        System.out.println("groupName = " + groupName);
-        System.out.println("sGroupStartNr = " + sGroupStartNr);
-        System.out.println("sNrGroups = " + sNrGroups);
-        System.out.println("password = " + password);
-        System.out.println("playerName = " + playerName);
-        System.out.println("sPlayerStartNr = " + sPlayerStartNr);
-        System.out.println("sNrPlayers = " + sNrPlayers);
+        // System.out.println("groupName = " + groupName);
+        // System.out.println("sGroupStartNr = " + sGroupStartNr);
+        // System.out.println("sNrGroups = " + sNrGroups);
+        // System.out.println("password = " + password);
+        // System.out.println("playerName = " + playerName);
+        // System.out.println("sPlayerStartNr = " + sPlayerStartNr);
+        // System.out.println("sNrPlayers = " + sNrPlayers);
+        // System.out.println("sScenarioId = " + sScenarioId);
+        // System.out.println("sCurrentRoundId = " + sCurrentRoundId);
 
         // check validity
         if (!groupName.contains("#"))
@@ -488,15 +495,9 @@ public class MaintainGameSession
                     "clickRecordId('showGameSession'," + gameSessionId + ")");
             return;
         }
-        if (password.length() > 0 && !password.contains("%"))
+        if (password.indexOf('#') != password.lastIndexOf('#'))
         {
-            ModalWindowUtils.popup(data, "Error in password", "<p>No % sign in pasword</p>",
-                    "clickRecordId('showGameSession'," + gameSessionId + ")");
-            return;
-        }
-        if (password.indexOf('%') != password.lastIndexOf('%'))
-        {
-            ModalWindowUtils.popup(data, "Error in password", "<p>Multiple % sign in password</p>",
+            ModalWindowUtils.popup(data, "Error in password", "<p>Multiple # sign in password</p>",
                     "clickRecordId('showGameSession'," + gameSessionId + ")");
             return;
         }
@@ -506,6 +507,8 @@ public class MaintainGameSession
             Integer.parseInt(sNrGroups);
             Integer.parseInt(sPlayerStartNr);
             Integer.parseInt(sNrPlayers);
+            Integer.parseInt(sScenarioId);
+            Integer.parseInt(sCurrentRoundId);
         }
         catch (NumberFormatException nfe)
         {
@@ -518,13 +521,23 @@ public class MaintainGameSession
         int nrGroups = Integer.parseInt(sNrGroups);
         int playerStartNr = Integer.parseInt(sPlayerStartNr);
         int nrPlayers = Integer.parseInt(sNrPlayers);
+        UInteger scenarioId = UInteger.valueOf(sScenarioId);
+        UInteger currentRoundId = UInteger.valueOf(sCurrentRoundId);
+
+        Random random = new Random();
+        SortedMap<Double, UInteger> randomRecords = new TreeMap<>();
+        List<WelfaretypeRecord> tableRecords =
+                dslContext.selectFrom(Tables.WELFARETYPE).where(Tables.WELFARETYPE.SCENARIO_ID.eq(scenarioId)).fetch();
+        for (WelfaretypeRecord record : tableRecords)
+            randomRecords.put(random.nextDouble(), record.getId());
+        List<UInteger> welfareTypeRecords = new ArrayList<>(randomRecords.values());
 
         // make the groups
         for (int i = groupStartNr; i < groupStartNr + nrGroups; i++)
         {
             GroupRecord group = dslContext.newRecord(Tables.GROUP);
-            String nr = "" + i;
-            String name = groupName.replaceFirst("#", nr);
+            String gnr = "" + i;
+            String gname = groupName.replaceFirst("#", gnr);
             String pwd;
             if (password.length() == 0)
             {
@@ -532,18 +545,18 @@ public class MaintainGameSession
             }
             else
             {
-                pwd = password.replaceFirst("#", nr);
+                pwd = password.replaceFirst("#", gnr);
             }
 
-            group.setName(name);
-            group.setPassword(password);
+            group.setName(gname);
+            group.setPassword(pwd);
             group.setGamesessionId(UInteger.valueOf(gameSessionId));
             group.setScenarioId(scenarioId);
-            group.setCurrentRoundId(currentRoundId);
-            int groupId = 0;
+            UInteger groupId;
             try
             {
-                groupId = group.store();
+                group.store();
+                groupId = group.getId();
             }
             catch (DataAccessException exception)
             {
@@ -552,12 +565,16 @@ public class MaintainGameSession
                 return;
             }
 
+            System.out.println("ScenarioId group " + gname + " = " + scenarioId);
+
             // make the players in the group
             for (int j = playerStartNr; j < playerStartNr + nrPlayers; j++)
             {
                 PlayerRecord player = dslContext.newRecord(Tables.PLAYER);
                 String pnr = "" + j;
-                String pname = groupName.replaceFirst("#", nr).replaceFirst("\\%", pnr);
+                String pname = playerName.replaceFirst("#", gnr).replaceFirst("\\%", pnr);
+                UInteger welfareTypeId = welfareTypeRecords.get(j % welfareTypeRecords.size());
+                System.out.println("welfareTypeId player " + pname + " = " + welfareTypeId);
 
                 player.setCode(pname);
                 player.setGroupId(groupId);
@@ -574,15 +591,7 @@ public class MaintainGameSession
                 }
             }
         }
-        /*-
-        data.showColumn("GameSessionGameVersion", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMEVERSION,
-                Tables.GAMEVERSION.NAME, "name", false);
-        data.showDependentColumn("GameSession", 1, data.getColumn(1).getSelectedRecordId(), true, Tables.GAMESESSION,
-                Tables.GAMESESSION.NAME, "name", Tables.GAMESESSION.GAMEVERSION_ID, true);
-        data.showDependentColumn("Group", 2, 0, true, Tables.GROUP, Tables.GROUP.NAME, "name", Tables.GROUP.GAMESESSION_ID,
-                true);
-        data.resetColumn(3);
-        data.resetFormColumn();
-        */
+
+        showGameSession(request.getSession(), data, gameSessionId, true, true);
     }
 }
