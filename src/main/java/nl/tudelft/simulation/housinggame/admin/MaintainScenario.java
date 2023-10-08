@@ -9,10 +9,10 @@ import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryInt;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryPickRecordUInt;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryString;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecordUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.GameversionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.ScenarioRecord;
@@ -113,7 +113,7 @@ public class MaintainScenario
                         + "<br> not been used, and when it has no associated scenarios")
                 .setRecordNr(gameVersionId)
                 .startForm()
-                .addEntry(new FormEntryString(Tables.GAMEVERSION.NAME)
+                .addEntry(new TableEntryString(Tables.GAMEVERSION.NAME)
                         .setRequired()
                         .setInitialValue(gameVersion.getName(), "")
                         .setLabel("Game Version name")
@@ -160,21 +160,21 @@ public class MaintainScenario
                         + "<br> been used, and when it has no roles, rounds, groups, params")
                 .setRecordNr(scenarioId)
                 .startForm()
-                .addEntry(new FormEntryString(Tables.SCENARIO.NAME)
+                .addEntry(new TableEntryString(Tables.SCENARIO.NAME)
                         .setRequired()
                         .setInitialValue(scenario.getName(), "")
                         .setLabel("Scenario name")
                         .setMaxChars(16))
-                .addEntry(new FormEntryInt(Tables.SCENARIO.INFORMATION_AMOUNT)
+                .addEntry(new TableEntryInt(Tables.SCENARIO.INFORMATION_AMOUNT)
                         .setRequired()
                         .setInitialValue(scenario.getInformationAmount(), 0)
                         .setLabel("Information amount")
                         .setMin(0))
-                .addEntry(new FormEntryUInt(Tables.SCENARIO.GAMEVERSION_ID)
+                .addEntry(new TableEntryUInt(Tables.SCENARIO.GAMEVERSION_ID)
                         .setInitialValue(gameVersionId, UInteger.valueOf(0))
                         .setLabel("GameVersion id")
                         .setHidden(true))
-                .addEntry(new FormEntryPickRecordUInt(Tables.SCENARIO.SCENARIOPARAMETERS_ID)
+                .addEntry(new TableEntryPickRecordUInt(Tables.SCENARIO.SCENARIOPARAMETERS_ID)
                         .setPickTable(data, Tables.SCENARIOPARAMETERS, Tables.SCENARIOPARAMETERS.ID, Tables.SCENARIOPARAMETERS.NAME)
                         .setInitialValue(scenario.getScenarioparametersId(), UInteger.valueOf(0))
                         .setLabel("Scenario parameters"))

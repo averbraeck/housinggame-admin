@@ -9,10 +9,10 @@ import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryDouble;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryInt;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryString;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDouble;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.CommunityRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.TaxRecord;
@@ -141,27 +141,27 @@ public class MaintainCommunity
                         + "<br>has not been used in a game play")
                 .setRecordNr(communityId)
                 .startForm()
-                .addEntry(new FormEntryString(Tables.COMMUNITY.NAME)
+                .addEntry(new TableEntryString(Tables.COMMUNITY.NAME)
                         .setRequired()
                         .setInitialValue(community.getName(), "")
                         .setLabel("Community name")
                         .setMaxChars(45))
-                .addEntry(new FormEntryInt(Tables.COMMUNITY.CAPACITY)
+                .addEntry(new TableEntryInt(Tables.COMMUNITY.CAPACITY)
                         .setRequired()
                         .setInitialValue(community.getCapacity(), 0)
                         .setLabel("Capacity")
                         .setMin(0))
-                .addEntry(new FormEntryInt(Tables.COMMUNITY.PROTECTION_RAIN_FLOOD)
+                .addEntry(new TableEntryInt(Tables.COMMUNITY.PROTECTION_RAIN_FLOOD)
                         .setRequired()
                         .setInitialValue(community.getProtectionRainFlood(), 0)
                         .setLabel("Protection rain flood")
                         .setMin(0))
-                .addEntry(new FormEntryInt(Tables.COMMUNITY.PROTECTION_RIVER_FLOOD)
+                .addEntry(new TableEntryInt(Tables.COMMUNITY.PROTECTION_RIVER_FLOOD)
                         .setRequired()
                         .setInitialValue(community.getProtectionRiverFlood(), 0)
                         .setLabel("Protection river flood")
                         .setMin(0))
-                .addEntry(new FormEntryUInt(Tables.COMMUNITY.GAMEVERSION_ID)
+                .addEntry(new TableEntryUInt(Tables.COMMUNITY.GAMEVERSION_ID)
                         .setInitialValue(gameVersionId, UInteger.valueOf(0))
                         .setLabel("Scenario id")
                         .setHidden(true))
@@ -207,27 +207,27 @@ public class MaintainCommunity
                         + "<br>has not been used in a community")
                 .setRecordNr(taxId)
                 .startForm()
-                .addEntry(new FormEntryString(Tables.TAX.NAME)
+                .addEntry(new TableEntryString(Tables.TAX.NAME)
                         .setRequired()
                         .setInitialValue(tax.getName(), "")
                         .setLabel("Tax name")
                         .setMaxChars(45))
-                .addEntry(new FormEntryUInt(Tables.TAX.MINIMUM_INHABITANTS)
+                .addEntry(new TableEntryUInt(Tables.TAX.MINIMUM_INHABITANTS)
                         .setRequired()
                         .setInitialValue(tax.getMinimumInhabitants(), UInteger.valueOf(0))
                         .setLabel("Minimum inhabitants")
                         .setMin(0))
-                .addEntry(new FormEntryUInt(Tables.TAX.MAXIMUM_INHABITANTS)
+                .addEntry(new TableEntryUInt(Tables.TAX.MAXIMUM_INHABITANTS)
                         .setRequired()
                         .setInitialValue(tax.getMaximumInhabitants(), UInteger.valueOf(0))
                         .setLabel("Maximum inhabitants")
                         .setMin(0))
-                .addEntry(new FormEntryDouble(Tables.TAX.TAX_COST)
+                .addEntry(new TableEntryDouble(Tables.TAX.TAX_COST)
                         .setRequired()
                         .setInitialValue(tax.getTaxCost(), 0.0)
                         .setLabel("Tax cost")
                         .setMin(0))
-                .addEntry(new FormEntryUInt(Tables.TAX.COMMUNITY_ID)
+                .addEntry(new TableEntryUInt(Tables.TAX.COMMUNITY_ID)
                         .setInitialValue(communityId, UInteger.valueOf(0))
                         .setLabel("Community id")
                         .setHidden(true))

@@ -15,13 +15,13 @@ import org.jooq.types.UInteger;
 
 import nl.tudelft.simulation.housinggame.admin.AdminData;
 
-public class FormEntryPickRecordUInt extends AbstractTableEntry<FormEntryPickRecordUInt, UInteger>
+public class TableEntryPickRecordUInt extends AbstractTableEntry<TableEntryPickRecordUInt, UInteger>
 {
 
     /** Entries alphabetically sorted on pick name. */
     private SortedMap<String, UInteger> records = new TreeMap<>();
 
-    public FormEntryPickRecordUInt(final TableField<?, UInteger> tableField)
+    public TableEntryPickRecordUInt(final TableField<?, UInteger> tableField)
     {
         super(tableField);
     }
@@ -42,7 +42,7 @@ public class FormEntryPickRecordUInt extends AbstractTableEntry<FormEntryPickRec
         return UInteger.valueOf(s);
     }
 
-    public FormEntryPickRecordUInt setPickTable(final AdminData data, final Table<?> table, final TableField<?, UInteger> id,
+    public TableEntryPickRecordUInt setPickTable(final AdminData data, final Table<?> table, final TableField<?, UInteger> id,
             final TableField<?, ?> name)
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
@@ -56,7 +56,7 @@ public class FormEntryPickRecordUInt extends AbstractTableEntry<FormEntryPickRec
         return this;
     }
 
-    public FormEntryPickRecordUInt setPickTable(final AdminData data, final Table<?> table, final TableField<?, UInteger> id,
+    public TableEntryPickRecordUInt setPickTable(final AdminData data, final Table<?> table, final TableField<?, UInteger> id,
             final TableField<?, String> name, final Condition condition)
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);

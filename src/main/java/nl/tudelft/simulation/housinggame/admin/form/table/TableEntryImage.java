@@ -3,7 +3,7 @@ package nl.tudelft.simulation.housinggame.admin.form.table;
 import org.jooq.Record;
 import org.jooq.TableField;
 
-public class FormEntryImage extends AbstractTableEntry<FormEntryImage, byte[]>
+public class TableEntryImage extends AbstractTableEntry<TableEntryImage, byte[]>
 {
 
     /** the picture itself is going to/from the database; the String codes for the filename. */
@@ -24,7 +24,7 @@ public class FormEntryImage extends AbstractTableEntry<FormEntryImage, byte[]>
     /** large image (200x200). */
     private boolean largeImage;
 
-    public FormEntryImage(TableField<?, byte[]> tableField)
+    public TableEntryImage(TableField<?, byte[]> tableField)
     {
         super(tableField);
         this.filename = "";
@@ -78,7 +78,7 @@ public class FormEntryImage extends AbstractTableEntry<FormEntryImage, byte[]>
         return imageServlet;
     }
 
-    public FormEntryImage setImageServlet(String imageServlet)
+    public TableEntryImage setImageServlet(String imageServlet)
     {
         this.imageServlet = imageServlet;
         return this;
@@ -89,7 +89,7 @@ public class FormEntryImage extends AbstractTableEntry<FormEntryImage, byte[]>
         return imageRecordNr;
     }
 
-    public FormEntryImage setImageRecordNr(int imageRecordNr)
+    public TableEntryImage setImageRecordNr(int imageRecordNr)
     {
         this.imageRecordNr = imageRecordNr;
         return this;
@@ -100,13 +100,13 @@ public class FormEntryImage extends AbstractTableEntry<FormEntryImage, byte[]>
         return largeImage;
     }
 
-    public FormEntryImage setLargeImage(boolean largeImage)
+    public TableEntryImage setLargeImage(boolean largeImage)
     {
         this.largeImage = largeImage;
         return this;
     }
 
-    public FormEntryImage setLargeImage()
+    public TableEntryImage setLargeImage()
     {
         this.largeImage = true;
         return this;
@@ -117,7 +117,7 @@ public class FormEntryImage extends AbstractTableEntry<FormEntryImage, byte[]>
         return imageNr;
     }
 
-    public FormEntryImage setImageNr(int imageNr)
+    public TableEntryImage setImageNr(int imageNr)
     {
         this.imageNr = imageNr;
         return this;

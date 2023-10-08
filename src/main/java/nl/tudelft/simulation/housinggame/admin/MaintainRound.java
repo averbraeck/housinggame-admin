@@ -9,10 +9,10 @@ import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryInt;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryString;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryText;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.NewsitemRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.RoundRecord;
@@ -170,12 +170,12 @@ public class MaintainRound
                         + "<br>has not been used in a game play")
                 .setRecordNr(roundId)
                 .startForm()
-                .addEntry(new FormEntryInt(Tables.ROUND.ROUND_NUMBER)
+                .addEntry(new TableEntryInt(Tables.ROUND.ROUND_NUMBER)
                         .setRequired()
                         .setInitialValue(round.getRoundNumber(), 1)
                         .setLabel("Round number")
                         .setMin(0))
-                .addEntry(new FormEntryUInt(Tables.ROUND.SCENARIO_ID)
+                .addEntry(new TableEntryUInt(Tables.ROUND.SCENARIO_ID)
                         .setInitialValue(scenarioId, UInteger.valueOf(0))
                         .setLabel("Scenario id")
                         .setHidden(true))
@@ -224,16 +224,16 @@ public class MaintainRound
                         + "<br>has not been used in a round")
                 .setRecordNr(newsItemId)
                 .startForm()
-                .addEntry(new FormEntryString(Tables.NEWSITEM.NAME)
+                .addEntry(new TableEntryString(Tables.NEWSITEM.NAME)
                         .setRequired()
                         .setInitialValue(newsItem.getName(), "")
                         .setLabel("NewsItem name")
                         .setMaxChars(255))
-                .addEntry(new FormEntryText(Tables.NEWSITEM.CONTENT)
+                .addEntry(new TableEntryText(Tables.NEWSITEM.CONTENT)
                         .setRequired()
                         .setInitialValue(newsItem.getContent(), "")
                         .setLabel("News Content"))
-                .addEntry(new FormEntryUInt(Tables.NEWSITEM.ROUND_ID)
+                .addEntry(new TableEntryUInt(Tables.NEWSITEM.ROUND_ID)
                         .setInitialValue(roundId, UInteger.valueOf(0))
                         .setLabel("Round id")
                         .setHidden(true))

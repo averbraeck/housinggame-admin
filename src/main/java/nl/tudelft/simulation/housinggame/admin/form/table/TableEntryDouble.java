@@ -2,7 +2,7 @@ package nl.tudelft.simulation.housinggame.admin.form.table;
 
 import org.jooq.TableField;
 
-public class FormEntryDouble extends AbstractTableEntry<FormEntryDouble, Double>
+public class TableEntryDouble extends AbstractTableEntry<TableEntryDouble, Double>
 {
 
     double min;
@@ -11,7 +11,7 @@ public class FormEntryDouble extends AbstractTableEntry<FormEntryDouble, Double>
 
     Double step;
 
-    public FormEntryDouble(final TableField<?, Double> tableField)
+    public TableEntryDouble(final TableField<?, Double> tableField)
     {
         super(tableField);
         this.min = -Double.MAX_VALUE;
@@ -24,7 +24,7 @@ public class FormEntryDouble extends AbstractTableEntry<FormEntryDouble, Double>
         return this.min;
     }
 
-    public FormEntryDouble setMin(final double min)
+    public TableEntryDouble setMin(final double min)
     {
         this.min = min;
         return this;
@@ -35,7 +35,7 @@ public class FormEntryDouble extends AbstractTableEntry<FormEntryDouble, Double>
         return this.max;
     }
 
-    public FormEntryDouble setMax(final double max)
+    public TableEntryDouble setMax(final double max)
     {
         this.max = max;
         return this;
@@ -46,7 +46,7 @@ public class FormEntryDouble extends AbstractTableEntry<FormEntryDouble, Double>
         return this.step;
     }
 
-    public FormEntryDouble setStep(final double step)
+    public TableEntryDouble setStep(final double step)
     {
         this.step = step;
         return this;

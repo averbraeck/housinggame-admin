@@ -4,10 +4,10 @@ import java.time.LocalDate;
 
 import org.jooq.TableField;
 
-public class FormEntryDate extends AbstractTableEntry<FormEntryDate, LocalDate>
+public class TableEntryDate extends AbstractTableEntry<TableEntryDate, LocalDate>
 {
 
-    public FormEntryDate(final TableField<?, LocalDate> tableField)
+    public TableEntryDate(final TableField<?, LocalDate> tableField)
     {
         super(tableField);
     }

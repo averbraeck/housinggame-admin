@@ -3,7 +3,7 @@ package nl.tudelft.simulation.housinggame.admin.form.table;
 import org.jooq.TableField;
 import org.jooq.types.UInteger;
 
-public class FormEntryUInt extends AbstractTableEntry<FormEntryUInt, UInteger>
+public class TableEntryUInt extends AbstractTableEntry<TableEntryUInt, UInteger>
 {
 
     int min;
@@ -14,7 +14,7 @@ public class FormEntryUInt extends AbstractTableEntry<FormEntryUInt, UInteger>
 
     String pattern;
 
-    public FormEntryUInt(final TableField<?, UInteger> tableField)
+    public TableEntryUInt(final TableField<?, UInteger> tableField)
     {
         super(tableField);
         this.min = -Integer.MAX_VALUE;
@@ -28,7 +28,7 @@ public class FormEntryUInt extends AbstractTableEntry<FormEntryUInt, UInteger>
         return this.min;
     }
 
-    public FormEntryUInt setMin(final int min)
+    public TableEntryUInt setMin(final int min)
     {
         this.min = min;
         return this;
@@ -39,7 +39,7 @@ public class FormEntryUInt extends AbstractTableEntry<FormEntryUInt, UInteger>
         return this.max;
     }
 
-    public FormEntryUInt setMax(final int max)
+    public TableEntryUInt setMax(final int max)
     {
         this.max = max;
         return this;
@@ -50,7 +50,7 @@ public class FormEntryUInt extends AbstractTableEntry<FormEntryUInt, UInteger>
         return this.step;
     }
 
-    public FormEntryUInt setStep(final int step)
+    public TableEntryUInt setStep(final int step)
     {
         this.step = step;
         return this;
@@ -61,7 +61,7 @@ public class FormEntryUInt extends AbstractTableEntry<FormEntryUInt, UInteger>
         return this.pattern;
     }
 
-    public FormEntryUInt setPattern(final String pattern)
+    public TableEntryUInt setPattern(final String pattern)
     {
         this.pattern = pattern;
         return this;

@@ -9,10 +9,10 @@ import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryInt;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryString;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryText;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.MeasuretypeRecord;
 
@@ -147,36 +147,36 @@ public class MaintainMeasureType
                         + "<br>has not been used in a scenario")
                 .setRecordNr(measureTypeId)
                 .startForm()
-                .addEntry(new FormEntryString(Tables.MEASURETYPE.NAME)
+                .addEntry(new TableEntryString(Tables.MEASURETYPE.NAME)
                         .setRequired()
                         .setInitialValue(measureType.getName(), "")
                         .setLabel("Name")
                         .setMaxChars(255))
-                .addEntry(new FormEntryText(Tables.MEASURETYPE.DESCRIPTION)
+                .addEntry(new TableEntryText(Tables.MEASURETYPE.DESCRIPTION)
                         .setRequired()
                         .setInitialValue(measureType.getDescription(), "")
                         .setLabel("Description"))
-                .addEntry(new FormEntryUInt(Tables.MEASURETYPE.PRICE)
+                .addEntry(new TableEntryUInt(Tables.MEASURETYPE.PRICE)
                         .setRequired()
                         .setInitialValue(measureType.getPrice(), UInteger.valueOf(0))
                         .setLabel("Price")
                         .setMin(0))
-                .addEntry(new FormEntryInt(Tables.MEASURETYPE.SATISFACTION)
+                .addEntry(new TableEntryInt(Tables.MEASURETYPE.SATISFACTION)
                         .setRequired()
                         .setInitialValue(measureType.getSatisfaction(), 0)
                         .setLabel("Satisfaction")
                         .setMin(0))
-                .addEntry(new FormEntryInt(Tables.MEASURETYPE.PLUVIAL_PROTECTION_LEVEL)
+                .addEntry(new TableEntryInt(Tables.MEASURETYPE.PLUVIAL_PROTECTION_LEVEL)
                         .setRequired()
                         .setInitialValue(measureType.getPluvialProtectionLevel(), 0)
                         .setLabel("Pluvial protection level")
                         .setMin(0))
-                .addEntry(new FormEntryInt(Tables.MEASURETYPE.FLUVIAL_PROTECTION_LEVEL)
+                .addEntry(new TableEntryInt(Tables.MEASURETYPE.FLUVIAL_PROTECTION_LEVEL)
                         .setRequired()
                         .setInitialValue(measureType.getFluvialProtectionLevel(), 0)
                         .setLabel("Fluvial protection level")
                         .setMin(0))
-                .addEntry(new FormEntryUInt(Tables.MEASURETYPE.SCENARIO_ID)
+                .addEntry(new TableEntryUInt(Tables.MEASURETYPE.SCENARIO_ID)
                         .setInitialValue(scenarioId, UInteger.valueOf(0))
                         .setLabel("Scenario id")
                         .setHidden(true))

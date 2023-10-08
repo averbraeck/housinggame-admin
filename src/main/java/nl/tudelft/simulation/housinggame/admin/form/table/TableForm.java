@@ -263,11 +263,11 @@ public class TableForm
         String errors = "";
         for (AbstractTableEntry<?, ?> entry : this.entries)
         {
-            if (isMultipart() && entry instanceof FormEntryImage)
+            if (isMultipart() && entry instanceof TableEntryImage)
             {
                 try
                 {
-                    FormEntryImage imageEntry = (FormEntryImage) entry;
+                    TableEntryImage imageEntry = (TableEntryImage) entry;
                     Part filePart = request.getPart(imageEntry.getTableField().getName());
                     String reset = request.getParameter(entry.getTableField().getName() + "_reset");
                     boolean delete = reset != null && reset.equals("delete");

@@ -9,9 +9,9 @@ import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryPickRecordUInt;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryString;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecordUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryBoolean;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.FacilitatorRecord;
@@ -112,17 +112,17 @@ public class MaintainUser
                         + "<br> not been used, and when it has no facilitator(s) or player(s)")
                 .setRecordNr(userId)
                 .startForm()
-                .addEntry(new FormEntryString(Tables.USER.USERNAME)
+                .addEntry(new TableEntryString(Tables.USER.USERNAME)
                         .setRequired()
                         .setInitialValue(user.getUsername(), "")
                         .setLabel("User name")
                         .setMaxChars(16))
-                .addEntry(new FormEntryString(Tables.USER.EMAIL)
+                .addEntry(new TableEntryString(Tables.USER.EMAIL)
                         .setRequired(false)
                         .setInitialValue(user.getEmail(), "")
                         .setLabel("Email")
                         .setMaxChars(255))
-                .addEntry(new FormEntryString(Tables.USER.PASSWORD)
+                .addEntry(new TableEntryString(Tables.USER.PASSWORD)
                         .setRequired()
                         .setInitialValue(user.getPassword(), "")
                         .setLabel("Password")
@@ -174,16 +174,16 @@ public class MaintainUser
                         + "<br> been used, and when it has no linked gamesessions or groups")
                 .setRecordNr(facilitatorId)
                 .startForm()
-                .addEntry(new FormEntryString(Tables.FACILITATOR.NAME)
+                .addEntry(new TableEntryString(Tables.FACILITATOR.NAME)
                         .setRequired()
                         .setInitialValue(facilitator.getName(), "")
                         .setLabel("Facilitator name")
                         .setMaxChars(16))
-                .addEntry(new FormEntryUInt(Tables.FACILITATOR.USER_ID)
+                .addEntry(new TableEntryUInt(Tables.FACILITATOR.USER_ID)
                         .setInitialValue(userId, UInteger.valueOf(0))
                         .setLabel("User id")
                         .setHidden(true))
-                .addEntry(new FormEntryPickRecordUInt(Tables.FACILITATOR.GAMESESSION_ID)
+                .addEntry(new TableEntryPickRecordUInt(Tables.FACILITATOR.GAMESESSION_ID)
                         .setPickTable(data, Tables.GAMESESSION, Tables.GAMESESSION.ID, Tables.GAMESESSION.NAME)
                         .setInitialValue(facilitator.getGamesessionId(), UInteger.valueOf(0))
                         .setLabel("Gamesession"))

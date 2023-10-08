@@ -14,7 +14,7 @@ public abstract class AbstractTableEntry<F extends AbstractTableEntry<F, T>, T> 
 
     public AbstractTableEntry(final TableField<?, T> tableField)
     {
-        super(tableField.getName());
+        super(tableField.getName(), tableField.getName());
         this.tableField = tableField;
         this.type = this.tableField.getType().getName().toUpperCase();
         setRequired(false);

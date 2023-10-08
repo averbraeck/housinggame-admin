@@ -1,17 +1,12 @@
 package nl.tudelft.simulation.housinggame.admin.form;
 
-import org.jooq.Record;
-import org.jooq.TableField;
-
-import nl.tudelft.simulation.housinggame.admin.form.table.AbstractTableEntry;
-
-public class FormEntryBoolean extends AbstractTableEntry<FormEntryBoolean, Byte>
+public class FormEntryBoolean extends AbstractFormEntry<FormEntryBoolean, Byte>
 {
 
     // assumes boolean is coded as TINYINT
-    public FormEntryBoolean(final TableField<?, Byte> tableField)
+    public FormEntryBoolean(final String label, final String name)
     {
-        super(tableField);
+        super(label, name);
     }
 
     @Override
@@ -36,7 +31,7 @@ public class FormEntryBoolean extends AbstractTableEntry<FormEntryBoolean, Byte>
         if (isHidden())
         {
             s.append("    <input type=\"hidden\" name=\"");
-            s.append(getTableField().getName());
+            s.append(getName());
             s.append("\" value=\"");
             s.append(getLastEnteredValue() == null ? "0" : getLastEnteredValue());
             s.append("\" />\n");
@@ -51,7 +46,7 @@ public class FormEntryBoolean extends AbstractTableEntry<FormEntryBoolean, Byte>
         s.append("      </td>");
         s.append("      <td width=\"75%\">");
         s.append("<input type=\"checkbox\" name=\"");
-        s.append(getTableField().getName());
+        s.append(getName());
         s.append("\" ");
         s.append(getLastEnteredValue() == null || "0".equals(getLastEnteredValue()) ? "" : "checked");
         s.append(" value=\"1\"");
@@ -62,13 +57,6 @@ public class FormEntryBoolean extends AbstractTableEntry<FormEntryBoolean, Byte>
         s.append("</td>\n");
         s.append("    </tr>\n");
         return s.toString();
-    }
-
-    @Override
-    public String setRecordValue(final Record record, final String value)
-    {
-        String v = value == null ? "0" : value; // field is NOT returned when not ticked...
-        return super.setRecordValue(record, v);
     }
 
 }

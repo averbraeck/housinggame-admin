@@ -9,9 +9,9 @@ import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryString;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryText;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.QuestionRecord;
 
@@ -143,20 +143,20 @@ public class MaintainQuestion
                         + "<br>has not been used in a scenario")
                 .setRecordNr(questionId)
                 .startForm()
-                .addEntry(new FormEntryUInt(Tables.QUESTION.QUESTION_NUMBER)
+                .addEntry(new TableEntryUInt(Tables.QUESTION.QUESTION_NUMBER)
                         .setRequired()
                         .setInitialValue(question.getQuestionNumber(), UInteger.valueOf(1))
                         .setLabel("Question number"))
-                .addEntry(new FormEntryString(Tables.QUESTION.NAME)
+                .addEntry(new TableEntryString(Tables.QUESTION.NAME)
                         .setRequired()
                         .setInitialValue(question.getName(), "")
                         .setLabel("Name")
                         .setMaxChars(45))
-                .addEntry(new FormEntryText(Tables.QUESTION.DESCRIPTION)
+                .addEntry(new TableEntryText(Tables.QUESTION.DESCRIPTION)
                         .setRequired()
                         .setInitialValue(question.getDescription(), "")
                         .setLabel("Description"))
-                .addEntry(new FormEntryUInt(Tables.QUESTION.SCENARIO_ID)
+                .addEntry(new TableEntryUInt(Tables.QUESTION.SCENARIO_ID)
                         .setInitialValue(scenarioId, UInteger.valueOf(0))
                         .setLabel("Scenario id")
                         .setHidden(true))

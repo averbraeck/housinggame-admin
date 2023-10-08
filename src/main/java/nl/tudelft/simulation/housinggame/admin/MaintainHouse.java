@@ -9,11 +9,11 @@ import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryInt;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryPickRecordUInt;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryString;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryText;
-import nl.tudelft.simulation.housinggame.admin.form.table.FormEntryUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecordUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.HouseRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.InitialhousemeasureRecord;
@@ -174,41 +174,41 @@ public class MaintainHouse
                         + "<br>has not been used in a community")
                 .setRecordNr(houseId)
                 .startForm()
-                .addEntry(new FormEntryString(Tables.HOUSE.ADDRESS)
+                .addEntry(new TableEntryString(Tables.HOUSE.ADDRESS)
                         .setRequired()
                         .setInitialValue(house.getAddress(), "")
                         .setLabel("House address (eg U01)")
                         .setMaxChars(45))
-                .addEntry(new FormEntryUInt(Tables.HOUSE.PRICE)
+                .addEntry(new TableEntryUInt(Tables.HOUSE.PRICE)
                         .setRequired()
                         .setInitialValue(house.getPrice(), UInteger.valueOf(0))
                         .setLabel("Price")
                         .setMin(0))
-                .addEntry(new FormEntryUInt(Tables.HOUSE.RATING)
+                .addEntry(new TableEntryUInt(Tables.HOUSE.RATING)
                         .setRequired()
                         .setInitialValue(house.getRating(), UInteger.valueOf(0))
                         .setLabel("Rating")
                         .setMin(0))
-                .addEntry(new FormEntryUInt(Tables.HOUSE.AVAILABLE_ROUND)
+                .addEntry(new TableEntryUInt(Tables.HOUSE.AVAILABLE_ROUND)
                         .setRequired()
                         .setInitialValue(house.getAvailableRound(), UInteger.valueOf(0))
                         .setLabel("Available from round")
                         .setMin(1))
-                .addEntry(new FormEntryText(Tables.HOUSE.DESCRIPTION)
+                .addEntry(new TableEntryText(Tables.HOUSE.DESCRIPTION)
                         .setRequired()
                         .setInitialValue(house.getDescription(), "")
                         .setLabel("Description"))
-                .addEntry(new FormEntryInt(Tables.HOUSE.INITIAL_PLUVIAL_PROTECTION)
+                .addEntry(new TableEntryInt(Tables.HOUSE.INITIAL_PLUVIAL_PROTECTION)
                         .setRequired()
                         .setInitialValue(house.getInitialPluvialProtection(), 0)
                         .setLabel("Initial pluvial protection")
                         .setMin(0))
-                .addEntry(new FormEntryInt(Tables.HOUSE.INITIAL_FLUVIAL_PROTECTION)
+                .addEntry(new TableEntryInt(Tables.HOUSE.INITIAL_FLUVIAL_PROTECTION)
                         .setRequired()
                         .setInitialValue(house.getInitialFluvialProtection(), 0)
                         .setLabel("Initial fluvial protection")
                         .setMin(0))
-                .addEntry(new FormEntryUInt(Tables.HOUSE.COMMUNITY_ID)
+                .addEntry(new TableEntryUInt(Tables.HOUSE.COMMUNITY_ID)
                         .setInitialValue(communityId, UInteger.valueOf(0))
                         .setLabel("Community id")
                         .setHidden(true))
@@ -260,21 +260,21 @@ public class MaintainHouse
                         + "<br>has not been used in a house")
                 .setRecordNr(initialHouseMeasureId)
                 .startForm()
-                .addEntry(new FormEntryString(Tables.INITIALHOUSEMEASURE.NAME)
+                .addEntry(new TableEntryString(Tables.INITIALHOUSEMEASURE.NAME)
                         .setRequired()
                         .setInitialValue(initialHouseMeasure.getName(), "")
                         .setLabel("Measure name")
                         .setMaxChars(45))
-                .addEntry(new FormEntryUInt(Tables.INITIALHOUSEMEASURE.ROUND)
+                .addEntry(new TableEntryUInt(Tables.INITIALHOUSEMEASURE.ROUND)
                         .setRequired()
                         .setInitialValue(initialHouseMeasure.getRound(), UInteger.valueOf(0))
                         .setLabel("Effective in round")
                         .setMin(1))
-                .addEntry(new FormEntryPickRecordUInt(Tables.INITIALHOUSEMEASURE.MEASURETYPE_ID)
+                .addEntry(new TableEntryPickRecordUInt(Tables.INITIALHOUSEMEASURE.MEASURETYPE_ID)
                         .setPickTable(data, Tables.MEASURETYPE, Tables.MEASURETYPE.ID, Tables.MEASURETYPE.NAME)
                         .setInitialValue(initialHouseMeasure.getMeasuretypeId(), UInteger.valueOf(0))
                         .setLabel("Measure type"))
-                .addEntry(new FormEntryUInt(Tables.INITIALHOUSEMEASURE.HOUSE_ID)
+                .addEntry(new TableEntryUInt(Tables.INITIALHOUSEMEASURE.HOUSE_ID)
                         .setInitialValue(houseId, UInteger.valueOf(0))
                         .setLabel("House id")
                         .setHidden(true))

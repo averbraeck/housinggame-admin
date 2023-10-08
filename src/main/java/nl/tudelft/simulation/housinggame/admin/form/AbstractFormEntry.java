@@ -9,6 +9,8 @@ public abstract class AbstractFormEntry<F extends AbstractFormEntry<F, T>, T>
 
     private String label;
 
+    private String name;
+
     // private String type;
 
     private boolean required;
@@ -23,9 +25,10 @@ public abstract class AbstractFormEntry<F extends AbstractFormEntry<F, T>, T>
 
     private String lastEnteredValue; // to restore the form after error
 
-    public AbstractFormEntry(final String label)
+    public AbstractFormEntry(final String label, final String name)
     {
         this.label = label;
+        this.name = name;
         this.required = false;
         this.readOnly = false;
         this.errors = "";
@@ -50,6 +53,18 @@ public abstract class AbstractFormEntry<F extends AbstractFormEntry<F, T>, T>
     public F setLabel(final String label)
     {
         this.label = label;
+        return (F) this;
+    }
+
+    public String getName()
+    {
+        return this.name;
+    }
+
+    @SuppressWarnings("unchecked")
+    public F setName(final String name)
+    {
+        this.name = name;
         return (F) this;
     }
 

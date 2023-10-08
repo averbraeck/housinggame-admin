@@ -3,12 +3,12 @@ package nl.tudelft.simulation.housinggame.admin.form.table;
 import org.jooq.EnumType;
 import org.jooq.TableField;
 
-public class FormEntryEnum<T extends EnumType> extends AbstractTableEntry<FormEntryEnum<T>, T>
+public class TableEntryEnum<T extends EnumType> extends AbstractTableEntry<TableEntryEnum<T>, T>
 {
 
     private T[] pickListEntries;
 
-    public FormEntryEnum(final TableField<?, T> tableField)
+    public TableEntryEnum(final TableField<?, T> tableField)
     {
         super(tableField);
     }
@@ -37,7 +37,7 @@ public class FormEntryEnum<T extends EnumType> extends AbstractTableEntry<FormEn
         return this.pickListEntries;
     }
 
-    public FormEntryEnum<T> setPickListEntries(final T[] pickListEntries)
+    public TableEntryEnum<T> setPickListEntries(final T[] pickListEntries)
     {
         this.pickListEntries = pickListEntries;
         return this;

@@ -2,7 +2,7 @@ package nl.tudelft.simulation.housinggame.admin.form.table;
 
 import org.jooq.TableField;
 
-public class FormEntryInt extends AbstractTableEntry<FormEntryInt, Integer>
+public class TableEntryInt extends AbstractTableEntry<TableEntryInt, Integer>
 {
 
     int min;
@@ -13,7 +13,7 @@ public class FormEntryInt extends AbstractTableEntry<FormEntryInt, Integer>
 
     String pattern;
 
-    public FormEntryInt(final TableField<?, Integer> tableField)
+    public TableEntryInt(final TableField<?, Integer> tableField)
     {
         super(tableField);
         this.min = -Integer.MAX_VALUE;
@@ -27,7 +27,7 @@ public class FormEntryInt extends AbstractTableEntry<FormEntryInt, Integer>
         return this.min;
     }
 
-    public FormEntryInt setMin(final int min)
+    public TableEntryInt setMin(final int min)
     {
         this.min = min;
         return this;
@@ -38,7 +38,7 @@ public class FormEntryInt extends AbstractTableEntry<FormEntryInt, Integer>
         return this.max;
     }
 
-    public FormEntryInt setMax(final int max)
+    public TableEntryInt setMax(final int max)
     {
         this.max = max;
         return this;
@@ -49,7 +49,7 @@ public class FormEntryInt extends AbstractTableEntry<FormEntryInt, Integer>
         return this.step;
     }
 
-    public FormEntryInt setStep(final int step)
+    public TableEntryInt setStep(final int step)
     {
         this.step = step;
         return this;
@@ -60,7 +60,7 @@ public class FormEntryInt extends AbstractTableEntry<FormEntryInt, Integer>
         return this.pattern;
     }
 
-    public FormEntryInt setPattern(final String pattern)
+    public TableEntryInt setPattern(final String pattern)
     {
         this.pattern = pattern;
         return this;

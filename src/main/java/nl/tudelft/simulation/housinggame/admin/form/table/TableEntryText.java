@@ -2,14 +2,14 @@ package nl.tudelft.simulation.housinggame.admin.form.table;
 
 import org.jooq.TableField;
 
-public class FormEntryText extends AbstractTableEntry<FormEntryText, String>
+public class TableEntryText extends AbstractTableEntry<TableEntryText, String>
 {
 
     int maxChars;
 
     int rows;
 
-    public FormEntryText(final TableField<?, String> tableField)
+    public TableEntryText(final TableField<?, String> tableField)
     {
         super(tableField);
         this.maxChars = 65535;
@@ -21,7 +21,7 @@ public class FormEntryText extends AbstractTableEntry<FormEntryText, String>
         return this.maxChars;
     }
 
-    public FormEntryText setMaxChars(final int maxChars)
+    public TableEntryText setMaxChars(final int maxChars)
     {
         this.maxChars = maxChars;
         return this;
@@ -32,7 +32,7 @@ public class FormEntryText extends AbstractTableEntry<FormEntryText, String>
         return this.rows;
     }
 
-    public FormEntryText setRows(final int rows)
+    public TableEntryText setRows(final int rows)
     {
         this.rows = rows;
         return this;
