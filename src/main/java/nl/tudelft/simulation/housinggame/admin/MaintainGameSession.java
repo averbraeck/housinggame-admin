@@ -1,22 +1,32 @@
 package nl.tudelft.simulation.housinggame.admin;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.util.Random;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
+import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
-import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
+import jakarta.xml.bind.DatatypeConverter;
+import nl.tudelft.simulation.housinggame.admin.form.FormEntryInt;
+import nl.tudelft.simulation.housinggame.admin.form.FormEntryString;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDate;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecordUInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.GamesessionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.PlayerRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.UserRecord;
 
 public class MaintainGameSession
 {
@@ -63,6 +73,11 @@ public class MaintainGameSession
         else if (click.equals("generateGroupsParams"))
         {
             generateGroupsParams(session, data, recordId);
+        }
+
+        else if (click.equals("generateGroups"))
+        {
+            generateGroups(request, data);
         }
 
         else if (click.contains("Group"))
@@ -367,7 +382,7 @@ public class MaintainGameSession
                 + "user name and and password. The user number will be generated at the place of the % sign \n"
                 + "in the user name. The code will be randomly generated.</p>\n");
 
-        s.append("<div class=\"tg-form\">\n");
+        s.append("<div class=\"hg-form\">\n");
         s.append("  <form id=\"editForm\" action=\"/housinggame-admin/admin\" method=\"POST\" >\n");
         s.append("    <input id=\"editClick\" type=\"hidden\" name=\"editClick\" value=\"tobefilled\" />\n");
         s.append("    <input id=\"editRecordNr\" type=\"hidden\" name=\"editRecordNr\" value=\"0\" />\n");
@@ -375,14 +390,19 @@ public class MaintainGameSession
         s.append("    <fieldset>\n");
         s.append("     <table width=\"100%\">\n");
 
-        s.append(makeStringField("Group names (with #)", true, "groupname", ""));
-        s.append(makeIntField("Group start number", true, "groupstartnr", 1));
-        s.append(makeIntField("Number of groups", true, "nrgroups", 6));
-        s.append(makeStringField("Group password", false, "password", ""));
+        s.append(new FormEntryString("Group names (with #)", "groupname").setMaxChars(16).setRequired()
+                .setInitialValue("Table#", "Table#").makeHtml());
+        s.append(new FormEntryInt("Group start number", "groupstartnr").setMin(1).setRequired().setInitialValue(1, 1)
+                .makeHtml());
+        s.append(new FormEntryInt("Number of groups", "nrgroups").setMin(1).setRequired().setInitialValue(6, 1).makeHtml());
+        s.append(new FormEntryString("Group password (# allowed)", "password").setMaxChars(16).setRequired().makeHtml());
         // s.append(makePickField("Group scenario", false, "scenario", ""));
-        s.append(makeStringField("Player names (with # and %)", true, "playername", ""));
-        s.append(makeIntField("Player start number", true, "playerstartnr", 1));
-        s.append(makeIntField("Number of players", true, "nrplayers", 8));
+        s.append(new FormEntryString("Player names (with # and %)", "playername").setMaxChars(16).setRequired()
+                .setInitialValue("t#p%", "t#p%").makeHtml());
+        s.append(new FormEntryInt("Player start number", "playerstartnr").setMin(1).setRequired().setInitialValue(1, 1)
+                .makeHtml());
+        s.append(new FormEntryInt("Nr of players / group", "nrplayers").setMin(1).setRequired().setInitialValue(8, 1)
+                .makeHtml());
 
         s.append("     </table>\n");
         s.append("    </fieldset>\n");
@@ -391,69 +411,24 @@ public class MaintainGameSession
         s.append("</div>\n");
 
         data.getFormColumn().setHtmlContents(s.toString());
-        data.getFormColumn().setHeader("Generate User Batch");
-    }
-
-    private static String makeStringField(final String label, final boolean required, final String name,
-            final String initialValue)
-    {
-        StringBuilder s = new StringBuilder();
-        s.append("    <tr>\n");
-        s.append("      <td width=\"40%\">");
-        s.append(label);
-        s.append("      </td>");
-        s.append("      <td width=\"60%\">");
-        s.append("<input type=\"text\" style=\"width:97%;\" ");
-        if (required)
-            s.append("required name=\"");
-        else
-            s.append("name=\"");
-        s.append(name);
-        s.append("\" value=\"");
-        s.append(initialValue);
-        s.append("\" />");
-        s.append("</td>\n");
-        s.append("    </tr>\n");
-        return s.toString();
-    }
-
-    private static String makeIntField(final String label, final boolean required, final String name, final int initialValue)
-    {
-        StringBuilder s = new StringBuilder();
-        s.append("    <tr>\n");
-        s.append("      <td width=\"40%\">");
-        s.append(label);
-        s.append("      </td>");
-        s.append("      <td width=\"60%\">");
-        s.append("<input type=\"number\" style=\"width:97%;\" ");
-        if (required)
-            s.append("required name=\"");
-        else
-            s.append("name=\"");
-        s.append(name);
-        s.append("\" value=\"");
-        s.append(initialValue);
-        s.append("\" />");
-        s.append("</td>\n");
-        s.append("    </tr>\n");
-        return s.toString();
+        data.getFormColumn().setHeader("Generate Player Batch");
     }
 
     private static String buttonRow(final AdminData data)
     {
         StringBuilder s = new StringBuilder();
-        s.append("    <div class=\"tg-admin-form-buttons\">\n");
+        s.append("    <div class=\"hg-admin-form-buttons\">\n");
 
-        s.append("      <span class=\"tg-admin-form-button\" /><a href=\"#\" onClick=\"submitEditForm('");
-        s.append("showUsers");
+        s.append("      <span class=\"hg-admin-form-button\" /><a href=\"#\" onClick=\"submitEditForm('");
+        s.append("showGroups");
         s.append("', ");
         s.append(data.getColumn(0).getSelectedRecordId());
         s.append("); return false;\">Cancel</a></span>\n");
 
-        s.append("      <span class=\"tg-admin-form-button\" /><a href=\"#\" onClick=\"submitEditForm('");
-        s.append("generateUsers");
+        s.append("      <span class=\"hg-admin-form-button\" /><a href=\"#\" onClick=\"submitEditForm('");
+        s.append("generateGroups");
         s.append("', ");
-        s.append(data.getColumn(0).getSelectedRecordId());
+        s.append(data.getColumn(1).getSelectedRecordId());
         s.append("); return false;\">");
         s.append("Generate");
         s.append("</a></span>\n");
@@ -462,4 +437,152 @@ public class MaintainGameSession
         return s.toString();
     }
 
+    public static void generateGroups(final HttpServletRequest request, final AdminData data)
+    {
+        int gameSessionId = data.getColumn(1).getSelectedRecordId();
+        DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
+        String groupName = request.getParameter("groupname");
+        String sGroupStartNr = request.getParameter("groupstartnr");
+        String sNrGroups = request.getParameter("nrgroups");
+        String password = request.getParameter("password");
+        String playerName = request.getParameter("playername");
+        String sPlayerStartNr = request.getParameter("playerstartnr");
+        String sNrPlayers = request.getParameter("nrplayers");
+
+        System.out.println("groupName = " + groupName);
+        System.out.println("sGroupStartNr = " + sGroupStartNr);
+        System.out.println("sNrGroups = " + sNrGroups);
+        System.out.println("password = " + password);
+        System.out.println("playerName = " + playerName);
+        System.out.println("sPlayerStartNr = " + sPlayerStartNr);
+        System.out.println("sNrPlayers = " + sNrPlayers);
+
+        // check validity
+        if (!groupName.contains("#"))
+        {
+            ModalWindowUtils.popup(data, "Error in group name", "<p>No # sign in group name</p>",
+                    "clickRecordId('showGameSession'," + gameSessionId + ")");
+            return;
+        }
+        if (playerName.indexOf('#') != playerName.lastIndexOf('#'))
+        {
+            ModalWindowUtils.popup(data, "Error in group name", "<p>Multiple # sign in group name</p>",
+                    "clickRecordId('showGameSession'," + gameSessionId + ")");
+            return;
+        }
+        if (!playerName.contains("%"))
+        {
+            ModalWindowUtils.popup(data, "Error in player name", "<p>No % sign in player name</p>",
+                    "clickRecordId('showGameSession'," + gameSessionId + ")");
+            return;
+        }
+        if (playerName.indexOf('%') != playerName.lastIndexOf('%'))
+        {
+            ModalWindowUtils.popup(data, "Error in player name", "<p>Multiple % sign in player name</p>",
+                    "clickRecordId('showGameSession'," + gameSessionId + ")");
+            return;
+        }
+        if (playerName.indexOf('#') != playerName.lastIndexOf('#'))
+        {
+            ModalWindowUtils.popup(data, "Error in player name", "<p>Multiple # sign in player name</p>",
+                    "clickRecordId('showGameSession'," + gameSessionId + ")");
+            return;
+        }
+        if (password.length() > 0 && !password.contains("%"))
+        {
+            ModalWindowUtils.popup(data, "Error in password", "<p>No % sign in pasword</p>",
+                    "clickRecordId('showGameSession'," + gameSessionId + ")");
+            return;
+        }
+        if (password.indexOf('%') != password.lastIndexOf('%'))
+        {
+            ModalWindowUtils.popup(data, "Error in password", "<p>Multiple % sign in password</p>",
+                    "clickRecordId('showGameSession'," + gameSessionId + ")");
+            return;
+        }
+        try
+        {
+            Integer.parseInt(sGroupStartNr);
+            Integer.parseInt(sNrGroups);
+            Integer.parseInt(sPlayerStartNr);
+            Integer.parseInt(sNrPlayers);
+        }
+        catch (NumberFormatException nfe)
+        {
+            ModalWindowUtils.popup(data, "Error in numeric values", "<p>startNr / nr wrong</p>",
+                    "clickRecordId('showGameSession'," + gameSessionId + ")");
+            return;
+        }
+
+        int groupStartNr = Integer.parseInt(sGroupStartNr);
+        int nrGroups = Integer.parseInt(sNrGroups);
+        int playerStartNr = Integer.parseInt(sPlayerStartNr);
+        int nrPlayers = Integer.parseInt(sNrPlayers);
+
+        // make the groups
+        for (int i = groupStartNr; i < groupStartNr + nrGroups; i++)
+        {
+            GroupRecord group = dslContext.newRecord(Tables.GROUP);
+            String nr = "" + i;
+            String name = groupName.replaceFirst("#", nr);
+            String pwd;
+            if (password.length() == 0)
+            {
+                pwd = "" + new Random().nextInt(1, 1000);
+            }
+            else
+            {
+                pwd = password.replaceFirst("#", nr);
+            }
+
+            group.setName(name);
+            group.setPassword(password);
+            group.setGamesessionId(UInteger.valueOf(gameSessionId));
+            group.setScenarioId(scenarioId);
+            group.setCurrentRoundId(currentRoundId);
+            int groupId = 0;
+            try
+            {
+                groupId = group.store();
+            }
+            catch (DataAccessException exception)
+            {
+                ModalWindowUtils.popup(data, "Error storing group record", "<p>" + exception.getMessage() + "</p>",
+                        "clickRecordId('showGameSession'," + gameSessionId + ")");
+                return;
+            }
+
+            // make the players in the group
+            for (int j = playerStartNr; j < playerStartNr + nrPlayers; j++)
+            {
+                PlayerRecord player = dslContext.newRecord(Tables.PLAYER);
+                String pnr = "" + j;
+                String pname = groupName.replaceFirst("#", nr).replaceFirst("\\%", pnr);
+
+                player.setCode(pname);
+                player.setGroupId(groupId);
+                player.setWelfaretypeId(welfareTypeId);
+                try
+                {
+                    player.store();
+                }
+                catch (DataAccessException exception)
+                {
+                    ModalWindowUtils.popup(data, "Error storing player record", "<p>" + exception.getMessage() + "</p>",
+                            "clickRecordId('showGameSession'," + gameSessionId + ")");
+                    return;
+                }
+            }
+        }
+        /*-
+        data.showColumn("GameSessionGameVersion", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMEVERSION,
+                Tables.GAMEVERSION.NAME, "name", false);
+        data.showDependentColumn("GameSession", 1, data.getColumn(1).getSelectedRecordId(), true, Tables.GAMESESSION,
+                Tables.GAMESESSION.NAME, "name", Tables.GAMESESSION.GAMEVERSION_ID, true);
+        data.showDependentColumn("Group", 2, 0, true, Tables.GROUP, Tables.GROUP.NAME, "name", Tables.GROUP.GAMESESSION_ID,
+                true);
+        data.resetColumn(3);
+        data.resetFormColumn();
+        */
+    }
 }

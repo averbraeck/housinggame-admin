@@ -225,6 +225,7 @@ public class AdminServlet extends HttpServlet
             case "deleteGroup":
             case "deleteGroupOk":
             case "newGroup":
+            case "generateGroups":
             case "generateGroupsParams":
 
             case "viewPlayer":
