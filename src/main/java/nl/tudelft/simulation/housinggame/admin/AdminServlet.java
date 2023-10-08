@@ -116,10 +116,9 @@ public class AdminServlet extends HttpServlet
                 MaintainWelfareType.handleMenu(request, click, recordNr);
                 break;
 
-            // (GameVersion) - (Scenario) - MeasureType
+            // (GameVersion) - MeasureType
             case "measuretype":
             case "viewMeasureTypeGameVersion":
-            case "viewMeasureTypeScenario":
 
             case "viewMeasureType":
             case "editMeasureType":
