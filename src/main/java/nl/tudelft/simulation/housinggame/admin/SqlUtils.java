@@ -59,12 +59,18 @@ public final class SqlUtils
         data.setMenuChoice("");
     }
 
-    @SuppressWarnings("unchecked")
     public static <R extends org.jooq.UpdatableRecord<R>> R readRecordFromId(final AdminData data, final Table<R> table,
             final int recordId)
     {
+        return readRecordFromId(data, table, UInteger.valueOf(recordId));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <R extends org.jooq.UpdatableRecord<R>> R readRecordFromId(final AdminData data, final Table<R> table,
+            final UInteger recordId)
+    {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        return dslContext.selectFrom(table).where(((TableField<R, UInteger>) table.field("id")).eq(UInteger.valueOf(recordId)))
+        return dslContext.selectFrom(table).where(((TableField<R, UInteger>) table.field("id")).eq(recordId))
                 .fetchOne();
     }
 
