@@ -91,9 +91,9 @@ public class Measuretype extends TableImpl<MeasuretypeRecord> {
     public final TableField<MeasuretypeRecord, Integer> FLUVIAL_PROTECTION_LEVEL = createField(DSL.name("fluvial_protection_level"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>housinggame.measuretype.scenario_id</code>.
+     * The column <code>housinggame.measuretype.gameversion_id</code>.
      */
-    public final TableField<MeasuretypeRecord, UInteger> SCENARIO_ID = createField(DSL.name("scenario_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+    public final TableField<MeasuretypeRecord, UInteger> GAMEVERSION_ID = createField(DSL.name("gameversion_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
     private Measuretype(Name alias, Table<MeasuretypeRecord> aliased) {
         this(alias, aliased, null);
@@ -135,7 +135,7 @@ public class Measuretype extends TableImpl<MeasuretypeRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.MEASURETYPE_FK_MEASURETYPE_SCENARIO1_IDX);
+        return Arrays.asList(Indexes.MEASURETYPE_FK_MEASURETYPE_GAMEVERSION1_IDX);
     }
 
     @Override
@@ -155,20 +155,20 @@ public class Measuretype extends TableImpl<MeasuretypeRecord> {
 
     @Override
     public List<ForeignKey<MeasuretypeRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_MEASURETYPE_SCENARIO1);
+        return Arrays.asList(Keys.FK_MEASURETYPE_GAMEVERSION1);
     }
 
-    private transient Scenario _scenario;
+    private transient Gameversion _gameversion;
 
     /**
-     * Get the implicit join path to the <code>housinggame.scenario</code>
+     * Get the implicit join path to the <code>housinggame.gameversion</code>
      * table.
      */
-    public Scenario scenario() {
-        if (_scenario == null)
-            _scenario = new Scenario(this, Keys.FK_MEASURETYPE_SCENARIO1);
+    public Gameversion gameversion() {
+        if (_gameversion == null)
+            _gameversion = new Gameversion(this, Keys.FK_MEASURETYPE_GAMEVERSION1);
 
-        return _scenario;
+        return _gameversion;
     }
 
     @Override

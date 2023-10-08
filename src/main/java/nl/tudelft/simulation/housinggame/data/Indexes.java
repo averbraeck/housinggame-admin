@@ -53,7 +53,7 @@ public class Indexes {
     public static final Index MEASURE_FK_MEASURE_HOUSE1_IDX = Internal.createIndex(DSL.name("fk_measure_house1_idx"), Measure.MEASURE, new OrderField[] { Measure.MEASURE.HOUSE_ID }, false);
     public static final Index MEASURE_FK_MEASURE_MEASURETYPE1_IDX = Internal.createIndex(DSL.name("fk_measure_measuretype1_idx"), Measure.MEASURE, new OrderField[] { Measure.MEASURE.MEASURETYPE_ID }, false);
     public static final Index MEASURE_FK_MEASURE_PLAYERROUND1_IDX = Internal.createIndex(DSL.name("fk_measure_playerround1_idx"), Measure.MEASURE, new OrderField[] { Measure.MEASURE.PLAYERROUND_ID }, false);
-    public static final Index MEASURETYPE_FK_MEASURETYPE_SCENARIO1_IDX = Internal.createIndex(DSL.name("fk_measuretype_scenario1_idx"), Measuretype.MEASURETYPE, new OrderField[] { Measuretype.MEASURETYPE.SCENARIO_ID }, false);
+    public static final Index MEASURETYPE_FK_MEASURETYPE_GAMEVERSION1_IDX = Internal.createIndex(DSL.name("fk_measuretype_gameversion1_idx"), Measuretype.MEASURETYPE, new OrderField[] { Measuretype.MEASURETYPE.GAMEVERSION_ID }, false);
     public static final Index NEWSITEM_FK_NEWSITEM_ROUND1_IDX = Internal.createIndex(DSL.name("fk_newsitem_round1_idx"), Newsitem.NEWSITEM, new OrderField[] { Newsitem.NEWSITEM.ROUND_ID }, false);
     public static final Index PLAYER_FK_PLAYER_GROUP1_IDX = Internal.createIndex(DSL.name("fk_player_group1_idx"), Player.PLAYER, new OrderField[] { Player.PLAYER.GROUP_ID }, false);
     public static final Index PLAYER_FK_PLAYER_USER1_IDX = Internal.createIndex(DSL.name("fk_player_user1_idx"), Player.PLAYER, new OrderField[] { Player.PLAYER.USER_ID }, false);

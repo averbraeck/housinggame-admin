@@ -121,16 +121,16 @@ public class MeasuretypeRecord extends UpdatableRecordImpl<MeasuretypeRecord> im
     }
 
     /**
-     * Setter for <code>housinggame.measuretype.scenario_id</code>.
+     * Setter for <code>housinggame.measuretype.gameversion_id</code>.
      */
-    public void setScenarioId(UInteger value) {
+    public void setGameversionId(UInteger value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>housinggame.measuretype.scenario_id</code>.
+     * Getter for <code>housinggame.measuretype.gameversion_id</code>.
      */
-    public UInteger getScenarioId() {
+    public UInteger getGameversionId() {
         return (UInteger) get(7);
     }
 
@@ -194,7 +194,7 @@ public class MeasuretypeRecord extends UpdatableRecordImpl<MeasuretypeRecord> im
 
     @Override
     public Field<UInteger> field8() {
-        return Measuretype.MEASURETYPE.SCENARIO_ID;
+        return Measuretype.MEASURETYPE.GAMEVERSION_ID;
     }
 
     @Override
@@ -234,7 +234,7 @@ public class MeasuretypeRecord extends UpdatableRecordImpl<MeasuretypeRecord> im
 
     @Override
     public UInteger component8() {
-        return getScenarioId();
+        return getGameversionId();
     }
 
     @Override
@@ -274,7 +274,7 @@ public class MeasuretypeRecord extends UpdatableRecordImpl<MeasuretypeRecord> im
 
     @Override
     public UInteger value8() {
-        return getScenarioId();
+        return getGameversionId();
     }
 
     @Override
@@ -321,7 +321,7 @@ public class MeasuretypeRecord extends UpdatableRecordImpl<MeasuretypeRecord> im
 
     @Override
     public MeasuretypeRecord value8(UInteger value) {
-        setScenarioId(value);
+        setGameversionId(value);
         return this;
     }
 
@@ -352,7 +352,7 @@ public class MeasuretypeRecord extends UpdatableRecordImpl<MeasuretypeRecord> im
     /**
      * Create a detached, initialised MeasuretypeRecord
      */
-    public MeasuretypeRecord(UInteger id, String name, String description, UInteger price, Integer satisfaction, Integer pluvialProtectionLevel, Integer fluvialProtectionLevel, UInteger scenarioId) {
+    public MeasuretypeRecord(UInteger id, String name, String description, UInteger price, Integer satisfaction, Integer pluvialProtectionLevel, Integer fluvialProtectionLevel, UInteger gameversionId) {
         super(Measuretype.MEASURETYPE);
 
         setId(id);
@@ -362,7 +362,7 @@ public class MeasuretypeRecord extends UpdatableRecordImpl<MeasuretypeRecord> im
         setSatisfaction(satisfaction);
         setPluvialProtectionLevel(pluvialProtectionLevel);
         setFluvialProtectionLevel(fluvialProtectionLevel);
-        setScenarioId(scenarioId);
+        setGameversionId(gameversionId);
         resetChangedOnNotNull();
     }
 }
