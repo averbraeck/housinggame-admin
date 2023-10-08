@@ -8,11 +8,11 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
-import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.MeasuretypeRecord;
 
