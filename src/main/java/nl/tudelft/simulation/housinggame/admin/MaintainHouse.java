@@ -250,6 +250,7 @@ public class MaintainHouse
                         .where(Tables.INITIALHOUSEMEASURE.ID.eq(UInteger.valueOf(initialHouseMeasureId))).fetchOne();
         UInteger houseId = initialHouseMeasureId == 0 ? UInteger.valueOf(data.getColumn(2).getSelectedRecordId())
                 : initialHouseMeasure.getHouseId();
+        UInteger gameVersionId = UInteger.valueOf(data.getColumn(0).getSelectedRecordId());
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -271,7 +272,9 @@ public class MaintainHouse
                         .setLabel("Effective in round")
                         .setMin(1))
                 .addEntry(new TableEntryPickRecordUInt(Tables.INITIALHOUSEMEASURE.MEASURETYPE_ID)
-                        .setPickTable(data, Tables.MEASURETYPE, Tables.MEASURETYPE.ID, Tables.MEASURETYPE.NAME)
+                        .setRequired()
+                        .setPickTable(data, Tables.MEASURETYPE.where(Tables.MEASURETYPE.GAMEVERSION_ID.eq(gameVersionId)),
+                                Tables.MEASURETYPE.ID, Tables.MEASURETYPE.NAME)
                         .setInitialValue(initialHouseMeasure.getMeasuretypeId(), UInteger.valueOf(0))
                         .setLabel("Measure type"))
                 .addEntry(new TableEntryUInt(Tables.INITIALHOUSEMEASURE.HOUSE_ID)
