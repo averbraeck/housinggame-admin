@@ -8,11 +8,10 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
-import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecordUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryBoolean;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryBoolean;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.FacilitatorRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.UserRecord;
@@ -183,10 +182,6 @@ public class MaintainUser
                         .setInitialValue(userId, UInteger.valueOf(0))
                         .setLabel("User id")
                         .setHidden(true))
-                .addEntry(new TableEntryPickRecordUInt(Tables.FACILITATOR.GAMESESSION_ID)
-                        .setPickTable(data, Tables.GAMESESSION, Tables.GAMESESSION.ID, Tables.GAMESESSION.NAME)
-                        .setInitialValue(facilitator.getGamesessionId(), UInteger.valueOf(0))
-                        .setLabel("Gamesession"))
                 .endForm();
         //@formatter:on
         data.getFormColumn().setHeaderForm("Edit Facilitator", form);
