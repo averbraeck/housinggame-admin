@@ -397,9 +397,6 @@ public class MaintainGameSession
         s.append(new FormEntryPickRecordUInt("Scenario to play", "scenarioId").setRequired()
                 .setPickTable(data, Tables.SCENARIO, Tables.SCENARIO.ID, Tables.SCENARIO.NAME)
                 .setInitialValue(UInteger.valueOf(0), UInteger.valueOf(0)).makeHtml());
-        s.append(new FormEntryPickRecordUInt("Start round nr", "currentRoundId").setRequired()
-                .setPickTable(data, Tables.ROUND, Tables.ROUND.ID, Tables.ROUND.ROUND_NUMBER)
-                .setInitialValue(UInteger.valueOf(0), UInteger.valueOf(0)).makeHtml());
         s.append(new FormEntryString("Player names (with # and %)", "playername").setMaxChars(16).setRequired()
                 .setInitialValue("t#p%", "t#p%").makeHtml());
         s.append(new FormEntryInt("Player start number", "playerstartnr").setMin(1).setRequired().setInitialValue(1, 1)
@@ -452,7 +449,6 @@ public class MaintainGameSession
         String sPlayerStartNr = request.getParameter("playerstartnr");
         String sNrPlayers = request.getParameter("nrplayers");
         String sScenarioId = request.getParameter("scenarioId");
-        String sCurrentRoundId = request.getParameter("currentRoundId");
 
         // System.out.println("groupName = " + groupName);
         // System.out.println("sGroupStartNr = " + sGroupStartNr);
@@ -462,7 +458,6 @@ public class MaintainGameSession
         // System.out.println("sPlayerStartNr = " + sPlayerStartNr);
         // System.out.println("sNrPlayers = " + sNrPlayers);
         // System.out.println("sScenarioId = " + sScenarioId);
-        // System.out.println("sCurrentRoundId = " + sCurrentRoundId);
 
         // check validity
         if (!groupName.contains("#"))
@@ -508,7 +503,6 @@ public class MaintainGameSession
             Integer.parseInt(sPlayerStartNr);
             Integer.parseInt(sNrPlayers);
             Integer.parseInt(sScenarioId);
-            Integer.parseInt(sCurrentRoundId);
         }
         catch (NumberFormatException nfe)
         {
@@ -522,7 +516,6 @@ public class MaintainGameSession
         int playerStartNr = Integer.parseInt(sPlayerStartNr);
         int nrPlayers = Integer.parseInt(sNrPlayers);
         UInteger scenarioId = UInteger.valueOf(sScenarioId);
-        UInteger currentRoundId = UInteger.valueOf(sCurrentRoundId);
 
         Random random = new Random();
         SortedMap<Double, UInteger> randomRecords = new TreeMap<>();
