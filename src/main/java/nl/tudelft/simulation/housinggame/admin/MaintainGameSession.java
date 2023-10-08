@@ -379,7 +379,7 @@ public class MaintainGameSession
         s.append(makeIntField("Group start number", true, "groupstartnr", 1));
         s.append(makeIntField("Number of groups", true, "nrgroups", 6));
         s.append(makeStringField("Group password", false, "password", ""));
-        s.append(makePickField("Group scenario", false, "scenario", ""));
+        // s.append(makePickField("Group scenario", false, "scenario", ""));
         s.append(makeStringField("Player names (with # and %)", true, "playername", ""));
         s.append(makeIntField("Player start number", true, "playerstartnr", 1));
         s.append(makeIntField("Number of players", true, "nrplayers", 8));
