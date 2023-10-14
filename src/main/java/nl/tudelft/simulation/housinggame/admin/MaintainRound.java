@@ -332,7 +332,7 @@ public class MaintainRound
                         .setPickTable(data, Tables.COMMUNITY.where(Tables.COMMUNITY.GAMEVERSION_ID.eq(gameVersionId)),
                                 Tables.COMMUNITY.ID, Tables.COMMUNITY.NAME)
                         .setInitialValue(newsEffects.getCommunityId(), UInteger.valueOf(0))
-                        .setLabel("Community (blank = all)"))
+                        .setLabel("Affected community (blank = all)"))
                 .addEntry(new TableEntryBoolean(Tables.NEWSEFFECTS.HOUSE_DISCOUNT_EUROS)
                         .setRequired()
                         .setInitialValue(newsEffects.getHouseDiscountEuros(), (byte) 0)
