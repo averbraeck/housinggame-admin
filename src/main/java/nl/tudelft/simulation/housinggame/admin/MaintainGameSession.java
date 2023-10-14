@@ -171,7 +171,7 @@ public class MaintainGameSession
         }
         if (editButton && recordId != 0)
         {
-            data.getColumn(2).addContent(AdminTable.finalButton("Generate Greups + Players", "generateGroupsParams"));
+            data.getColumn(2).addContent(AdminTable.finalButton("Generate Groups + Players", "generateGroupsParams"));
         }
     }
 
