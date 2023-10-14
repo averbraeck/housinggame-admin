@@ -14,8 +14,8 @@ import nl.tudelft.simulation.housinggame.data.tables.House;
 import nl.tudelft.simulation.housinggame.data.tables.Initialhousemeasure;
 import nl.tudelft.simulation.housinggame.data.tables.Measure;
 import nl.tudelft.simulation.housinggame.data.tables.Measuretype;
+import nl.tudelft.simulation.housinggame.data.tables.Newseffects;
 import nl.tudelft.simulation.housinggame.data.tables.Newsitem;
-import nl.tudelft.simulation.housinggame.data.tables.Newsparameters;
 import nl.tudelft.simulation.housinggame.data.tables.Player;
 import nl.tudelft.simulation.housinggame.data.tables.Playerround;
 import nl.tudelft.simulation.housinggame.data.tables.Question;
@@ -85,14 +85,14 @@ public class Tables {
     public static final Measuretype MEASURETYPE = Measuretype.MEASURETYPE;
 
     /**
+     * The table <code>housinggame.newseffects</code>.
+     */
+    public static final Newseffects NEWSEFFECTS = Newseffects.NEWSEFFECTS;
+
+    /**
      * The table <code>housinggame.newsitem</code>.
      */
     public static final Newsitem NEWSITEM = Newsitem.NEWSITEM;
-
-    /**
-     * The table <code>housinggame.newsparameters</code>.
-     */
-    public static final Newsparameters NEWSPARAMETERS = Newsparameters.NEWSPARAMETERS;
 
     /**
      * The table <code>housinggame.player</code>.

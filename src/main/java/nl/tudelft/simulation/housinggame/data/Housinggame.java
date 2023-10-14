@@ -17,8 +17,8 @@ import nl.tudelft.simulation.housinggame.data.tables.House;
 import nl.tudelft.simulation.housinggame.data.tables.Initialhousemeasure;
 import nl.tudelft.simulation.housinggame.data.tables.Measure;
 import nl.tudelft.simulation.housinggame.data.tables.Measuretype;
+import nl.tudelft.simulation.housinggame.data.tables.Newseffects;
 import nl.tudelft.simulation.housinggame.data.tables.Newsitem;
-import nl.tudelft.simulation.housinggame.data.tables.Newsparameters;
 import nl.tudelft.simulation.housinggame.data.tables.Player;
 import nl.tudelft.simulation.housinggame.data.tables.Playerround;
 import nl.tudelft.simulation.housinggame.data.tables.Question;
@@ -99,14 +99,14 @@ public class Housinggame extends SchemaImpl {
     public final Measuretype MEASURETYPE = Measuretype.MEASURETYPE;
 
     /**
+     * The table <code>housinggame.newseffects</code>.
+     */
+    public final Newseffects NEWSEFFECTS = Newseffects.NEWSEFFECTS;
+
+    /**
      * The table <code>housinggame.newsitem</code>.
      */
     public final Newsitem NEWSITEM = Newsitem.NEWSITEM;
-
-    /**
-     * The table <code>housinggame.newsparameters</code>.
-     */
-    public final Newsparameters NEWSPARAMETERS = Newsparameters.NEWSPARAMETERS;
 
     /**
      * The table <code>housinggame.player</code>.
@@ -184,8 +184,8 @@ public class Housinggame extends SchemaImpl {
             Initialhousemeasure.INITIALHOUSEMEASURE,
             Measure.MEASURE,
             Measuretype.MEASURETYPE,
+            Newseffects.NEWSEFFECTS,
             Newsitem.NEWSITEM,
-            Newsparameters.NEWSPARAMETERS,
             Player.PLAYER,
             Playerround.PLAYERROUND,
             Question.QUESTION,
