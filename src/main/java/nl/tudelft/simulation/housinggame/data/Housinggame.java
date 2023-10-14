@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import nl.tudelft.simulation.housinggame.data.tables.Community;
-import nl.tudelft.simulation.housinggame.data.tables.Damage;
 import nl.tudelft.simulation.housinggame.data.tables.Facilitator;
 import nl.tudelft.simulation.housinggame.data.tables.Gamesession;
 import nl.tudelft.simulation.housinggame.data.tables.Gameversion;
@@ -19,6 +18,7 @@ import nl.tudelft.simulation.housinggame.data.tables.Initialhousemeasure;
 import nl.tudelft.simulation.housinggame.data.tables.Measure;
 import nl.tudelft.simulation.housinggame.data.tables.Measuretype;
 import nl.tudelft.simulation.housinggame.data.tables.Newsitem;
+import nl.tudelft.simulation.housinggame.data.tables.Newsparameters;
 import nl.tudelft.simulation.housinggame.data.tables.Player;
 import nl.tudelft.simulation.housinggame.data.tables.Playerround;
 import nl.tudelft.simulation.housinggame.data.tables.Question;
@@ -52,11 +52,6 @@ public class Housinggame extends SchemaImpl {
      * The table <code>housinggame.community</code>.
      */
     public final Community COMMUNITY = Community.COMMUNITY;
-
-    /**
-     * The table <code>housinggame.damage</code>.
-     */
-    public final Damage DAMAGE = Damage.DAMAGE;
 
     /**
      * The table <code>housinggame.facilitator</code>.
@@ -107,6 +102,11 @@ public class Housinggame extends SchemaImpl {
      * The table <code>housinggame.newsitem</code>.
      */
     public final Newsitem NEWSITEM = Newsitem.NEWSITEM;
+
+    /**
+     * The table <code>housinggame.newsparameters</code>.
+     */
+    public final Newsparameters NEWSPARAMETERS = Newsparameters.NEWSPARAMETERS;
 
     /**
      * The table <code>housinggame.player</code>.
@@ -175,7 +175,6 @@ public class Housinggame extends SchemaImpl {
     public final List<Table<?>> getTables() {
         return Arrays.asList(
             Community.COMMUNITY,
-            Damage.DAMAGE,
             Facilitator.FACILITATOR,
             Gamesession.GAMESESSION,
             Gameversion.GAMEVERSION,
@@ -186,6 +185,7 @@ public class Housinggame extends SchemaImpl {
             Measure.MEASURE,
             Measuretype.MEASURETYPE,
             Newsitem.NEWSITEM,
+            Newsparameters.NEWSPARAMETERS,
             Player.PLAYER,
             Playerround.PLAYERROUND,
             Question.QUESTION,

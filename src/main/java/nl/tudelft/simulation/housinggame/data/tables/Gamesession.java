@@ -17,13 +17,13 @@ import nl.tudelft.simulation.housinggame.data.tables.records.GamesessionRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function7;
+import org.jooq.Function9;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row7;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -86,6 +86,16 @@ public class Gamesession extends TableImpl<GamesessionRecord> {
      * The column <code>housinggame.gamesession.date</code>.
      */
     public final TableField<GamesessionRecord, LocalDate> DATE = createField(DSL.name("date"), SQLDataType.LOCALDATE.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.LOCALDATE)), this, "");
+
+    /**
+     * The column <code>housinggame.gamesession.start_time</code>.
+     */
+    public final TableField<GamesessionRecord, LocalDateTime> START_TIME = createField(DSL.name("start_time"), SQLDataType.LOCALDATETIME(0).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.LOCALDATETIME)), this, "");
+
+    /**
+     * The column <code>housinggame.gamesession.end_time</code>.
+     */
+    public final TableField<GamesessionRecord, LocalDateTime> END_TIME = createField(DSL.name("end_time"), SQLDataType.LOCALDATETIME(0).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>housinggame.gamesession.gameversion_id</code>.
@@ -208,18 +218,18 @@ public class Gamesession extends TableImpl<GamesessionRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<UInteger, String, String, String, LocalDateTime, LocalDate, UInteger> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row9<UInteger, String, String, String, LocalDateTime, LocalDate, LocalDateTime, LocalDateTime, UInteger> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function7<? super UInteger, ? super String, ? super String, ? super String, ? super LocalDateTime, ? super LocalDate, ? super UInteger, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function9<? super UInteger, ? super String, ? super String, ? super String, ? super LocalDateTime, ? super LocalDate, ? super LocalDateTime, ? super LocalDateTime, ? super UInteger, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -227,7 +237,7 @@ public class Gamesession extends TableImpl<GamesessionRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function7<? super UInteger, ? super String, ? super String, ? super String, ? super LocalDateTime, ? super LocalDate, ? super UInteger, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function9<? super UInteger, ? super String, ? super String, ? super String, ? super LocalDateTime, ? super LocalDate, ? super LocalDateTime, ? super LocalDateTime, ? super UInteger, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

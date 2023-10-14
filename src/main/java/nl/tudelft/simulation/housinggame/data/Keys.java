@@ -5,7 +5,6 @@ package nl.tudelft.simulation.housinggame.data;
 
 
 import nl.tudelft.simulation.housinggame.data.tables.Community;
-import nl.tudelft.simulation.housinggame.data.tables.Damage;
 import nl.tudelft.simulation.housinggame.data.tables.Facilitator;
 import nl.tudelft.simulation.housinggame.data.tables.Gamesession;
 import nl.tudelft.simulation.housinggame.data.tables.Gameversion;
@@ -16,6 +15,7 @@ import nl.tudelft.simulation.housinggame.data.tables.Initialhousemeasure;
 import nl.tudelft.simulation.housinggame.data.tables.Measure;
 import nl.tudelft.simulation.housinggame.data.tables.Measuretype;
 import nl.tudelft.simulation.housinggame.data.tables.Newsitem;
+import nl.tudelft.simulation.housinggame.data.tables.Newsparameters;
 import nl.tudelft.simulation.housinggame.data.tables.Player;
 import nl.tudelft.simulation.housinggame.data.tables.Playerround;
 import nl.tudelft.simulation.housinggame.data.tables.Question;
@@ -27,7 +27,6 @@ import nl.tudelft.simulation.housinggame.data.tables.Tax;
 import nl.tudelft.simulation.housinggame.data.tables.User;
 import nl.tudelft.simulation.housinggame.data.tables.Welfaretype;
 import nl.tudelft.simulation.housinggame.data.tables.records.CommunityRecord;
-import nl.tudelft.simulation.housinggame.data.tables.records.DamageRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.FacilitatorRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GamesessionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GameversionRecord;
@@ -38,6 +37,7 @@ import nl.tudelft.simulation.housinggame.data.tables.records.Initialhousemeasure
 import nl.tudelft.simulation.housinggame.data.tables.records.MeasureRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.MeasuretypeRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.NewsitemRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.NewsparametersRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.PlayerRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.PlayerroundRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.QuestionRecord;
@@ -69,8 +69,6 @@ public class Keys {
 
     public static final UniqueKey<CommunityRecord> KEY_COMMUNITY_ID_UNIQUE = Internal.createUniqueKey(Community.COMMUNITY, DSL.name("KEY_community_id_UNIQUE"), new TableField[] { Community.COMMUNITY.ID }, true);
     public static final UniqueKey<CommunityRecord> KEY_COMMUNITY_PRIMARY = Internal.createUniqueKey(Community.COMMUNITY, DSL.name("KEY_community_PRIMARY"), new TableField[] { Community.COMMUNITY.ID }, true);
-    public static final UniqueKey<DamageRecord> KEY_DAMAGE_ID_UNIQUE = Internal.createUniqueKey(Damage.DAMAGE, DSL.name("KEY_damage_id_UNIQUE"), new TableField[] { Damage.DAMAGE.ID }, true);
-    public static final UniqueKey<DamageRecord> KEY_DAMAGE_PRIMARY = Internal.createUniqueKey(Damage.DAMAGE, DSL.name("KEY_damage_PRIMARY"), new TableField[] { Damage.DAMAGE.ID }, true);
     public static final UniqueKey<FacilitatorRecord> KEY_FACILITATOR_ID_UNIQUE = Internal.createUniqueKey(Facilitator.FACILITATOR, DSL.name("KEY_facilitator_Id_UNIQUE"), new TableField[] { Facilitator.FACILITATOR.ID }, true);
     public static final UniqueKey<FacilitatorRecord> KEY_FACILITATOR_PRIMARY = Internal.createUniqueKey(Facilitator.FACILITATOR, DSL.name("KEY_facilitator_PRIMARY"), new TableField[] { Facilitator.FACILITATOR.ID }, true);
     public static final UniqueKey<GamesessionRecord> KEY_GAMESESSION_ID_UNIQUE = Internal.createUniqueKey(Gamesession.GAMESESSION, DSL.name("KEY_gamesession_Id_UNIQUE"), new TableField[] { Gamesession.GAMESESSION.ID }, true);
@@ -93,6 +91,8 @@ public class Keys {
     public static final UniqueKey<MeasuretypeRecord> KEY_MEASURETYPE_PRIMARY = Internal.createUniqueKey(Measuretype.MEASURETYPE, DSL.name("KEY_measuretype_PRIMARY"), new TableField[] { Measuretype.MEASURETYPE.ID }, true);
     public static final UniqueKey<NewsitemRecord> KEY_NEWSITEM_ID_UNIQUE = Internal.createUniqueKey(Newsitem.NEWSITEM, DSL.name("KEY_newsitem_id_UNIQUE"), new TableField[] { Newsitem.NEWSITEM.ID }, true);
     public static final UniqueKey<NewsitemRecord> KEY_NEWSITEM_PRIMARY = Internal.createUniqueKey(Newsitem.NEWSITEM, DSL.name("KEY_newsitem_PRIMARY"), new TableField[] { Newsitem.NEWSITEM.ID }, true);
+    public static final UniqueKey<NewsparametersRecord> KEY_NEWSPARAMETERS_ID_UNIQUE = Internal.createUniqueKey(Newsparameters.NEWSPARAMETERS, DSL.name("KEY_newsparameters_id_UNIQUE"), new TableField[] { Newsparameters.NEWSPARAMETERS.ID }, true);
+    public static final UniqueKey<NewsparametersRecord> KEY_NEWSPARAMETERS_PRIMARY = Internal.createUniqueKey(Newsparameters.NEWSPARAMETERS, DSL.name("KEY_newsparameters_PRIMARY"), new TableField[] { Newsparameters.NEWSPARAMETERS.ID }, true);
     public static final UniqueKey<PlayerRecord> KEY_PLAYER_ID_UNIQUE = Internal.createUniqueKey(Player.PLAYER, DSL.name("KEY_player_id_UNIQUE"), new TableField[] { Player.PLAYER.ID }, true);
     public static final UniqueKey<PlayerRecord> KEY_PLAYER_PRIMARY = Internal.createUniqueKey(Player.PLAYER, DSL.name("KEY_player_PRIMARY"), new TableField[] { Player.PLAYER.ID }, true);
     public static final UniqueKey<PlayerroundRecord> KEY_PLAYERROUND_ID_UNIQUE = Internal.createUniqueKey(Playerround.PLAYERROUND, DSL.name("KEY_playerround_id_UNIQUE"), new TableField[] { Playerround.PLAYERROUND.ID }, true);
@@ -136,6 +136,8 @@ public class Keys {
     public static final ForeignKey<MeasureRecord, PlayerroundRecord> FK_MEASURE_PLAYERROUND1 = Internal.createForeignKey(Measure.MEASURE, DSL.name("fk_measure_playerround1"), new TableField[] { Measure.MEASURE.PLAYERROUND_ID }, Keys.KEY_PLAYERROUND_PRIMARY, new TableField[] { Playerround.PLAYERROUND.ID }, true);
     public static final ForeignKey<MeasuretypeRecord, GameversionRecord> FK_MEASURETYPE_GAMEVERSION1 = Internal.createForeignKey(Measuretype.MEASURETYPE, DSL.name("fk_measuretype_gameversion1"), new TableField[] { Measuretype.MEASURETYPE.GAMEVERSION_ID }, Keys.KEY_GAMEVERSION_PRIMARY, new TableField[] { Gameversion.GAMEVERSION.ID }, true);
     public static final ForeignKey<NewsitemRecord, RoundRecord> FK_NEWSITEM_ROUND1 = Internal.createForeignKey(Newsitem.NEWSITEM, DSL.name("fk_newsitem_round1"), new TableField[] { Newsitem.NEWSITEM.ROUND_ID }, Keys.KEY_ROUND_PRIMARY, new TableField[] { Round.ROUND.ID }, true);
+    public static final ForeignKey<NewsparametersRecord, CommunityRecord> FK_NEWSPARAMETERS_COMMUNITY1 = Internal.createForeignKey(Newsparameters.NEWSPARAMETERS, DSL.name("fk_newsparameters_community1"), new TableField[] { Newsparameters.NEWSPARAMETERS.COMMUNITY_ID }, Keys.KEY_COMMUNITY_PRIMARY, new TableField[] { Community.COMMUNITY.ID }, true);
+    public static final ForeignKey<NewsparametersRecord, NewsitemRecord> FK_NEWSPARAMETERS_NEWSITEM1 = Internal.createForeignKey(Newsparameters.NEWSPARAMETERS, DSL.name("fk_newsparameters_newsitem1"), new TableField[] { Newsparameters.NEWSPARAMETERS.NEWSITEM_ID }, Keys.KEY_NEWSITEM_PRIMARY, new TableField[] { Newsitem.NEWSITEM.ID }, true);
     public static final ForeignKey<PlayerRecord, GroupRecord> FK_PLAYER_GROUP1 = Internal.createForeignKey(Player.PLAYER, DSL.name("fk_player_group1"), new TableField[] { Player.PLAYER.GROUP_ID }, Keys.KEY_GROUP_PRIMARY, new TableField[] { Group.GROUP.ID }, true);
     public static final ForeignKey<PlayerRecord, UserRecord> FK_PLAYER_USER1 = Internal.createForeignKey(Player.PLAYER, DSL.name("fk_player_user1"), new TableField[] { Player.PLAYER.USER_ID }, Keys.KEY_USER_PRIMARY, new TableField[] { User.USER.ID }, true);
     public static final ForeignKey<PlayerRecord, WelfaretypeRecord> FK_PLAYER_WELFARETYPE1 = Internal.createForeignKey(Player.PLAYER, DSL.name("fk_player_welfaretype1"), new TableField[] { Player.PLAYER.WELFARETYPE_ID }, Keys.KEY_WELFARETYPE_PRIMARY, new TableField[] { Welfaretype.WELFARETYPE.ID }, true);

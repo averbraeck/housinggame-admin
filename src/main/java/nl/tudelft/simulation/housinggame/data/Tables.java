@@ -5,7 +5,6 @@ package nl.tudelft.simulation.housinggame.data;
 
 
 import nl.tudelft.simulation.housinggame.data.tables.Community;
-import nl.tudelft.simulation.housinggame.data.tables.Damage;
 import nl.tudelft.simulation.housinggame.data.tables.Facilitator;
 import nl.tudelft.simulation.housinggame.data.tables.Gamesession;
 import nl.tudelft.simulation.housinggame.data.tables.Gameversion;
@@ -16,6 +15,7 @@ import nl.tudelft.simulation.housinggame.data.tables.Initialhousemeasure;
 import nl.tudelft.simulation.housinggame.data.tables.Measure;
 import nl.tudelft.simulation.housinggame.data.tables.Measuretype;
 import nl.tudelft.simulation.housinggame.data.tables.Newsitem;
+import nl.tudelft.simulation.housinggame.data.tables.Newsparameters;
 import nl.tudelft.simulation.housinggame.data.tables.Player;
 import nl.tudelft.simulation.housinggame.data.tables.Playerround;
 import nl.tudelft.simulation.housinggame.data.tables.Question;
@@ -38,11 +38,6 @@ public class Tables {
      * The table <code>housinggame.community</code>.
      */
     public static final Community COMMUNITY = Community.COMMUNITY;
-
-    /**
-     * The table <code>housinggame.damage</code>.
-     */
-    public static final Damage DAMAGE = Damage.DAMAGE;
 
     /**
      * The table <code>housinggame.facilitator</code>.
@@ -93,6 +88,11 @@ public class Tables {
      * The table <code>housinggame.newsitem</code>.
      */
     public static final Newsitem NEWSITEM = Newsitem.NEWSITEM;
+
+    /**
+     * The table <code>housinggame.newsparameters</code>.
+     */
+    public static final Newsparameters NEWSPARAMETERS = Newsparameters.NEWSPARAMETERS;
 
     /**
      * The table <code>housinggame.player</code>.
