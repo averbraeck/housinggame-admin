@@ -97,6 +97,13 @@ public class AdminServlet extends HttpServlet
             case "deleteNewsItem":
             case "deleteNewsItemOk":
             case "newNewsItem":
+
+            case "viewNewsEffects":
+            case "editNewsEffects":
+            case "saveNewsEffects":
+            case "deleteNewsEffects":
+            case "deleteNewsEffectsOk":
+            case "newNewsEffects":
                 data.setMenuChoice("round");
                 MaintainRound.handleMenu(request, click, recordNr);
                 break;
