@@ -15,7 +15,7 @@ public class FormEntryDate extends AbstractFormEntry<FormEntryDate, LocalDate>
     {
         if (value == null)
             return "";
-        return value.toString().replaceFirst("T", ", ");
+        return value.toString();
     }
 
     @Override
@@ -67,7 +67,7 @@ public class FormEntryDate extends AbstractFormEntry<FormEntryDate, LocalDate>
             s.append(" *");
         s.append("      </td>");
         s.append("      <td width=\"75%\">");
-        s.append("<input class=\"form-control\" ");
+        s.append("<input type=\"date\" ");
         if (isRequired())
             s.append("required name=\"");
         else
@@ -82,14 +82,6 @@ public class FormEntryDate extends AbstractFormEntry<FormEntryDate, LocalDate>
         s.append("</td>\n");
         s.append("    </tr>\n");
 
-        if (!isReadOnly())
-        {
-            s.append("    <script>\n");
-            s.append("      instance = new dtsel.DTS('input[name=\"");
-            s.append(getName());
-            s.append("\"]', { direction: 'BOTTOM', dateFormat: \"yyyy-mm-dd\", showTime: false});");
-            s.append("    </script>\n");
-        }
         return s.toString();
     }
 

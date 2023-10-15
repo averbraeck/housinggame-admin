@@ -7,10 +7,7 @@
     <title>Housing Game Administration</title>
 
     <link rel="stylesheet" type="text/css" href="/housinggame-admin/css/admin.css" />
-    <link rel="stylesheet" type="text/css" href="/housinggame-admin/css/dtsel.css" />
-
     <script src="/housinggame-admin/js/admin.js"></script>
-    <script src="/housinggame-admin/js/dtsel.js"></script>
 
     <style>
     table, th, td {
