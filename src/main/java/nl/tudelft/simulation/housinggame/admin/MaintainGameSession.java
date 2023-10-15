@@ -19,6 +19,7 @@ import nl.tudelft.simulation.housinggame.admin.form.FormEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.FormEntryPickRecordUInt;
 import nl.tudelft.simulation.housinggame.admin.form.FormEntryString;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDate;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDateTime;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecordUInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
@@ -212,6 +213,14 @@ public class MaintainGameSession
                         .setRequired(false)
                         .setInitialValue(gameSession.getDate(), null)
                         .setLabel("Date"))
+                .addEntry(new TableEntryDateTime(Tables.GAMESESSION.START_TIME)
+                        .setRequired(false)
+                        .setInitialValue(gameSession.getStartTime(), null)
+                        .setLabel("Start time login"))
+                .addEntry(new TableEntryDateTime(Tables.GAMESESSION.END_TIME)
+                        .setRequired(false)
+                        .setInitialValue(gameSession.getEndTime(), null)
+                        .setLabel("End time login"))
                 .addEntry(new TableEntryUInt(Tables.GAMESESSION.GAMEVERSION_ID)
                         .setInitialValue(gameVersionId, UInteger.valueOf(0))
                         .setLabel("Game version id")
