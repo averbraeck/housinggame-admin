@@ -191,7 +191,7 @@ CREATE TABLE `groupround` (
   KEY `fk_groupround_round1_idx` (`round_id`),
   CONSTRAINT `fk_groupround_group1` FOREIGN KEY (`group_id`) REFERENCES `group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_groupround_round1` FOREIGN KEY (`round_id`) REFERENCES `round` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -200,6 +200,7 @@ CREATE TABLE `groupround` (
 
 LOCK TABLES `groupround` WRITE;
 /*!40000 ALTER TABLE `groupround` DISABLE KEYS */;
+INSERT INTO `groupround` VALUES (11,0,0,'2023-10-22 09:00:00',27,7);
 /*!40000 ALTER TABLE `groupround` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -280,14 +281,11 @@ CREATE TABLE `measure` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `value` float unsigned NOT NULL DEFAULT 1,
   `playerround_id` int(10) unsigned NOT NULL,
-  `house_id` int(10) unsigned NOT NULL,
   `measuretype_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
-  KEY `fk_measure_house1_idx` (`house_id`),
   KEY `fk_measure_measuretype1_idx` (`measuretype_id`),
   KEY `fk_measure_playerround1_idx` (`playerround_id`),
-  CONSTRAINT `fk_measure_house1` FOREIGN KEY (`house_id`) REFERENCES `house` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_measure_measuretype1` FOREIGN KEY (`measuretype_id`) REFERENCES `measuretype` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_measure_playerround1` FOREIGN KEY (`playerround_id`) REFERENCES `playerround` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -752,4 +750,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-15 12:52:32
+-- Dump completed on 2023-10-22 16:59:29
