@@ -187,6 +187,7 @@ CREATE TABLE `groupround` (
   `round_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
+  UNIQUE KEY `id_group_round` (`group_id`,`round_id`) COMMENT 'Ensure the combination of group and round is unique, so each group can play a round only once.',
   KEY `fk_groupround_group1_idx` (`group_id`),
   KEY `fk_groupround_round1_idx` (`round_id`),
   CONSTRAINT `fk_groupround_group1` FOREIGN KEY (`group_id`) REFERENCES `group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -288,7 +289,7 @@ CREATE TABLE `measure` (
   KEY `fk_measure_playerround1_idx` (`playerround_id`),
   CONSTRAINT `fk_measure_measuretype1` FOREIGN KEY (`measuretype_id`) REFERENCES `measuretype` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_measure_playerround1` FOREIGN KEY (`playerround_id`) REFERENCES `playerround` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -297,6 +298,7 @@ CREATE TABLE `measure` (
 
 LOCK TABLES `measure` WRITE;
 /*!40000 ALTER TABLE `measure` DISABLE KEYS */;
+INSERT INTO `measure` VALUES (1,2,76,26),(2,1,76,12);
 /*!40000 ALTER TABLE `measure` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -471,13 +473,14 @@ CREATE TABLE `playerround` (
   `groupround_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
+  UNIQUE KEY `id_player_groupround` (`player_id`,`groupround_id`) COMMENT 'A player for a gamesession can only play every groupround once.',
   KEY `fk_playerround_house1_idx` (`house_id`),
   KEY `fk_playerround_player1_idx` (`player_id`),
   KEY `fk_playerround_groupround1_idx` (`groupround_id`),
   CONSTRAINT `fk_playerround_groupround1` FOREIGN KEY (`groupround_id`) REFERENCES `groupround` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_playerround_house1` FOREIGN KEY (`house_id`) REFERENCES `house` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_playerround_player1` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -486,6 +489,7 @@ CREATE TABLE `playerround` (
 
 LOCK TABLES `playerround` WRITE;
 /*!40000 ALTER TABLE `playerround` DISABLE KEYS */;
+INSERT INTO `playerround` VALUES (76,3,0,0,30000,65000,0,0,4,6000,0,0,0,0,0,0,0,0,0,'2023-10-26 15:42:37',32,156,11);
 /*!40000 ALTER TABLE `playerround` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -533,11 +537,12 @@ CREATE TABLE `questionscore` (
   `question_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
+  UNIQUE KEY `id_playerround_question` (`playerround_id`,`question_id`),
   KEY `fk_questionscore_playerround1_idx` (`playerround_id`),
   KEY `fk_questionscore_question1_idx` (`question_id`),
   CONSTRAINT `fk_questionscore_playerround1` FOREIGN KEY (`playerround_id`) REFERENCES `playerround` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_questionscore_question1` FOREIGN KEY (`question_id`) REFERENCES `question` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -546,6 +551,7 @@ CREATE TABLE `questionscore` (
 
 LOCK TABLES `questionscore` WRITE;
 /*!40000 ALTER TABLE `questionscore` DISABLE KEYS */;
+INSERT INTO `questionscore` VALUES (1,1,76,1),(2,3,76,2);
 /*!40000 ALTER TABLE `questionscore` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -750,4 +756,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-22 16:59:29
+-- Dump completed on 2023-10-26 22:28:22
