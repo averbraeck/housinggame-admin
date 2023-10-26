@@ -258,10 +258,18 @@ public class AdminData
             final int columnNr, final int recordId, final boolean editButton, final Table<R> table, final Field<T> sortField,
             final String nameField, final TableField<R, UInteger> selectField, final boolean newButton)
     {
+        showDependentColumn(columnName, columnNr, recordId, editButton, table, sortField, nameField, selectField, newButton,
+                columnNr - 1);
+    }
+
+    public <R extends org.jooq.Record, T extends Comparable<? super T>> void showDependentColumn(final String columnName,
+            final int columnNr, final int recordId, final boolean editButton, final Table<R> table, final Field<T> sortField,
+            final String nameField, final TableField<R, UInteger> selectField, final boolean newButton, final int whereColumn)
+    {
         StringBuilder s = new StringBuilder();
         DSLContext dslContext = DSL.using(getDataSource(), SQLDialect.MYSQL);
         List<R> records = dslContext.selectFrom(table)
-                .where(selectField.eq(UInteger.valueOf(getColumn(columnNr - 1).getSelectedRecordId()))).fetch()
+                .where(selectField.eq(UInteger.valueOf(getColumn(whereColumn).getSelectedRecordId()))).fetch()
                 .sortAsc(sortField);
 
         s.append(AdminTable.startTable());
