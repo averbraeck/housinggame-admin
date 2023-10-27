@@ -1,6 +1,5 @@
 package nl.tudelft.simulation.housinggame.admin;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -13,7 +12,6 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDateTime;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDouble;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecordUInt;
@@ -282,10 +280,6 @@ public class MaintainPlay
                         .setLabel("Fluvial flood intensity")
                         .setMin(0)
                         .setMax(10))
-//                .addEntry(new TableEntryDateTime(Tables.GROUPROUND.START_TIME)
-//                        .setRequired()
-//                        .setInitialValue(groupRound.getStartTime(), LocalDateTime.now())
-//                        .setLabel("Start time"))
                 .addEntry(new TableEntryUInt(Tables.GROUPROUND.GROUP_ID)
                         .setInitialValue(groupId, UInteger.valueOf(0))
                         .setLabel("Group id")
@@ -475,10 +469,6 @@ public class MaintainPlay
                         .setInitialValue(playerRound.getSatisfactionPointBought(), UInteger.valueOf(0))
                         .setLabel("Sat.point bought")
                         .setMin(0))
-//                .addEntry(new TableEntryDateTime(Tables.PLAYERROUND.CREATE_TIME)
-//                        .setInitialValue(playerRound.getCreateTime(), LocalDateTime.now())
-//                        .setLabel("Create time")
-//                        .setHidden(true))
                 .addEntry(new TableEntryUInt(Tables.PLAYERROUND.GROUPROUND_ID)
                         .setInitialValue(groupRoundId, UInteger.valueOf(0))
                         .setLabel("GroupRound id")
