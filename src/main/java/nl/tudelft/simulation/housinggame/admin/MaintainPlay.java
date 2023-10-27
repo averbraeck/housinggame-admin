@@ -73,7 +73,7 @@ public class MaintainPlay
                 {
                     DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
                     RoundRecord round =
-                            dslContext.selectFrom(Tables.ROUND.where(Tables.ROUND.ID.eq(groupRound.getGroupId()))).fetchOne();
+                            dslContext.selectFrom(Tables.ROUND.where(Tables.ROUND.ID.eq(groupRound.getRoundId()))).fetchOne();
                     data.deleteRecord(groupRound, "PlayGroupRound", String.valueOf(round.getRoundNumber()),
                             "deletePlayGroupRoundOk", "play");
                 }
@@ -282,10 +282,10 @@ public class MaintainPlay
                         .setLabel("Fluvial flood intensity")
                         .setMin(0)
                         .setMax(10))
-                .addEntry(new TableEntryDateTime(Tables.GROUPROUND.START_TIME)
-                        .setRequired()
-                        .setInitialValue(groupRound.getStartTime(), LocalDateTime.now())
-                        .setLabel("Start time"))
+//                .addEntry(new TableEntryDateTime(Tables.GROUPROUND.START_TIME)
+//                        .setRequired()
+//                        .setInitialValue(groupRound.getStartTime(), LocalDateTime.now())
+//                        .setLabel("Start time"))
                 .addEntry(new TableEntryUInt(Tables.GROUPROUND.GROUP_ID)
                         .setInitialValue(groupId, UInteger.valueOf(0))
                         .setLabel("Group id")
@@ -475,10 +475,10 @@ public class MaintainPlay
                         .setInitialValue(playerRound.getSatisfactionPointBought(), UInteger.valueOf(0))
                         .setLabel("Sat.point bought")
                         .setMin(0))
-                .addEntry(new TableEntryDateTime(Tables.PLAYERROUND.CREATE_TIME)
-                        .setInitialValue(playerRound.getCreateTime(), LocalDateTime.now())
-                        .setLabel("Create time")
-                        .setHidden(true))
+//                .addEntry(new TableEntryDateTime(Tables.PLAYERROUND.CREATE_TIME)
+//                        .setInitialValue(playerRound.getCreateTime(), LocalDateTime.now())
+//                        .setLabel("Create time")
+//                        .setHidden(true))
                 .addEntry(new TableEntryUInt(Tables.PLAYERROUND.GROUPROUND_ID)
                         .setInitialValue(groupRoundId, UInteger.valueOf(0))
                         .setLabel("GroupRound id")
