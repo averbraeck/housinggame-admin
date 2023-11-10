@@ -372,7 +372,6 @@ public class MaintainPlay
                         .setLabel("Player code")
                         .setReadOnly())
                 .addEntry(new TableEntryPickRecordUInt(Tables.PLAYERROUND.HOUSE_ID)
-                        .setRequired()
                         .setPickTable(data, Tables.HOUSE.join(Tables.COMMUNITY)
                                 .on(Tables.HOUSE.COMMUNITY_ID.eq(Tables.COMMUNITY.ID))
                                 .and(Tables.COMMUNITY.GAMEVERSION_ID.eq(gameVersion.getId())),
@@ -475,7 +474,7 @@ public class MaintainPlay
                         .setHidden(true))
                 .endForm();
         //@formatter:on
-        data.getFormColumn().setHeaderForm("Edit GroupRound", form);
+        data.getFormColumn().setHeaderForm("Edit PlayerRound", form);
     }
 
     /*
