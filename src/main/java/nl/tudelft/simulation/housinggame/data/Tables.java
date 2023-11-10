@@ -4,6 +4,7 @@
 package nl.tudelft.simulation.housinggame.data;
 
 
+import nl.tudelft.simulation.housinggame.data.tables.Bid;
 import nl.tudelft.simulation.housinggame.data.tables.Community;
 import nl.tudelft.simulation.housinggame.data.tables.Facilitator;
 import nl.tudelft.simulation.housinggame.data.tables.Gamesession;
@@ -12,6 +13,8 @@ import nl.tudelft.simulation.housinggame.data.tables.Group;
 import nl.tudelft.simulation.housinggame.data.tables.Groupround;
 import nl.tudelft.simulation.housinggame.data.tables.House;
 import nl.tudelft.simulation.housinggame.data.tables.Initialhousemeasure;
+import nl.tudelft.simulation.housinggame.data.tables.Label;
+import nl.tudelft.simulation.housinggame.data.tables.Language;
 import nl.tudelft.simulation.housinggame.data.tables.Measure;
 import nl.tudelft.simulation.housinggame.data.tables.Measuretype;
 import nl.tudelft.simulation.housinggame.data.tables.Newseffects;
@@ -33,6 +36,11 @@ import nl.tudelft.simulation.housinggame.data.tables.Welfaretype;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>housinggame.bid</code>.
+     */
+    public static final Bid BID = Bid.BID;
 
     /**
      * The table <code>housinggame.community</code>.
@@ -73,6 +81,16 @@ public class Tables {
      * The table <code>housinggame.initialhousemeasure</code>.
      */
     public static final Initialhousemeasure INITIALHOUSEMEASURE = Initialhousemeasure.INITIALHOUSEMEASURE;
+
+    /**
+     * The table <code>housinggame.label</code>.
+     */
+    public static final Label LABEL = Label.LABEL;
+
+    /**
+     * The table <code>housinggame.language</code>.
+     */
+    public static final Language LANGUAGE = Language.LANGUAGE;
 
     /**
      * The table <code>housinggame.measure</code>.

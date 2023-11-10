@@ -7,6 +7,7 @@ package nl.tudelft.simulation.housinggame.data;
 import java.util.Arrays;
 import java.util.List;
 
+import nl.tudelft.simulation.housinggame.data.tables.Bid;
 import nl.tudelft.simulation.housinggame.data.tables.Community;
 import nl.tudelft.simulation.housinggame.data.tables.Facilitator;
 import nl.tudelft.simulation.housinggame.data.tables.Gamesession;
@@ -15,6 +16,8 @@ import nl.tudelft.simulation.housinggame.data.tables.Group;
 import nl.tudelft.simulation.housinggame.data.tables.Groupround;
 import nl.tudelft.simulation.housinggame.data.tables.House;
 import nl.tudelft.simulation.housinggame.data.tables.Initialhousemeasure;
+import nl.tudelft.simulation.housinggame.data.tables.Label;
+import nl.tudelft.simulation.housinggame.data.tables.Language;
 import nl.tudelft.simulation.housinggame.data.tables.Measure;
 import nl.tudelft.simulation.housinggame.data.tables.Measuretype;
 import nl.tudelft.simulation.housinggame.data.tables.Newseffects;
@@ -47,6 +50,11 @@ public class Housinggame extends SchemaImpl {
      * The reference instance of <code>housinggame</code>
      */
     public static final Housinggame HOUSINGGAME = new Housinggame();
+
+    /**
+     * The table <code>housinggame.bid</code>.
+     */
+    public final Bid BID = Bid.BID;
 
     /**
      * The table <code>housinggame.community</code>.
@@ -87,6 +95,16 @@ public class Housinggame extends SchemaImpl {
      * The table <code>housinggame.initialhousemeasure</code>.
      */
     public final Initialhousemeasure INITIALHOUSEMEASURE = Initialhousemeasure.INITIALHOUSEMEASURE;
+
+    /**
+     * The table <code>housinggame.label</code>.
+     */
+    public final Label LABEL = Label.LABEL;
+
+    /**
+     * The table <code>housinggame.language</code>.
+     */
+    public final Language LANGUAGE = Language.LANGUAGE;
 
     /**
      * The table <code>housinggame.measure</code>.
@@ -174,6 +192,7 @@ public class Housinggame extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.asList(
+            Bid.BID,
             Community.COMMUNITY,
             Facilitator.FACILITATOR,
             Gamesession.GAMESESSION,
@@ -182,6 +201,8 @@ public class Housinggame extends SchemaImpl {
             Groupround.GROUPROUND,
             House.HOUSE,
             Initialhousemeasure.INITIALHOUSEMEASURE,
+            Label.LABEL,
+            Language.LANGUAGE,
             Measure.MEASURE,
             Measuretype.MEASURETYPE,
             Newseffects.NEWSEFFECTS,

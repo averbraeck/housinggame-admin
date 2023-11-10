@@ -4,6 +4,7 @@
 package nl.tudelft.simulation.housinggame.data;
 
 
+import nl.tudelft.simulation.housinggame.data.tables.Bid;
 import nl.tudelft.simulation.housinggame.data.tables.Community;
 import nl.tudelft.simulation.housinggame.data.tables.Facilitator;
 import nl.tudelft.simulation.housinggame.data.tables.Gamesession;
@@ -40,6 +41,8 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
+    public static final Index BID_FK_BID_GROUPROUND1_IDX = Internal.createIndex(DSL.name("fk_bid_groupround1_idx"), Bid.BID, new OrderField[] { Bid.BID.GROUPROUND_ID }, false);
+    public static final Index BID_FK_BID_HOUSE1_IDX = Internal.createIndex(DSL.name("fk_bid_house1_idx"), Bid.BID, new OrderField[] { Bid.BID.HOUSE_ID }, false);
     public static final Index COMMUNITY_FK_COMMUNITY_GAMEVERSION1_IDX = Internal.createIndex(DSL.name("fk_community_gameversion1_idx"), Community.COMMUNITY, new OrderField[] { Community.COMMUNITY.GAMEVERSION_ID }, false);
     public static final Index FACILITATOR_FK_FACILITATOR_USER1_IDX = Internal.createIndex(DSL.name("fk_facilitator_user1_idx"), Facilitator.FACILITATOR, new OrderField[] { Facilitator.FACILITATOR.USER_ID }, false);
     public static final Index GAMESESSION_FK_GAMESESSION_GAMEVERSION1_IDX = Internal.createIndex(DSL.name("fk_gamesession_gameversion1_idx"), Gamesession.GAMESESSION, new OrderField[] { Gamesession.GAMESESSION.GAMEVERSION_ID }, false);

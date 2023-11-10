@@ -141,7 +141,7 @@ public class Groupround extends TableImpl<GrouproundRecord> {
 
     @Override
     public List<UniqueKey<GrouproundRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_GROUPROUND_ID_UNIQUE);
+        return Arrays.asList(Keys.KEY_GROUPROUND_ID_UNIQUE, Keys.KEY_GROUPROUND_ID_GROUP_ROUND);
     }
 
     @Override

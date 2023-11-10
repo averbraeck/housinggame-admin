@@ -155,9 +155,14 @@ public class Playerround extends TableImpl<PlayerroundRecord> {
     public final TableField<PlayerroundRecord, LocalDateTime> CREATE_TIME = createField(DSL.name("create_time"), SQLDataType.LOCALDATETIME(0).defaultValue(DSL.field(DSL.raw("current_timestamp()"), SQLDataType.LOCALDATETIME)), this, "");
 
     /**
+     * The column <code>housinggame.playerround.moving_reason</code>.
+     */
+    public final TableField<PlayerroundRecord, String> MOVING_REASON = createField(DSL.name("moving_reason"), SQLDataType.CLOB.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.CLOB)), this, "");
+
+    /**
      * The column <code>housinggame.playerround.house_id</code>.
      */
-    public final TableField<PlayerroundRecord, UInteger> HOUSE_ID = createField(DSL.name("house_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+    public final TableField<PlayerroundRecord, UInteger> HOUSE_ID = createField(DSL.name("house_id"), SQLDataType.INTEGERUNSIGNED.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.INTEGERUNSIGNED)), this, "");
 
     /**
      * The column <code>housinggame.playerround.player_id</code>.
@@ -224,7 +229,7 @@ public class Playerround extends TableImpl<PlayerroundRecord> {
 
     @Override
     public List<UniqueKey<PlayerroundRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_PLAYERROUND_ID_UNIQUE);
+        return Arrays.asList(Keys.KEY_PLAYERROUND_ID_UNIQUE, Keys.KEY_PLAYERROUND_ID_PLAYER_GROUPROUND);
     }
 
     @Override

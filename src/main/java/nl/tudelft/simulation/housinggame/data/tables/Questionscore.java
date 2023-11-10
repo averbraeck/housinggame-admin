@@ -130,7 +130,7 @@ public class Questionscore extends TableImpl<QuestionscoreRecord> {
 
     @Override
     public List<UniqueKey<QuestionscoreRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_QUESTIONSCORE_ID_UNIQUE);
+        return Arrays.asList(Keys.KEY_QUESTIONSCORE_ID_UNIQUE, Keys.KEY_QUESTIONSCORE_ID_PLAYERROUND_QUESTION);
     }
 
     @Override

@@ -308,45 +308,59 @@ public class PlayerroundRecord extends UpdatableRecordImpl<PlayerroundRecord> {
     }
 
     /**
+     * Setter for <code>housinggame.playerround.moving_reason</code>.
+     */
+    public void setMovingReason(String value) {
+        set(20, value);
+    }
+
+    /**
+     * Getter for <code>housinggame.playerround.moving_reason</code>.
+     */
+    public String getMovingReason() {
+        return (String) get(20);
+    }
+
+    /**
      * Setter for <code>housinggame.playerround.house_id</code>.
      */
     public void setHouseId(UInteger value) {
-        set(20, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>housinggame.playerround.house_id</code>.
      */
     public UInteger getHouseId() {
-        return (UInteger) get(20);
+        return (UInteger) get(21);
     }
 
     /**
      * Setter for <code>housinggame.playerround.player_id</code>.
      */
     public void setPlayerId(UInteger value) {
-        set(21, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>housinggame.playerround.player_id</code>.
      */
     public UInteger getPlayerId() {
-        return (UInteger) get(21);
+        return (UInteger) get(22);
     }
 
     /**
      * Setter for <code>housinggame.playerround.groupround_id</code>.
      */
     public void setGrouproundId(UInteger value) {
-        set(22, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>housinggame.playerround.groupround_id</code>.
      */
     public UInteger getGrouproundId() {
-        return (UInteger) get(22);
+        return (UInteger) get(23);
     }
 
     // -------------------------------------------------------------------------
@@ -372,7 +386,7 @@ public class PlayerroundRecord extends UpdatableRecordImpl<PlayerroundRecord> {
     /**
      * Create a detached, initialised PlayerroundRecord
      */
-    public PlayerroundRecord(UInteger id, UInteger satisfaction, UInteger saving, UInteger mortgage, UInteger livingCosts, UInteger income, UInteger debt, Integer currentWealth, UInteger preferredHouseRating, UInteger satisfactionCostPerPoint, UInteger housePriceSold, UInteger housePriceBought, UInteger spentSavingsForBuyingHouse, UInteger paidOffDebt, UInteger measureBought, UInteger pluvialDamage, UInteger fluvialDamage, UInteger repairedDamage, UInteger satisfactionPointBought, LocalDateTime createTime, UInteger houseId, UInteger playerId, UInteger grouproundId) {
+    public PlayerroundRecord(UInteger id, UInteger satisfaction, UInteger saving, UInteger mortgage, UInteger livingCosts, UInteger income, UInteger debt, Integer currentWealth, UInteger preferredHouseRating, UInteger satisfactionCostPerPoint, UInteger housePriceSold, UInteger housePriceBought, UInteger spentSavingsForBuyingHouse, UInteger paidOffDebt, UInteger measureBought, UInteger pluvialDamage, UInteger fluvialDamage, UInteger repairedDamage, UInteger satisfactionPointBought, LocalDateTime createTime, String movingReason, UInteger houseId, UInteger playerId, UInteger grouproundId) {
         super(Playerround.PLAYERROUND);
 
         setId(id);
@@ -395,6 +409,7 @@ public class PlayerroundRecord extends UpdatableRecordImpl<PlayerroundRecord> {
         setRepairedDamage(repairedDamage);
         setSatisfactionPointBought(satisfactionPointBought);
         setCreateTime(createTime);
+        setMovingReason(movingReason);
         setHouseId(houseId);
         setPlayerId(playerId);
         setGrouproundId(grouproundId);
