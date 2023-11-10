@@ -147,11 +147,11 @@ public class MaintainParameters
                         .setLabel("Mortgage Percentage")
                         .setMin(0.0)
                         .setMax(100.0))
-                .addEntry(new TableEntryPickRecordUInt(Tables.SCENARIOPARAMETERS.DEFAULT_LANGUAGE)
+                .addEntry(new TableEntryPickRecordUInt(Tables.SCENARIOPARAMETERS.DEFAULT_LANGUAGE_ID)
                         .setRequired()
                         .setPickTable(data, Tables.LANGUAGE, Tables.LANGUAGE.ID,
                                 Tables.LANGUAGE.CODE)
-                        .setInitialValue(scenarioParameters.getDefaultLanguage(), UInteger.valueOf(0))
+                        .setInitialValue(scenarioParameters.getDefaultLanguageId(), UInteger.valueOf(0))
                         .setLabel("Default language"))
                 .endForm();
         //@formatter:on
