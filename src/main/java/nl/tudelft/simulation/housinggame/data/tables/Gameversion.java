@@ -9,17 +9,19 @@ import java.util.List;
 import java.util.function.Function;
 
 import nl.tudelft.simulation.housinggame.data.Housinggame;
+import nl.tudelft.simulation.housinggame.data.Indexes;
 import nl.tudelft.simulation.housinggame.data.Keys;
 import nl.tudelft.simulation.housinggame.data.tables.records.GameversionRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function2;
+import org.jooq.Function3;
 import org.jooq.Identity;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row2;
+import org.jooq.Row3;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -63,6 +65,11 @@ public class Gameversion extends TableImpl<GameversionRecord> {
      */
     public final TableField<GameversionRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(255).nullable(false), this, "");
 
+    /**
+     * The column <code>housinggame.gameversion.language_id</code>.
+     */
+    public final TableField<GameversionRecord, UInteger> LANGUAGE_ID = createField(DSL.name("language_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+
     private Gameversion(Name alias, Table<GameversionRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -102,6 +109,11 @@ public class Gameversion extends TableImpl<GameversionRecord> {
     }
 
     @Override
+    public List<Index> getIndexes() {
+        return Arrays.asList(Indexes.GAMEVERSION_FK_GAMEVERSION_LANGUAGE1_IDX);
+    }
+
+    @Override
     public Identity<GameversionRecord, UInteger> getIdentity() {
         return (Identity<GameversionRecord, UInteger>) super.getIdentity();
     }
@@ -114,6 +126,24 @@ public class Gameversion extends TableImpl<GameversionRecord> {
     @Override
     public List<UniqueKey<GameversionRecord>> getUniqueKeys() {
         return Arrays.asList(Keys.KEY_GAMEVERSION_ID_UNIQUE, Keys.KEY_GAMEVERSION_NAME_UNIQUE);
+    }
+
+    @Override
+    public List<ForeignKey<GameversionRecord, ?>> getReferences() {
+        return Arrays.asList(Keys.FK_GAMEVERSION_LANGUAGE1);
+    }
+
+    private transient Language _language;
+
+    /**
+     * Get the implicit join path to the <code>housinggame.language</code>
+     * table.
+     */
+    public Language language() {
+        if (_language == null)
+            _language = new Language(this, Keys.FK_GAMEVERSION_LANGUAGE1);
+
+        return _language;
     }
 
     @Override
@@ -156,18 +186,18 @@ public class Gameversion extends TableImpl<GameversionRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row2 type methods
+    // Row3 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<UInteger, String> fieldsRow() {
-        return (Row2) super.fieldsRow();
+    public Row3<UInteger, String, UInteger> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function2<? super UInteger, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function3<? super UInteger, ? super String, ? super UInteger, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -175,7 +205,7 @@ public class Gameversion extends TableImpl<GameversionRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function2<? super UInteger, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function3<? super UInteger, ? super String, ? super UInteger, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

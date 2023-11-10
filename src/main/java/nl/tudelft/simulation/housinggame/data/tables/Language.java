@@ -14,12 +14,12 @@ import nl.tudelft.simulation.housinggame.data.tables.records.LanguageRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function6;
+import org.jooq.Function5;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row6;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -78,11 +78,6 @@ public class Language extends TableImpl<LanguageRecord> {
      */
     public final TableField<LanguageRecord, String> LANGUAGE4 = createField(DSL.name("language4"), SQLDataType.VARCHAR(2).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
 
-    /**
-     * The column <code>housinggame.language.lock</code>.
-     */
-    public final TableField<LanguageRecord, String> LOCK = createField(DSL.name("lock"), SQLDataType.VARCHAR(1).nullable(false).defaultValue(DSL.field(DSL.raw("'X'"), SQLDataType.VARCHAR)), this, "");
-
     private Language(Name alias, Table<LanguageRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -133,7 +128,7 @@ public class Language extends TableImpl<LanguageRecord> {
 
     @Override
     public List<UniqueKey<LanguageRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_LANGUAGE_ID_UNIQUE, Keys.KEY_LANGUAGE_LOCK_UNIQUE);
+        return Arrays.asList(Keys.KEY_LANGUAGE_ID_UNIQUE);
     }
 
     @Override
@@ -176,18 +171,18 @@ public class Language extends TableImpl<LanguageRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<UInteger, String, String, String, String, String> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row5<UInteger, String, String, String, String> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function6<? super UInteger, ? super String, ? super String, ? super String, ? super String, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function5<? super UInteger, ? super String, ? super String, ? super String, ? super String, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -195,7 +190,7 @@ public class Language extends TableImpl<LanguageRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function6<? super UInteger, ? super String, ? super String, ? super String, ? super String, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function5<? super UInteger, ? super String, ? super String, ? super String, ? super String, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

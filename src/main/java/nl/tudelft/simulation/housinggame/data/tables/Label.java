@@ -9,17 +9,19 @@ import java.util.List;
 import java.util.function.Function;
 
 import nl.tudelft.simulation.housinggame.data.Housinggame;
+import nl.tudelft.simulation.housinggame.data.Indexes;
 import nl.tudelft.simulation.housinggame.data.Keys;
 import nl.tudelft.simulation.housinggame.data.tables.records.LabelRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function6;
+import org.jooq.Function7;
 import org.jooq.Identity;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row6;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -83,6 +85,11 @@ public class Label extends TableImpl<LabelRecord> {
      */
     public final TableField<LabelRecord, String> VALUE4 = createField(DSL.name("value4"), SQLDataType.CLOB.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.CLOB)), this, "");
 
+    /**
+     * The column <code>housinggame.label.gameversion_id</code>.
+     */
+    public final TableField<LabelRecord, UInteger> GAMEVERSION_ID = createField(DSL.name("gameversion_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+
     private Label(Name alias, Table<LabelRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -122,6 +129,11 @@ public class Label extends TableImpl<LabelRecord> {
     }
 
     @Override
+    public List<Index> getIndexes() {
+        return Arrays.asList(Indexes.LABEL_FK_LABEL_GAMEVERSION1_IDX);
+    }
+
+    @Override
     public Identity<LabelRecord, UInteger> getIdentity() {
         return (Identity<LabelRecord, UInteger>) super.getIdentity();
     }
@@ -134,6 +146,24 @@ public class Label extends TableImpl<LabelRecord> {
     @Override
     public List<UniqueKey<LabelRecord>> getUniqueKeys() {
         return Arrays.asList(Keys.KEY_LABEL_ID_UNIQUE);
+    }
+
+    @Override
+    public List<ForeignKey<LabelRecord, ?>> getReferences() {
+        return Arrays.asList(Keys.FK_LABEL_GAMEVERSION1);
+    }
+
+    private transient Gameversion _gameversion;
+
+    /**
+     * Get the implicit join path to the <code>housinggame.gameversion</code>
+     * table.
+     */
+    public Gameversion gameversion() {
+        if (_gameversion == null)
+            _gameversion = new Gameversion(this, Keys.FK_LABEL_GAMEVERSION1);
+
+        return _gameversion;
     }
 
     @Override
@@ -176,18 +206,18 @@ public class Label extends TableImpl<LabelRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<UInteger, String, String, String, String, String> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<UInteger, String, String, String, String, String, UInteger> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function6<? super UInteger, ? super String, ? super String, ? super String, ? super String, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function7<? super UInteger, ? super String, ? super String, ? super String, ? super String, ? super String, ? super UInteger, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -195,7 +225,7 @@ public class Label extends TableImpl<LabelRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function6<? super UInteger, ? super String, ? super String, ? super String, ? super String, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function7<? super UInteger, ? super String, ? super String, ? super String, ? super String, ? super String, ? super UInteger, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

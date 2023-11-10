@@ -8,10 +8,12 @@ import nl.tudelft.simulation.housinggame.data.tables.Bid;
 import nl.tudelft.simulation.housinggame.data.tables.Community;
 import nl.tudelft.simulation.housinggame.data.tables.Facilitator;
 import nl.tudelft.simulation.housinggame.data.tables.Gamesession;
+import nl.tudelft.simulation.housinggame.data.tables.Gameversion;
 import nl.tudelft.simulation.housinggame.data.tables.Group;
 import nl.tudelft.simulation.housinggame.data.tables.Groupround;
 import nl.tudelft.simulation.housinggame.data.tables.House;
 import nl.tudelft.simulation.housinggame.data.tables.Initialhousemeasure;
+import nl.tudelft.simulation.housinggame.data.tables.Label;
 import nl.tudelft.simulation.housinggame.data.tables.Measure;
 import nl.tudelft.simulation.housinggame.data.tables.Measuretype;
 import nl.tudelft.simulation.housinggame.data.tables.Newseffects;
@@ -46,6 +48,7 @@ public class Indexes {
     public static final Index COMMUNITY_FK_COMMUNITY_GAMEVERSION1_IDX = Internal.createIndex(DSL.name("fk_community_gameversion1_idx"), Community.COMMUNITY, new OrderField[] { Community.COMMUNITY.GAMEVERSION_ID }, false);
     public static final Index FACILITATOR_FK_FACILITATOR_USER1_IDX = Internal.createIndex(DSL.name("fk_facilitator_user1_idx"), Facilitator.FACILITATOR, new OrderField[] { Facilitator.FACILITATOR.USER_ID }, false);
     public static final Index GAMESESSION_FK_GAMESESSION_GAMEVERSION1_IDX = Internal.createIndex(DSL.name("fk_gamesession_gameversion1_idx"), Gamesession.GAMESESSION, new OrderField[] { Gamesession.GAMESESSION.GAMEVERSION_ID }, false);
+    public static final Index GAMEVERSION_FK_GAMEVERSION_LANGUAGE1_IDX = Internal.createIndex(DSL.name("fk_gameversion_language1_idx"), Gameversion.GAMEVERSION, new OrderField[] { Gameversion.GAMEVERSION.LANGUAGE_ID }, false);
     public static final Index GROUP_FK_GROUP_FACILITATOR1_IDX = Internal.createIndex(DSL.name("fk_group_facilitator1_idx"), Group.GROUP, new OrderField[] { Group.GROUP.FACILITATOR_ID }, false);
     public static final Index GROUP_FK_GROUP_GAMESESSION1_IDX = Internal.createIndex(DSL.name("fk_group_gamesession1_idx"), Group.GROUP, new OrderField[] { Group.GROUP.GAMESESSION_ID }, false);
     public static final Index GROUP_FK_GROUP_SCENARIO1_IDX = Internal.createIndex(DSL.name("fk_group_scenario1_idx"), Group.GROUP, new OrderField[] { Group.GROUP.SCENARIO_ID }, false);
@@ -54,6 +57,7 @@ public class Indexes {
     public static final Index HOUSE_FK_HOUSE_COMMUNITY1_IDX = Internal.createIndex(DSL.name("fk_house_community1_idx"), House.HOUSE, new OrderField[] { House.HOUSE.COMMUNITY_ID }, false);
     public static final Index INITIALHOUSEMEASURE_FK_INITIALHOUSEMEASURE_HOUSE1_IDX = Internal.createIndex(DSL.name("fk_initialhousemeasure_house1_idx"), Initialhousemeasure.INITIALHOUSEMEASURE, new OrderField[] { Initialhousemeasure.INITIALHOUSEMEASURE.HOUSE_ID }, false);
     public static final Index INITIALHOUSEMEASURE_FK_INITIALHOUSEMEASURE_MEASURETYPE1_IDX = Internal.createIndex(DSL.name("fk_initialhousemeasure_measuretype1_idx"), Initialhousemeasure.INITIALHOUSEMEASURE, new OrderField[] { Initialhousemeasure.INITIALHOUSEMEASURE.MEASURETYPE_ID }, false);
+    public static final Index LABEL_FK_LABEL_GAMEVERSION1_IDX = Internal.createIndex(DSL.name("fk_label_gameversion1_idx"), Label.LABEL, new OrderField[] { Label.LABEL.GAMEVERSION_ID }, false);
     public static final Index MEASURE_FK_MEASURE_MEASURETYPE1_IDX = Internal.createIndex(DSL.name("fk_measure_measuretype1_idx"), Measure.MEASURE, new OrderField[] { Measure.MEASURE.MEASURETYPE_ID }, false);
     public static final Index MEASURE_FK_MEASURE_PLAYERROUND1_IDX = Internal.createIndex(DSL.name("fk_measure_playerround1_idx"), Measure.MEASURE, new OrderField[] { Measure.MEASURE.PLAYERROUND_ID }, false);
     public static final Index MEASURETYPE_FK_MEASURETYPE_GAMEVERSION1_IDX = Internal.createIndex(DSL.name("fk_measuretype_gameversion1_idx"), Measuretype.MEASURETYPE, new OrderField[] { Measuretype.MEASURETYPE.GAMEVERSION_ID }, false);
