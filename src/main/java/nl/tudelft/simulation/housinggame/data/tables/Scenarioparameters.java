@@ -125,9 +125,10 @@ public class Scenarioparameters extends TableImpl<ScenarioparametersRecord> {
     public final TableField<ScenarioparametersRecord, Double> MORTGAGE_PERCENTAGE = createField(DSL.name("mortgage_percentage"), SQLDataType.FLOAT.nullable(false), this, "");
 
     /**
-     * The column <code>housinggame.scenarioparameters.default_language</code>.
+     * The column
+     * <code>housinggame.scenarioparameters.default_language_id</code>.
      */
-    public final TableField<ScenarioparametersRecord, UInteger> DEFAULT_LANGUAGE = createField(DSL.name("default_language"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+    public final TableField<ScenarioparametersRecord, UInteger> DEFAULT_LANGUAGE_ID = createField(DSL.name("default_language_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
     private Scenarioparameters(Name alias, Table<ScenarioparametersRecord> aliased) {
         this(alias, aliased, null);

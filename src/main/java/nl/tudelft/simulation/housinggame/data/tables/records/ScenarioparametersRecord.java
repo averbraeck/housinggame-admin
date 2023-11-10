@@ -209,16 +209,18 @@ public class ScenarioparametersRecord extends UpdatableRecordImpl<Scenarioparame
     }
 
     /**
-     * Setter for <code>housinggame.scenarioparameters.default_language</code>.
+     * Setter for
+     * <code>housinggame.scenarioparameters.default_language_id</code>.
      */
-    public void setDefaultLanguage(UInteger value) {
+    public void setDefaultLanguageId(UInteger value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>housinggame.scenarioparameters.default_language</code>.
+     * Getter for
+     * <code>housinggame.scenarioparameters.default_language_id</code>.
      */
-    public UInteger getDefaultLanguage() {
+    public UInteger getDefaultLanguageId() {
         return (UInteger) get(12);
     }
 
@@ -307,7 +309,7 @@ public class ScenarioparametersRecord extends UpdatableRecordImpl<Scenarioparame
 
     @Override
     public Field<UInteger> field13() {
-        return Scenarioparameters.SCENARIOPARAMETERS.DEFAULT_LANGUAGE;
+        return Scenarioparameters.SCENARIOPARAMETERS.DEFAULT_LANGUAGE_ID;
     }
 
     @Override
@@ -372,7 +374,7 @@ public class ScenarioparametersRecord extends UpdatableRecordImpl<Scenarioparame
 
     @Override
     public UInteger component13() {
-        return getDefaultLanguage();
+        return getDefaultLanguageId();
     }
 
     @Override
@@ -437,7 +439,7 @@ public class ScenarioparametersRecord extends UpdatableRecordImpl<Scenarioparame
 
     @Override
     public UInteger value13() {
-        return getDefaultLanguage();
+        return getDefaultLanguageId();
     }
 
     @Override
@@ -514,7 +516,7 @@ public class ScenarioparametersRecord extends UpdatableRecordImpl<Scenarioparame
 
     @Override
     public ScenarioparametersRecord value13(UInteger value) {
-        setDefaultLanguage(value);
+        setDefaultLanguageId(value);
         return this;
     }
 
@@ -550,7 +552,7 @@ public class ScenarioparametersRecord extends UpdatableRecordImpl<Scenarioparame
     /**
      * Create a detached, initialised ScenarioparametersRecord
      */
-    public ScenarioparametersRecord(UInteger id, String name, Double pluvialRepairCosts, Double pluvialSatisfactionPenalty, Double fluvialRepairCosts, Double fluvialSatisfactionPenalty, Double satisfactionDebtPenalty, Double satisfactionHouseRatingChange, Double satisfactionMovePenalty, Double floodRepairCost, Double floodSatisfactionPenalty, Double mortgagePercentage, UInteger defaultLanguage) {
+    public ScenarioparametersRecord(UInteger id, String name, Double pluvialRepairCosts, Double pluvialSatisfactionPenalty, Double fluvialRepairCosts, Double fluvialSatisfactionPenalty, Double satisfactionDebtPenalty, Double satisfactionHouseRatingChange, Double satisfactionMovePenalty, Double floodRepairCost, Double floodSatisfactionPenalty, Double mortgagePercentage, UInteger defaultLanguageId) {
         super(Scenarioparameters.SCENARIOPARAMETERS);
 
         setId(id);
@@ -565,7 +567,7 @@ public class ScenarioparametersRecord extends UpdatableRecordImpl<Scenarioparame
         setFloodRepairCost(floodRepairCost);
         setFloodSatisfactionPenalty(floodSatisfactionPenalty);
         setMortgagePercentage(mortgagePercentage);
-        setDefaultLanguage(defaultLanguage);
+        setDefaultLanguageId(defaultLanguageId);
         resetChangedOnNotNull();
     }
 }

@@ -82,7 +82,7 @@ public class Indexes {
     public static final Index ROUND_FK_ROUND_SCENARIO1_IDX = Internal.createIndex(DSL.name("fk_round_scenario1_idx"), Round.ROUND, new OrderField[] { Round.ROUND.SCENARIO_ID }, false);
     public static final Index SCENARIO_FK_SCENARIO_GAMEVERSION1_IDX = Internal.createIndex(DSL.name("fk_scenario_gameversion1_idx"), Scenario.SCENARIO, new OrderField[] { Scenario.SCENARIO.GAMEVERSION_ID }, false);
     public static final Index SCENARIO_FK_SCENARIO_SCENARIOPARAMETERS1_IDX = Internal.createIndex(DSL.name("fk_scenario_scenarioparameters1_idx"), Scenario.SCENARIO, new OrderField[] { Scenario.SCENARIO.SCENARIOPARAMETERS_ID }, false);
-    public static final Index SCENARIOPARAMETERS_FK_SCENARIOPARAMETERS_LANGUAGE1_IDX = Internal.createIndex(DSL.name("fk_scenarioparameters_language1_idx"), Scenarioparameters.SCENARIOPARAMETERS, new OrderField[] { Scenarioparameters.SCENARIOPARAMETERS.DEFAULT_LANGUAGE }, false);
+    public static final Index SCENARIOPARAMETERS_FK_SCENARIOPARAMETERS_LANGUAGE1_IDX = Internal.createIndex(DSL.name("fk_scenarioparameters_language1_idx"), Scenarioparameters.SCENARIOPARAMETERS, new OrderField[] { Scenarioparameters.SCENARIOPARAMETERS.DEFAULT_LANGUAGE_ID }, false);
     public static final Index TAX_FK_TAX_COMMUNITY1_IDX = Internal.createIndex(DSL.name("fk_tax_community1_idx"), Tax.TAX, new OrderField[] { Tax.TAX.COMMUNITY_ID }, false);
     public static final Index WELFARETYPE_FK_WELFARETYPE_SCENARIO1_IDX = Internal.createIndex(DSL.name("fk_welfaretype_scenario1_idx"), Welfaretype.WELFARETYPE, new OrderField[] { Welfaretype.WELFARETYPE.SCENARIO_ID }, false);
 }

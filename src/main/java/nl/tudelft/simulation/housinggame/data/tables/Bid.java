@@ -16,6 +16,7 @@ import nl.tudelft.simulation.housinggame.data.tables.records.BidRecord;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Function4;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -57,7 +58,7 @@ public class Bid extends TableImpl<BidRecord> {
     /**
      * The column <code>housinggame.bid.id</code>.
      */
-    public final TableField<BidRecord, UInteger> ID = createField(DSL.name("id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+    public final TableField<BidRecord, UInteger> ID = createField(DSL.name("id"), SQLDataType.INTEGERUNSIGNED.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>housinggame.bid.price</code>.
@@ -115,6 +116,11 @@ public class Bid extends TableImpl<BidRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.asList(Indexes.BID_FK_BID_GROUPROUND1_IDX, Indexes.BID_FK_BID_HOUSE1_IDX);
+    }
+
+    @Override
+    public Identity<BidRecord, UInteger> getIdentity() {
+        return (Identity<BidRecord, UInteger>) super.getIdentity();
     }
 
     @Override
