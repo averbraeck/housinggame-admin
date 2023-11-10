@@ -146,6 +146,11 @@ public class MaintainParameters
                         .setLabel("Mortgage Percentage")
                         .setMin(0.0)
                         .setMax(100.0))
+                .addEntry(new TableEntryString(Tables.SCENARIOPARAMETERS.LANGUAGE)
+                        .setRequired()
+                        .setInitialValue(scenarioParameters.getLanguage(), "")
+                        .setLabel("Default language")
+                        .setMaxChars(2))
                 .endForm();
         //@formatter:on
         data.getFormColumn().setHeaderForm("Edit Parameters", form);
