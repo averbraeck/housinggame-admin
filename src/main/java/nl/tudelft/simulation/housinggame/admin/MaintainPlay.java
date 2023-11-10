@@ -15,6 +15,7 @@ import org.jooq.types.UInteger;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDouble;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecordUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
@@ -468,6 +469,10 @@ public class MaintainPlay
                         .setInitialValue(playerRound.getSatisfactionPointBought(), UInteger.valueOf(0))
                         .setLabel("Sat.point bought")
                         .setMin(0))
+                .addEntry(new TableEntryText(Tables.PLAYERROUND.MOVING_REASON)
+                        .setInitialValue(playerRound.getMovingReason(), "")
+                        .setLabel("Moving reason")
+                        .setRows(3))
                 .addEntry(new TableEntryUInt(Tables.PLAYERROUND.GROUPROUND_ID)
                         .setInitialValue(groupRoundId, UInteger.valueOf(0))
                         .setLabel("GroupRound id")
