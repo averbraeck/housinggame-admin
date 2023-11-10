@@ -48,6 +48,25 @@ public class AdminServlet extends HttpServlet
 
         switch (click)
         {
+            // Language - Languages (non-heriarchic)
+            case "language":
+            case "viewLanguage":
+            case "editLanguage":
+            case "saveLanguage":
+            case "deleteLanguage":
+            case "deleteLanguageOk":
+            case "newLanguage":
+
+            case "viewLanguages":
+            case "editLanguages":
+            case "saveLanguages":
+            case "deleteLanguages":
+            case "deleteLanguagesOk":
+            case "newLanguages":
+                data.setMenuChoice("language");
+                MaintainLanguage.handleMenu(request, click, recordNr);
+                break;
+
             // ScenarioParameters
             case "parameters":
             case "viewParameters":
@@ -58,6 +77,25 @@ public class AdminServlet extends HttpServlet
             case "newParameters":
                 data.setMenuChoice("parameters");
                 MaintainParameters.handleMenu(request, click, recordNr);
+                break;
+
+            // GameVersion - Label
+            case "label":
+            case "viewLabelGameVersion":
+            case "editLabelGameVersion":
+            case "saveLabelGameVersion":
+            case "deleteLabelGameVersion":
+            case "deleteLabelGameVersionOk":
+            case "newLabelGameVersion":
+
+            case "viewLabel":
+            case "editLabel":
+            case "saveLabel":
+            case "deleteLabel":
+            case "deleteLabelOk":
+            case "newLabel":
+                data.setMenuChoice("label");
+                MaintainLabel.handleMenu(request, click, recordNr);
                 break;
 
             // GameVersion - Scenario
@@ -337,16 +375,18 @@ public class AdminServlet extends HttpServlet
     public static String getTopMenu(final AdminData data)
     {
         StringBuilder s = new StringBuilder();
+        topmenu(data, s, "language", "Language"); // Language - Languages (non-heriarchic)
         topmenu(data, s, "parameters", "Parameters"); // ScenarioParameters
+        topmenu(data, s, "label", "Label"); // GameVersion - Label
         topmenu(data, s, "scenario", "Scenario"); // GameVersion - Scenario
-        topmenu(data, s, "welfaretype", "WelfareType"); // (GameVersion) - (Scenario) - WelfareType
-        topmenu(data, s, "measuretype", "MeasureType"); // (GameVersion) - MeasureType
+        topmenu(data, s, "welfaretype", "Welfare"); // (GameVersion) - (Scenario) - WelfareType
+        topmenu(data, s, "measuretype", "Measure"); // (GameVersion) - MeasureType
         topmenu(data, s, "community", "Community"); // (GameVersion) - Community - Tax
         topmenu(data, s, "house", "House"); // (GameVersion) - (Community) - House - InitialHouseMeasure
         topmenu(data, s, "round", "Round"); // (GameVersion) - (Scenario) - Round - NewsItem
         topmenu(data, s, "question", "Question"); // (GameVersion) - (Scenario) - Question
         topmenu(data, s, "user", "User"); // User - Facilitator
-        topmenu(data, s, "gamesession", "GameSession"); // (GameVersion) - GameSession - Group - Player
+        topmenu(data, s, "gamesession", "Session"); // (GameVersion) - GameSession - Group - Player
         topmenu(data, s, "play", "Play"); // (GameSession) - (Group) - GroupRound - (Player) - PlayerRound - Measure/Question
         topmenu(data, s, "result", "Result"); // (GameSession) - (Group) - Result
         return s.toString();

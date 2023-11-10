@@ -9,6 +9,7 @@ import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDouble;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecordUInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
@@ -146,11 +147,12 @@ public class MaintainParameters
                         .setLabel("Mortgage Percentage")
                         .setMin(0.0)
                         .setMax(100.0))
-                .addEntry(new TableEntryString(Tables.SCENARIOPARAMETERS.LANGUAGE)
+                .addEntry(new TableEntryPickRecordUInt(Tables.SCENARIOPARAMETERS.DEFAULT_LANGUAGE)
                         .setRequired()
-                        .setInitialValue(scenarioParameters.getLanguage(), "")
-                        .setLabel("Default language")
-                        .setMaxChars(2))
+                        .setPickTable(data, Tables.LANGUAGE, Tables.LANGUAGE.ID,
+                                Tables.LANGUAGE.CODE)
+                        .setInitialValue(scenarioParameters.getDefaultLanguage(), UInteger.valueOf(0))
+                        .setLabel("Default language"))
                 .endForm();
         //@formatter:on
         data.getFormColumn().setHeaderForm("Edit Parameters", form);
