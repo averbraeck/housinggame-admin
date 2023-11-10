@@ -19,10 +19,12 @@ import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
+import nl.tudelft.simulation.housinggame.data.tables.records.BidRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GamesessionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GameversionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GrouproundRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.HouseRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.MeasureRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.MeasuretypeRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.PlayerRecord;
@@ -83,6 +85,34 @@ public class MaintainPlay
                 showPlayGroupRound(session, data, recordId, true, !click.startsWith("view"));
                 if (click.startsWith("new"))
                     editPlayGroupRound(session, data, 0, true);
+            }
+        }
+
+        else if (click.contains("PlayBid"))
+        {
+            if (click.startsWith("save"))
+                recordId = data.saveRecord(request, recordId, Tables.BID, "play");
+            else if (click.startsWith("delete"))
+            {
+                BidRecord bid = SqlUtils.readRecordFromId(data, Tables.BID, recordId);
+                if (click.endsWith("Ok"))
+                    data.deleteRecordOk(bid, "play");
+                else
+                {
+                    GrouproundRecord groupRound = SqlUtils.readRecordFromId(data, Tables.GROUPROUND, bid.getGrouproundId());
+                    RoundRecord round = SqlUtils.readRecordFromId(data, Tables.ROUND, groupRound.getRoundId());
+                    HouseRecord house = SqlUtils.readRecordFromId(data, Tables.HOUSE, bid.getHouseId());
+                    data.deleteRecord(bid, "PlayBid",
+                            "Round " + String.valueOf(round.getRoundNumber()) + ", House " + house.getAddress(),
+                            "deletePlayBidOk", "play");
+                }
+                recordId = 0;
+            }
+            if (!data.isError())
+            {
+                showPlayBid(session, data, recordId, true, !click.startsWith("view"));
+                if (click.startsWith("new"))
+                    editPlayBid(session, data, 0, true);
             }
         }
 
@@ -580,10 +610,11 @@ public class MaintainPlay
             final boolean edit)
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        QuestionscoreRecord questionScore = questionScoreId == 0 ? dslContext.newRecord(Tables.QUESTIONSCORE)
-                : dslContext.selectFrom(Tables.QUESTIONSCORE).where(Tables.QUESTIONSCORE.ID.eq(UInteger.valueOf(questionScoreId))).fetchOne();
-        UInteger playerRoundId =
-                questionScoreId == 0 ? UInteger.valueOf(data.getColumn(4).getSelectedRecordId()) : questionScore.getPlayerroundId();
+        QuestionscoreRecord questionScore =
+                questionScoreId == 0 ? dslContext.newRecord(Tables.QUESTIONSCORE) : dslContext.selectFrom(Tables.QUESTIONSCORE)
+                        .where(Tables.QUESTIONSCORE.ID.eq(UInteger.valueOf(questionScoreId))).fetchOne();
+        UInteger playerRoundId = questionScoreId == 0 ? UInteger.valueOf(data.getColumn(4).getSelectedRecordId())
+                : questionScore.getPlayerroundId();
         PlayerroundRecord playerRound = SqlUtils.readRecordFromId(data, Tables.PLAYERROUND, playerRoundId);
         GrouproundRecord groupRound = SqlUtils.readRecordFromId(data, Tables.GROUPROUND, playerRound.getGrouproundId());
         GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, groupRound.getGroupId());
@@ -622,6 +653,70 @@ public class MaintainPlay
 
     /*
      * *********************************************************************************************************
+     * ************************************************ BID ****************************************************
+     * *********************************************************************************************************
+     */
+
+    public static void showPlayBid(final HttpSession session, final AdminData data, final int recordId,
+            final boolean editButton, final boolean editRecord)
+    {
+        data.showColumn("PlayGameSession", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMESESSION,
+                Tables.GAMESESSION.NAME, "name", false);
+        data.showDependentColumn("PlayGroup", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.GROUP,
+                Tables.GROUP.NAME, "name", Tables.GROUP.GAMESESSION_ID, false);
+        showGroupRoundColumn(data, "PlayGroupRound", 2, data.getColumn(2).getSelectedRecordId());
+        showBidColumn(data, "PlayBid", 3, recordId);
+
+        data.resetColumn(4);
+        data.resetColumn(5);
+        data.resetFormColumn();
+    }
+
+    public static void editPlayBid(final HttpSession session, final AdminData data, final int bidId, final boolean edit)
+    {
+        DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
+        BidRecord bid = bidId == 0 ? dslContext.newRecord(Tables.BID)
+                : dslContext.selectFrom(Tables.BID).where(Tables.BID.ID.eq(UInteger.valueOf(bidId))).fetchOne();
+        UInteger groupRoundId = bidId == 0 ? UInteger.valueOf(data.getColumn(2).getSelectedRecordId()) : bid.getGrouproundId();
+        GrouproundRecord groupRound = SqlUtils.readRecordFromId(data, Tables.GROUPROUND, groupRoundId);
+        GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, groupRound.getGroupId());
+        GamesessionRecord gameSession = SqlUtils.readRecordFromId(data, Tables.GAMESESSION, group.getGamesessionId());
+        GameversionRecord gameVersion = SqlUtils.readRecordFromId(data, Tables.GAMEVERSION, gameSession.getGameversionId());
+
+        //@formatter:off
+        TableForm form = new TableForm()
+                .setEdit(edit)
+                .setCancelMethod("play", data.getColumn(0).getSelectedRecordId())
+                .setEditMethod("editPlayBid")
+                .setSaveMethod("savePlayBid")
+                .setDeleteMethod("deletePlayBid", "Delete", "<br>Note: you can remove a bid, but player "
+                        + "<br>finances are not automatically adapted")
+                .setRecordNr(bidId)
+                .startForm()
+                .addEntry(new TableEntryPickRecordUInt(Tables.BID.HOUSE_ID)
+                .setRequired()
+                        .setPickTable(data, Tables.HOUSE.join(Tables.COMMUNITY)
+                                .on(Tables.HOUSE.COMMUNITY_ID.eq(Tables.COMMUNITY.ID))
+                                .and(Tables.COMMUNITY.GAMEVERSION_ID.eq(gameVersion.getId())),
+                                Tables.HOUSE.ID, Tables.HOUSE.ADDRESS)
+                        .setInitialValue(bid.getHouseId(), UInteger.valueOf(0))
+                        .setLabel("House address"))
+                .addEntry(new TableEntryInt(Tables.BID.PRICE)
+                        .setRequired()
+                        .setInitialValue(bid.getPrice(), 0)
+                        .setLabel("Bid price")
+                        .setMin(0))
+                .addEntry(new TableEntryUInt(Tables.BID.GROUPROUND_ID)
+                        .setInitialValue(groupRoundId, UInteger.valueOf(0))
+                        .setLabel("GroupRound id")
+                        .setHidden(true))
+                .endForm();
+        //@formatter:on
+        data.getFormColumn().setHeaderForm("Edit Measure", form);
+    }
+
+    /*
+     * *********************************************************************************************************
      * ****************************************** SUPPORT METHODS **********************************************
      * *********************************************************************************************************
      */
@@ -652,6 +747,8 @@ public class MaintainPlay
         }
         s.append(AdminTable.endTable());
         s.append(AdminTable.finalButton("New GroupRound", "new" + columnName));
+        s.append(AdminTable.finalButton("Players", "viewPlayPlayer"));
+        s.append(AdminTable.finalButton("Bids", "viewPlayBid"));
 
         data.getColumn(columnNr).setSelectedRecordId(recordId);
         data.getColumn(columnNr).setContent(s.toString());
@@ -720,25 +817,52 @@ public class MaintainPlay
         data.getColumn(columnNr).setContent(s.toString());
     }
 
-    public static void showQuestionScoreColumn(final AdminData data, final String columnName, final int columnNr, final int recordId)
+    public static void showQuestionScoreColumn(final AdminData data, final String columnName, final int columnNr,
+            final int recordId)
     {
         StringBuilder s = new StringBuilder();
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        List<QuestionscoreRecord> records = dslContext.selectFrom(Tables.QUESTIONSCORE)
-                .where(Tables.QUESTIONSCORE.PLAYERROUND_ID.eq(UInteger.valueOf(data.getColumn(columnNr - 1).getSelectedRecordId())))
+        List<QuestionscoreRecord> records = dslContext.selectFrom(Tables.QUESTIONSCORE).where(
+                Tables.QUESTIONSCORE.PLAYERROUND_ID.eq(UInteger.valueOf(data.getColumn(columnNr - 1).getSelectedRecordId())))
                 .fetch();
 
         s.append(AdminTable.startTable());
         for (QuestionscoreRecord record : records)
         {
-            QuestionRecord question = dslContext
-                    .selectFrom(Tables.QUESTION.where(Tables.QUESTION.ID.eq(record.getQuestionId()))).fetchOne();
+            QuestionRecord question =
+                    dslContext.selectFrom(Tables.QUESTION.where(Tables.QUESTION.ID.eq(record.getQuestionId()))).fetchOne();
             TableRow tableRow = new TableRow(IdProvider.getId(record), recordId, question.getName(), "view" + columnName);
             tableRow.addButton("Edit", "edit" + columnName);
             s.append(tableRow.process());
         }
         s.append(AdminTable.endTable());
         s.append(AdminTable.finalButton("New Q-Score", "new" + columnName));
+
+        data.getColumn(columnNr).setSelectedRecordId(recordId);
+        data.getColumn(columnNr).setContent(s.toString());
+    }
+
+    public static void showBidColumn(final AdminData data, final String columnName, final int columnNr, final int recordId)
+    {
+        StringBuilder s = new StringBuilder();
+        DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
+        List<BidRecord> records = dslContext.selectFrom(Tables.BID)
+                .where(Tables.BID.GROUPROUND_ID.eq(UInteger.valueOf(data.getColumn(columnNr - 1).getSelectedRecordId())))
+                .fetch();
+
+        s.append(AdminTable.startTable());
+        for (BidRecord bid : records)
+        {
+            GrouproundRecord groupRound = SqlUtils.readRecordFromId(data, Tables.GROUPROUND, bid.getGrouproundId());
+            RoundRecord round = SqlUtils.readRecordFromId(data, Tables.ROUND, groupRound.getRoundId());
+            HouseRecord house = SqlUtils.readRecordFromId(data, Tables.HOUSE, bid.getHouseId());
+            TableRow tableRow = new TableRow(IdProvider.getId(bid), recordId,
+                    "Round " + String.valueOf(round.getRoundNumber()) + ", House " + house.getAddress(), "view" + columnName);
+            tableRow.addButton("Edit", "edit" + columnName);
+            s.append(tableRow.process());
+        }
+        s.append(AdminTable.endTable());
+        s.append(AdminTable.finalButton("New Bid", "new" + columnName));
 
         data.getColumn(columnNr).setSelectedRecordId(recordId);
         data.getColumn(columnNr).setContent(s.toString());

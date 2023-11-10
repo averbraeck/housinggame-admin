@@ -294,6 +294,13 @@ public class AdminServlet extends HttpServlet
             case "deletePlayGroupRoundOk":
             case "newPlayGroupRound":
 
+            case "viewPlayBid":
+            case "editPlayBid":
+            case "savePlayBid":
+            case "deletePlayBid":
+            case "deletePlayBidOk":
+            case "newPlayBid":
+
             case "viewPlayPlayer":
 
             case "viewPlayPlayerRound":
