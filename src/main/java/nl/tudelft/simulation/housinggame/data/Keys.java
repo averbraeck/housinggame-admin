@@ -103,6 +103,7 @@ public class Keys {
     public static final UniqueKey<LanguageRecord> KEY_LANGUAGE_NAME_UNIQUE = Internal.createUniqueKey(Language.LANGUAGE, DSL.name("KEY_language_name_UNIQUE"), new TableField[] { Language.LANGUAGE.NAME }, true);
     public static final UniqueKey<LanguageRecord> KEY_LANGUAGE_PRIMARY = Internal.createUniqueKey(Language.LANGUAGE, DSL.name("KEY_language_PRIMARY"), new TableField[] { Language.LANGUAGE.ID }, true);
     public static final UniqueKey<LanguagesRecord> KEY_LANGUAGES_ID_UNIQUE = Internal.createUniqueKey(Languages.LANGUAGES, DSL.name("KEY_languages_id_UNIQUE"), new TableField[] { Languages.LANGUAGES.ID }, true);
+    public static final UniqueKey<LanguagesRecord> KEY_LANGUAGES_NAME_UNIQUE = Internal.createUniqueKey(Languages.LANGUAGES, DSL.name("KEY_languages_name_UNIQUE"), new TableField[] { Languages.LANGUAGES.NAME }, true);
     public static final UniqueKey<LanguagesRecord> KEY_LANGUAGES_PRIMARY = Internal.createUniqueKey(Languages.LANGUAGES, DSL.name("KEY_languages_PRIMARY"), new TableField[] { Languages.LANGUAGES.ID }, true);
     public static final UniqueKey<MeasureRecord> KEY_MEASURE_ID_UNIQUE = Internal.createUniqueKey(Measure.MEASURE, DSL.name("KEY_measure_id_UNIQUE"), new TableField[] { Measure.MEASURE.ID }, true);
     public static final UniqueKey<MeasureRecord> KEY_MEASURE_PRIMARY = Internal.createUniqueKey(Measure.MEASURE, DSL.name("KEY_measure_PRIMARY"), new TableField[] { Measure.MEASURE.ID }, true);
