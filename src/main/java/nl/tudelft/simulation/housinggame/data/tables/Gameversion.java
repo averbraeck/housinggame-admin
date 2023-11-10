@@ -66,9 +66,9 @@ public class Gameversion extends TableImpl<GameversionRecord> {
     public final TableField<GameversionRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
-     * The column <code>housinggame.gameversion.language_id</code>.
+     * The column <code>housinggame.gameversion.languages_id</code>.
      */
-    public final TableField<GameversionRecord, UInteger> LANGUAGE_ID = createField(DSL.name("language_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+    public final TableField<GameversionRecord, UInteger> LANGUAGES_ID = createField(DSL.name("languages_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
     private Gameversion(Name alias, Table<GameversionRecord> aliased) {
         this(alias, aliased, null);
@@ -110,7 +110,7 @@ public class Gameversion extends TableImpl<GameversionRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.GAMEVERSION_FK_GAMEVERSION_LANGUAGE1_IDX);
+        return Arrays.asList(Indexes.GAMEVERSION_FK_GAMEVERSION_LANGUAGES1_IDX);
     }
 
     @Override
@@ -130,20 +130,20 @@ public class Gameversion extends TableImpl<GameversionRecord> {
 
     @Override
     public List<ForeignKey<GameversionRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_GAMEVERSION_LANGUAGE1);
+        return Arrays.asList(Keys.FK_GAMEVERSION_LANGUAGES1);
     }
 
-    private transient Language _language;
+    private transient Languages _languages;
 
     /**
-     * Get the implicit join path to the <code>housinggame.language</code>
+     * Get the implicit join path to the <code>housinggame.languages</code>
      * table.
      */
-    public Language language() {
-        if (_language == null)
-            _language = new Language(this, Keys.FK_GAMEVERSION_LANGUAGE1);
+    public Languages languages() {
+        if (_languages == null)
+            _languages = new Languages(this, Keys.FK_GAMEVERSION_LANGUAGES1);
 
-        return _language;
+        return _languages;
     }
 
     @Override

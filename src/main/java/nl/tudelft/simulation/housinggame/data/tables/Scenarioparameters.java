@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import nl.tudelft.simulation.housinggame.data.Housinggame;
+import nl.tudelft.simulation.housinggame.data.Indexes;
 import nl.tudelft.simulation.housinggame.data.Keys;
 import nl.tudelft.simulation.housinggame.data.tables.records.ScenarioparametersRecord;
 
@@ -16,6 +17,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Function13;
 import org.jooq.Identity;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
@@ -123,9 +125,9 @@ public class Scenarioparameters extends TableImpl<ScenarioparametersRecord> {
     public final TableField<ScenarioparametersRecord, Double> MORTGAGE_PERCENTAGE = createField(DSL.name("mortgage_percentage"), SQLDataType.FLOAT.nullable(false), this, "");
 
     /**
-     * The column <code>housinggame.scenarioparameters.language</code>.
+     * The column <code>housinggame.scenarioparameters.default_language</code>.
      */
-    public final TableField<ScenarioparametersRecord, String> LANGUAGE = createField(DSL.name("language"), SQLDataType.VARCHAR(2).nullable(false).defaultValue(DSL.field(DSL.raw("'EN'"), SQLDataType.VARCHAR)), this, "");
+    public final TableField<ScenarioparametersRecord, UInteger> DEFAULT_LANGUAGE = createField(DSL.name("default_language"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
     private Scenarioparameters(Name alias, Table<ScenarioparametersRecord> aliased) {
         this(alias, aliased, null);
@@ -168,6 +170,11 @@ public class Scenarioparameters extends TableImpl<ScenarioparametersRecord> {
     }
 
     @Override
+    public List<Index> getIndexes() {
+        return Arrays.asList(Indexes.SCENARIOPARAMETERS_FK_SCENARIOPARAMETERS_LANGUAGE1_IDX);
+    }
+
+    @Override
     public Identity<ScenarioparametersRecord, UInteger> getIdentity() {
         return (Identity<ScenarioparametersRecord, UInteger>) super.getIdentity();
     }
@@ -180,6 +187,24 @@ public class Scenarioparameters extends TableImpl<ScenarioparametersRecord> {
     @Override
     public List<UniqueKey<ScenarioparametersRecord>> getUniqueKeys() {
         return Arrays.asList(Keys.KEY_SCENARIOPARAMETERS_ID_UNIQUE, Keys.KEY_SCENARIOPARAMETERS_NAME_UNIQUE);
+    }
+
+    @Override
+    public List<ForeignKey<ScenarioparametersRecord, ?>> getReferences() {
+        return Arrays.asList(Keys.FK_SCENARIOPARAMETERS_LANGUAGE1);
+    }
+
+    private transient Language _language;
+
+    /**
+     * Get the implicit join path to the <code>housinggame.language</code>
+     * table.
+     */
+    public Language language() {
+        if (_language == null)
+            _language = new Language(this, Keys.FK_SCENARIOPARAMETERS_LANGUAGE1);
+
+        return _language;
     }
 
     @Override
@@ -226,14 +251,14 @@ public class Scenarioparameters extends TableImpl<ScenarioparametersRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row13<UInteger, String, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, String> fieldsRow() {
+    public Row13<UInteger, String, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, UInteger> fieldsRow() {
         return (Row13) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function13<? super UInteger, ? super String, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function13<? super UInteger, ? super String, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super UInteger, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -241,7 +266,7 @@ public class Scenarioparameters extends TableImpl<ScenarioparametersRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function13<? super UInteger, ? super String, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function13<? super UInteger, ? super String, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super Double, ? super UInteger, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

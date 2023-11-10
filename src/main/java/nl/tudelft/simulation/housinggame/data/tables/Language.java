@@ -14,12 +14,12 @@ import nl.tudelft.simulation.housinggame.data.tables.records.LanguageRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function5;
+import org.jooq.Function3;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row5;
+import org.jooq.Row3;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -59,24 +59,14 @@ public class Language extends TableImpl<LanguageRecord> {
     public final TableField<LanguageRecord, UInteger> ID = createField(DSL.name("id"), SQLDataType.INTEGERUNSIGNED.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>housinggame.language.language1</code>.
+     * The column <code>housinggame.language.code</code>.
      */
-    public final TableField<LanguageRecord, String> LANGUAGE1 = createField(DSL.name("language1"), SQLDataType.VARCHAR(2).nullable(false).defaultValue(DSL.field(DSL.raw("'EN'"), SQLDataType.VARCHAR)), this, "");
+    public final TableField<LanguageRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(2).nullable(false), this, "");
 
     /**
-     * The column <code>housinggame.language.language2</code>.
+     * The column <code>housinggame.language.name</code>.
      */
-    public final TableField<LanguageRecord, String> LANGUAGE2 = createField(DSL.name("language2"), SQLDataType.VARCHAR(2).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
-
-    /**
-     * The column <code>housinggame.language.language3</code>.
-     */
-    public final TableField<LanguageRecord, String> LANGUAGE3 = createField(DSL.name("language3"), SQLDataType.VARCHAR(2).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
-
-    /**
-     * The column <code>housinggame.language.language4</code>.
-     */
-    public final TableField<LanguageRecord, String> LANGUAGE4 = createField(DSL.name("language4"), SQLDataType.VARCHAR(2).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
+    public final TableField<LanguageRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(45).nullable(false), this, "");
 
     private Language(Name alias, Table<LanguageRecord> aliased) {
         this(alias, aliased, null);
@@ -128,7 +118,7 @@ public class Language extends TableImpl<LanguageRecord> {
 
     @Override
     public List<UniqueKey<LanguageRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_LANGUAGE_ID_UNIQUE);
+        return Arrays.asList(Keys.KEY_LANGUAGE_ID_UNIQUE, Keys.KEY_LANGUAGE_CODE_UNIQUE, Keys.KEY_LANGUAGE_NAME_UNIQUE);
     }
 
     @Override
@@ -171,18 +161,18 @@ public class Language extends TableImpl<LanguageRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row3 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<UInteger, String, String, String, String> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row3<UInteger, String, String> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function5<? super UInteger, ? super String, ? super String, ? super String, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function3<? super UInteger, ? super String, ? super String, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -190,7 +180,7 @@ public class Language extends TableImpl<LanguageRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function5<? super UInteger, ? super String, ? super String, ? super String, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function3<? super UInteger, ? super String, ? super String, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }
