@@ -86,9 +86,9 @@ public class Label extends TableImpl<LabelRecord> {
     public final TableField<LabelRecord, String> VALUE4 = createField(DSL.name("value4"), SQLDataType.CLOB.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.CLOB)), this, "");
 
     /**
-     * The column <code>housinggame.label.gameversion_id</code>.
+     * The column <code>housinggame.label.languages_id</code>.
      */
-    public final TableField<LabelRecord, UInteger> GAMEVERSION_ID = createField(DSL.name("gameversion_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+    public final TableField<LabelRecord, UInteger> LANGUAGES_ID = createField(DSL.name("languages_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
     private Label(Name alias, Table<LabelRecord> aliased) {
         this(alias, aliased, null);
@@ -130,7 +130,7 @@ public class Label extends TableImpl<LabelRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.LABEL_FK_LABEL_GAMEVERSION1_IDX);
+        return Arrays.asList(Indexes.LABEL_FK_LABEL_LANGUAGES1_IDX);
     }
 
     @Override
@@ -145,25 +145,25 @@ public class Label extends TableImpl<LabelRecord> {
 
     @Override
     public List<UniqueKey<LabelRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_LABEL_ID_UNIQUE);
+        return Arrays.asList(Keys.KEY_LABEL_ID_UNIQUE, Keys.KEY_LABEL_KEY_UNIQUE);
     }
 
     @Override
     public List<ForeignKey<LabelRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_LABEL_GAMEVERSION1);
+        return Arrays.asList(Keys.FK_LABEL_LANGUAGES1);
     }
 
-    private transient Gameversion _gameversion;
+    private transient Languages _languages;
 
     /**
-     * Get the implicit join path to the <code>housinggame.gameversion</code>
+     * Get the implicit join path to the <code>housinggame.languages</code>
      * table.
      */
-    public Gameversion gameversion() {
-        if (_gameversion == null)
-            _gameversion = new Gameversion(this, Keys.FK_LABEL_GAMEVERSION1);
+    public Languages languages() {
+        if (_languages == null)
+            _languages = new Languages(this, Keys.FK_LABEL_LANGUAGES1);
 
-        return _gameversion;
+        return _languages;
     }
 
     @Override

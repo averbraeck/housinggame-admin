@@ -107,16 +107,16 @@ public class LabelRecord extends UpdatableRecordImpl<LabelRecord> implements Rec
     }
 
     /**
-     * Setter for <code>housinggame.label.gameversion_id</code>.
+     * Setter for <code>housinggame.label.languages_id</code>.
      */
-    public void setGameversionId(UInteger value) {
+    public void setLanguagesId(UInteger value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>housinggame.label.gameversion_id</code>.
+     * Getter for <code>housinggame.label.languages_id</code>.
      */
-    public UInteger getGameversionId() {
+    public UInteger getLanguagesId() {
         return (UInteger) get(6);
     }
 
@@ -175,7 +175,7 @@ public class LabelRecord extends UpdatableRecordImpl<LabelRecord> implements Rec
 
     @Override
     public Field<UInteger> field7() {
-        return Label.LABEL.GAMEVERSION_ID;
+        return Label.LABEL.LANGUAGES_ID;
     }
 
     @Override
@@ -210,7 +210,7 @@ public class LabelRecord extends UpdatableRecordImpl<LabelRecord> implements Rec
 
     @Override
     public UInteger component7() {
-        return getGameversionId();
+        return getLanguagesId();
     }
 
     @Override
@@ -245,7 +245,7 @@ public class LabelRecord extends UpdatableRecordImpl<LabelRecord> implements Rec
 
     @Override
     public UInteger value7() {
-        return getGameversionId();
+        return getLanguagesId();
     }
 
     @Override
@@ -286,7 +286,7 @@ public class LabelRecord extends UpdatableRecordImpl<LabelRecord> implements Rec
 
     @Override
     public LabelRecord value7(UInteger value) {
-        setGameversionId(value);
+        setLanguagesId(value);
         return this;
     }
 
@@ -316,7 +316,7 @@ public class LabelRecord extends UpdatableRecordImpl<LabelRecord> implements Rec
     /**
      * Create a detached, initialised LabelRecord
      */
-    public LabelRecord(UInteger id, String key, String value1, String value2, String value3, String value4, UInteger gameversionId) {
+    public LabelRecord(UInteger id, String key, String value1, String value2, String value3, String value4, UInteger languagesId) {
         super(Label.LABEL);
 
         setId(id);
@@ -325,7 +325,7 @@ public class LabelRecord extends UpdatableRecordImpl<LabelRecord> implements Rec
         setValue2(value2);
         setValue3(value3);
         setValue4(value4);
-        setGameversionId(gameversionId);
+        setLanguagesId(languagesId);
         resetChangedOnNotNull();
     }
 }
