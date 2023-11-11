@@ -51,16 +51,16 @@ public class GameversionRecord extends UpdatableRecordImpl<GameversionRecord> im
     }
 
     /**
-     * Setter for <code>housinggame.gameversion.languages_id</code>.
+     * Setter for <code>housinggame.gameversion.languagegroup_id</code>.
      */
-    public void setLanguagesId(UInteger value) {
+    public void setLanguagegroupId(UInteger value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>housinggame.gameversion.languages_id</code>.
+     * Getter for <code>housinggame.gameversion.languagegroup_id</code>.
      */
-    public UInteger getLanguagesId() {
+    public UInteger getLanguagegroupId() {
         return (UInteger) get(2);
     }
 
@@ -99,7 +99,7 @@ public class GameversionRecord extends UpdatableRecordImpl<GameversionRecord> im
 
     @Override
     public Field<UInteger> field3() {
-        return Gameversion.GAMEVERSION.LANGUAGES_ID;
+        return Gameversion.GAMEVERSION.LANGUAGEGROUP_ID;
     }
 
     @Override
@@ -114,7 +114,7 @@ public class GameversionRecord extends UpdatableRecordImpl<GameversionRecord> im
 
     @Override
     public UInteger component3() {
-        return getLanguagesId();
+        return getLanguagegroupId();
     }
 
     @Override
@@ -129,7 +129,7 @@ public class GameversionRecord extends UpdatableRecordImpl<GameversionRecord> im
 
     @Override
     public UInteger value3() {
-        return getLanguagesId();
+        return getLanguagegroupId();
     }
 
     @Override
@@ -146,7 +146,7 @@ public class GameversionRecord extends UpdatableRecordImpl<GameversionRecord> im
 
     @Override
     public GameversionRecord value3(UInteger value) {
-        setLanguagesId(value);
+        setLanguagegroupId(value);
         return this;
     }
 
@@ -172,12 +172,12 @@ public class GameversionRecord extends UpdatableRecordImpl<GameversionRecord> im
     /**
      * Create a detached, initialised GameversionRecord
      */
-    public GameversionRecord(UInteger id, String name, UInteger languagesId) {
+    public GameversionRecord(UInteger id, String name, UInteger languagegroupId) {
         super(Gameversion.GAMEVERSION);
 
         setId(id);
         setName(name);
-        setLanguagesId(languagesId);
+        setLanguagegroupId(languagegroupId);
         resetChangedOnNotNull();
     }
 }

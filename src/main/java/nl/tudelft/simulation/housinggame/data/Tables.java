@@ -15,7 +15,7 @@ import nl.tudelft.simulation.housinggame.data.tables.House;
 import nl.tudelft.simulation.housinggame.data.tables.Initialhousemeasure;
 import nl.tudelft.simulation.housinggame.data.tables.Label;
 import nl.tudelft.simulation.housinggame.data.tables.Language;
-import nl.tudelft.simulation.housinggame.data.tables.Languages;
+import nl.tudelft.simulation.housinggame.data.tables.Languagegroup;
 import nl.tudelft.simulation.housinggame.data.tables.Measure;
 import nl.tudelft.simulation.housinggame.data.tables.Measuretype;
 import nl.tudelft.simulation.housinggame.data.tables.Newseffects;
@@ -94,9 +94,9 @@ public class Tables {
     public static final Language LANGUAGE = Language.LANGUAGE;
 
     /**
-     * The table <code>housinggame.languages</code>.
+     * The table <code>housinggame.languagegroup</code>.
      */
-    public static final Languages LANGUAGES = Languages.LANGUAGES;
+    public static final Languagegroup LANGUAGEGROUP = Languagegroup.LANGUAGEGROUP;
 
     /**
      * The table <code>housinggame.measure</code>.

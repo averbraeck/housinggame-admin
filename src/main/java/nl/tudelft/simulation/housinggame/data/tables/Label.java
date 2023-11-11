@@ -86,9 +86,9 @@ public class Label extends TableImpl<LabelRecord> {
     public final TableField<LabelRecord, String> VALUE4 = createField(DSL.name("value4"), SQLDataType.CLOB.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.CLOB)), this, "");
 
     /**
-     * The column <code>housinggame.label.languages_id</code>.
+     * The column <code>housinggame.label.languagegroup_id</code>.
      */
-    public final TableField<LabelRecord, UInteger> LANGUAGES_ID = createField(DSL.name("languages_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+    public final TableField<LabelRecord, UInteger> LANGUAGEGROUP_ID = createField(DSL.name("languagegroup_id"), SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
     private Label(Name alias, Table<LabelRecord> aliased) {
         this(alias, aliased, null);
@@ -130,7 +130,7 @@ public class Label extends TableImpl<LabelRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.LABEL_FK_LABEL_LANGUAGES1_IDX);
+        return Arrays.asList(Indexes.LABEL_FK_LABEL_LANGUAGEGROUP1_IDX);
     }
 
     @Override
@@ -150,20 +150,20 @@ public class Label extends TableImpl<LabelRecord> {
 
     @Override
     public List<ForeignKey<LabelRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_LABEL_LANGUAGES1);
+        return Arrays.asList(Keys.FK_LABEL_LANGUAGEGROUP1);
     }
 
-    private transient Languages _languages;
+    private transient Languagegroup _languagegroup;
 
     /**
-     * Get the implicit join path to the <code>housinggame.languages</code>
+     * Get the implicit join path to the <code>housinggame.languagegroup</code>
      * table.
      */
-    public Languages languages() {
-        if (_languages == null)
-            _languages = new Languages(this, Keys.FK_LABEL_LANGUAGES1);
+    public Languagegroup languagegroup() {
+        if (_languagegroup == null)
+            _languagegroup = new Languagegroup(this, Keys.FK_LABEL_LANGUAGEGROUP1);
 
-        return _languages;
+        return _languagegroup;
     }
 
     @Override
