@@ -48,7 +48,7 @@ public class AdminServlet extends HttpServlet
 
         switch (click)
         {
-            // Language - Languages (non-heriarchic)
+            // Language - Languages (non-heriarchic) - Label
             case "language":
             case "viewLanguage":
             case "editLanguage":
@@ -63,6 +63,13 @@ public class AdminServlet extends HttpServlet
             case "deleteLanguages":
             case "deleteLanguagesOk":
             case "newLanguages":
+
+            case "viewLabel":
+            case "editLabel":
+            case "saveLabel":
+            case "deleteLabel":
+            case "deleteLabelOk":
+            case "newLabel":
                 data.setMenuChoice("language");
                 MaintainLanguage.handleMenu(request, click, recordNr);
                 break;
@@ -88,16 +95,6 @@ public class AdminServlet extends HttpServlet
             case "deleteLabelGameVersion":
             case "deleteLabelGameVersionOk":
             case "newLabelGameVersion":
-
-            case "viewLabel":
-            case "editLabel":
-            case "saveLabel":
-            case "deleteLabel":
-            case "deleteLabelOk":
-            case "newLabel":
-                data.setMenuChoice("label");
-                MaintainLabel.handleMenu(request, click, recordNr);
-                break;
 
             // GameVersion - Scenario
             case "scenario":
@@ -389,9 +386,8 @@ public class AdminServlet extends HttpServlet
     public static String getTopMenu(final AdminData data)
     {
         StringBuilder s = new StringBuilder();
-        topmenu(data, s, "language", "Language"); // Language - Languages (non-heriarchic)
+        topmenu(data, s, "language", "Language"); // Language - Languages (non-heriarchic) - Label
         topmenu(data, s, "parameters", "Parameters"); // ScenarioParameters
-        topmenu(data, s, "label", "Label"); // GameVersion - Label
         topmenu(data, s, "scenario", "Scenario"); // GameVersion - Scenario
         topmenu(data, s, "welfaretype", "Welfare"); // (GameVersion) - (Scenario) - WelfareType
         topmenu(data, s, "measuretype", "Measure"); // (GameVersion) - MeasureType
