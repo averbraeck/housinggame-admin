@@ -63,7 +63,7 @@ public class Scenario extends TableImpl<ScenarioRecord> {
     /**
      * The column <code>housinggame.scenario.name</code>.
      */
-    public final TableField<ScenarioRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(16).nullable(false), this, "");
+    public final TableField<ScenarioRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(45).nullable(false), this, "");
 
     /**
      * The column <code>housinggame.scenario.information_amount</code>.
