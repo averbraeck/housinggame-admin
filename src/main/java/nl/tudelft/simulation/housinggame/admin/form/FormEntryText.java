@@ -11,7 +11,7 @@ public class FormEntryText extends AbstractFormEntry<FormEntryText, String>
     {
         super(label, name);
         this.maxChars = 65535;
-        this.rows = 15;
+        this.rows = 10;
     }
 
     public int getMaxChars()
@@ -57,7 +57,7 @@ public class FormEntryText extends AbstractFormEntry<FormEntryText, String>
     @Override
     public String codeForType(final String s)
     {
-        return s;
+        return s.strip();
     }
 
     @Override
