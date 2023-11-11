@@ -170,7 +170,7 @@ public class MaintainScenario
                         .setRequired()
                         .setInitialValue(scenario.getName(), "")
                         .setLabel("Scenario name")
-                        .setMaxChars(16))
+                        .setMaxChars(45))
                 .addEntry(new TableEntryInt(Tables.SCENARIO.INFORMATION_AMOUNT)
                         .setRequired()
                         .setInitialValue(scenario.getInformationAmount(), 0)
