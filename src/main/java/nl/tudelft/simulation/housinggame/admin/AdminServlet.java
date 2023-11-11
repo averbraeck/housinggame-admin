@@ -75,6 +75,7 @@ public class AdminServlet extends HttpServlet
             case "deleteParameters":
             case "deleteParametersOk":
             case "newParameters":
+            case "cloneParameters":
                 data.setMenuChoice("parameters");
                 MaintainParameters.handleMenu(request, click, recordNr);
                 break;
@@ -106,6 +107,9 @@ public class AdminServlet extends HttpServlet
             case "deleteGameVersion":
             case "deleteGameVersionOk":
             case "newGameVersion":
+            case "cloneGameVersion":
+            case "destroyGameVersion":
+            case "destroyGameVersionOk":
 
             case "viewScenario":
             case "editScenario":
@@ -113,6 +117,9 @@ public class AdminServlet extends HttpServlet
             case "deleteScenario":
             case "deleteScenarioOk":
             case "newScenario":
+            case "cloneScenario":
+            case "destroyScenario":
+            case "destroyScenarioOk":
                 data.setMenuChoice("scenario");
                 MaintainScenario.handleMenu(request, click, recordNr);
                 break;

@@ -45,6 +45,41 @@ public class MaintainScenario
                     data.deleteRecord(gameVersion, "GameVersion", gameVersion.getName(), "deleteGameVersionOk", "scenario");
                 recordId = 0;
             }
+            else if (click.startsWith("clone"))
+            {
+                GameversionRecord gameVersion = SqlUtils.readRecordFromId(data, Tables.GAMEVERSION, recordId);
+                try
+                {
+                    SqlUtils.cloneGameVersion(data, gameVersion);
+                }
+                catch (Exception e)
+                {
+                    System.err.println(e.getMessage());
+                    ModalWindowUtils.popup(data, "Error cloning GameVersion",
+                            e.getClass().getSimpleName() + ": " + e.getMessage(), "clickMenu('scenario')");
+                    data.setError(true);
+                }
+            }
+            else if (click.startsWith("destroy"))
+            {
+                GameversionRecord gameVersion = SqlUtils.readRecordFromId(data, Tables.GAMEVERSION, recordId);
+                try
+                {
+                    if (click.endsWith("Ok"))
+                        SqlUtils.destroyGameVersion(data, gameVersion);
+                    else
+                        data.destroyRecord(gameVersion, "GameVersion", gameVersion.getName(), "destroyGameVersionOk",
+                                "scenario");
+                    recordId = 0;
+                }
+                catch (Exception e)
+                {
+                    System.err.println(e.getMessage());
+                    ModalWindowUtils.popup(data, "Error destroying GameVersion",
+                            e.getClass().getSimpleName() + ": " + e.getMessage(), "clickMenu('scenario')");
+                    data.setError(true);
+                }
+            }
             if (!data.isError())
             {
                 showGameVersion(session, data, recordId, true, !click.startsWith("view"));
@@ -65,6 +100,40 @@ public class MaintainScenario
                 else
                     data.deleteRecord(scenario, "Scenario", scenario.getName(), "deleteScenarioOk", "scenario");
                 recordId = 0;
+            }
+            else if (click.startsWith("clone"))
+            {
+                ScenarioRecord scenario = SqlUtils.readRecordFromId(data, Tables.SCENARIO, recordId);
+                try
+                {
+                    SqlUtils.cloneScenario(data, scenario);
+                }
+                catch (Exception e)
+                {
+                    System.err.println(e.getMessage());
+                    ModalWindowUtils.popup(data, "Error cloning Scenario", e.getClass().getSimpleName() + ": " + e.getMessage(),
+                            "clickMenu('scenario')");
+                    data.setError(true);
+                }
+            }
+            else if (click.startsWith("destroy"))
+            {
+                ScenarioRecord scenario = SqlUtils.readRecordFromId(data, Tables.SCENARIO, recordId);
+                try
+                {
+                    if (click.endsWith("Ok"))
+                        SqlUtils.destroyScenario(data, scenario);
+                    else
+                        data.destroyRecord(scenario, "Scenario", scenario.getName(), "destroyScenarioOk", "scenario");
+                    recordId = 0;
+                }
+                catch (Exception e)
+                {
+                    System.err.println(e.getMessage());
+                    ModalWindowUtils.popup(data, "Error destroying Scenario",
+                            e.getClass().getSimpleName() + ": " + e.getMessage(), "clickMenu('scenario')");
+                    data.setError(true);
+                }
             }
             if (!data.isError())
             {
@@ -123,9 +192,11 @@ public class MaintainScenario
                         .setPickTable(data, Tables.LANGUAGES, Tables.LANGUAGES.ID,
                                 Tables.LANGUAGES.NAME)
                         .setInitialValue(gameVersion.getLanguagesId(), UInteger.valueOf(0))
-                        .setLabel("Game languages"))
-                .endForm();
+                        .setLabel("Game languages"));
         //@formatter:on
+        form.addAddtionalButton("cloneGameVersion", "Clone Entire GameVersion");
+        form.addAddtionalButton("destroyGameVersion", "Destroy Entire GameVersion");
+        form.endForm();
         data.getFormColumn().setHeaderForm("Edit Game Version", form);
     }
 
@@ -185,9 +256,11 @@ public class MaintainScenario
                         .setPickTable(data, Tables.SCENARIOPARAMETERS, Tables.SCENARIOPARAMETERS.ID,
                                 Tables.SCENARIOPARAMETERS.NAME)
                         .setInitialValue(scenario.getScenarioparametersId(), UInteger.valueOf(0))
-                        .setLabel("Scenario parameters"))
-                .endForm();
+                        .setLabel("Scenario parameters"));
         //@formatter:on
+        form.addAddtionalButton("cloneScenario", "Clone Entire Scenario");
+        form.addAddtionalButton("destroyScenario", "Destroy Entire Scenario");
+        form.endForm();
         data.getFormColumn().setHeaderForm("Edit Scenario", form);
     }
 

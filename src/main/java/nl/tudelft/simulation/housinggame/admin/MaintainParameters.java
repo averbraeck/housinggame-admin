@@ -45,6 +45,22 @@ public class MaintainParameters
                             "parameters");
                 recordId = 0;
             }
+            else if (click.startsWith("clone"))
+            {
+                ScenarioparametersRecord scenarioParameters =
+                        SqlUtils.readRecordFromId(data, Tables.SCENARIOPARAMETERS, recordId);
+                try
+                {
+                    SqlUtils.cloneScenarioParameters(data, scenarioParameters);
+                }
+                catch (Exception e)
+                {
+                    System.err.println(e.getMessage());
+                    ModalWindowUtils.popup(data, "Error cloning Parameters",
+                            e.getClass().getSimpleName() + ": " + e.getMessage(), "clickMenu('parameters')");
+                    data.setError(true);
+                }
+            }
             if (!data.isError())
             {
                 showScenarioParameters(session, data, recordId, true, !click.startsWith("view"));
@@ -152,9 +168,11 @@ public class MaintainParameters
                         .setPickTable(data, Tables.LANGUAGE, Tables.LANGUAGE.ID,
                                 Tables.LANGUAGE.CODE)
                         .setInitialValue(scenarioParameters.getDefaultLanguageId(), UInteger.valueOf(0))
-                        .setLabel("Default language"))
-                .endForm();
+                        .setLabel("Default language"));
         //@formatter:on
+
+        form.addAddtionalButton("cloneParameters", "Clone Scenario Parameters");
+        form.endForm();
         data.getFormColumn().setHeaderForm("Edit Parameters", form);
     }
 

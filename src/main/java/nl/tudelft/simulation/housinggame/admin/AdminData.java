@@ -334,6 +334,16 @@ public class AdminData
         setShowModalWindow(1);
     }
 
+    public <R extends org.jooq.UpdatableRecord<R>> void destroyRecord(final R record, final String tableName,
+            final String recordName, final String okButtonName, final String errorMenu)
+    {
+        ModalWindowUtils.make2ButtonModalWindow(this, "DESTROY " + tableName,
+                "<p>DESTROY " + tableName + " " + recordName + " plus ALL dependent tables?</p>", "DESTROY",
+                "clickRecordId('" + okButtonName + "', " + getId(record) + ")", "Cancel", "clickMenu('" + errorMenu + "')",
+                "clickMenu('" + errorMenu + "')");
+        setShowModalWindow(1);
+    }
+
     public <R extends org.jooq.UpdatableRecord<R>> void deleteRecordOk(final R record, final String errorMenu)
     {
         try
