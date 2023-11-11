@@ -38,6 +38,8 @@ public class UserLoginServlet extends HttpServlet
         try
         {
             Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName("com.mysql.cj.protocol.a.NullValueEncoder");
+            Class.forName("com.mysql.cj.protocol.a.SqlDateValueEncoder");
         }
         catch (ClassNotFoundException e)
         {
@@ -70,7 +72,7 @@ public class UserLoginServlet extends HttpServlet
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
     {
 
         String username = request.getParameter("username");
@@ -120,7 +122,7 @@ public class UserLoginServlet extends HttpServlet
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
     {
         response.sendRedirect("jsp/admin/login.jsp");
     }
