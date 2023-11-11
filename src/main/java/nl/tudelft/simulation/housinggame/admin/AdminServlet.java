@@ -48,7 +48,7 @@ public class AdminServlet extends HttpServlet
 
         switch (click)
         {
-            // Language - Languages (non-heriarchic) - Label
+            // Language - LanguageGroup (non-heriarchic) - Label
             case "language":
             case "viewLanguage":
             case "editLanguage":
@@ -57,12 +57,12 @@ public class AdminServlet extends HttpServlet
             case "deleteLanguageOk":
             case "newLanguage":
 
-            case "viewLanguages":
-            case "editLanguages":
-            case "saveLanguages":
-            case "deleteLanguages":
-            case "deleteLanguagesOk":
-            case "newLanguages":
+            case "viewLanguageGroup":
+            case "editLanguageGroup":
+            case "saveLanguageGroup":
+            case "deleteLanguageGroup":
+            case "deleteLanguageGroupOk":
+            case "newLanguageGroup":
 
             case "viewLabel":
             case "editLabel":
@@ -386,7 +386,7 @@ public class AdminServlet extends HttpServlet
     public static String getTopMenu(final AdminData data)
     {
         StringBuilder s = new StringBuilder();
-        topmenu(data, s, "language", "Language"); // Language - Languages (non-heriarchic) - Label
+        topmenu(data, s, "language", "Language"); // Language - LanguageGroup (non-heriarchic) - Label
         topmenu(data, s, "parameters", "Parameters"); // ScenarioParameters
         topmenu(data, s, "scenario", "Scenario"); // GameVersion - Scenario
         topmenu(data, s, "welfaretype", "Welfare"); // (GameVersion) - (Scenario) - WelfareType

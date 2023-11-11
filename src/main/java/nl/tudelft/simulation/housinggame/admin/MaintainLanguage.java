@@ -16,7 +16,7 @@ import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.LabelRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.LanguageRecord;
-import nl.tudelft.simulation.housinggame.data.tables.records.LanguagesRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.LanguagegroupRecord;
 
 public class MaintainLanguage
 {
@@ -28,8 +28,8 @@ public class MaintainLanguage
 
         if (click.equals("language"))
         {
-            data.clearColumns("20%", "Language", "20%", "Language group", "20%", "Label");
-            data.clearFormColumn("40%", "Edit Properties");
+            data.clearColumns("15%", "Language", "15%", "Language group", "15%", "Label");
+            data.clearFormColumn("55%", "Edit Properties");
             showLanguage(session, data, 0, true, false);
         }
 
@@ -54,24 +54,24 @@ public class MaintainLanguage
             }
         }
 
-        else if (click.contains("Languages"))
+        else if (click.contains("LanguageGroup"))
         {
             if (click.startsWith("save"))
-                recordId = data.saveRecord(request, recordId, Tables.LANGUAGES, "language");
+                recordId = data.saveRecord(request, recordId, Tables.LANGUAGEGROUP, "language");
             else if (click.startsWith("delete"))
             {
-                LanguagesRecord languages = SqlUtils.readRecordFromId(data, Tables.LANGUAGES, recordId);
+                LanguagegroupRecord languages = SqlUtils.readRecordFromId(data, Tables.LANGUAGEGROUP, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(languages, "language");
                 else
-                    data.deleteRecord(languages, "Languages", languages.getName(), "deleteLanguagesOk", "language");
+                    data.deleteRecord(languages, "LanguageGroup", languages.getName(), "deleteLanguageGroupOk", "language");
                 recordId = 0;
             }
             if (!data.isError())
             {
-                showLanguages(session, data, recordId, true, !click.startsWith("view"));
+                showLanguageGroup(session, data, recordId, true, !click.startsWith("view"));
                 if (click.startsWith("new"))
-                    editLanguages(session, data, 0, true);
+                    editLanguageGroup(session, data, 0, true);
             }
         }
 
@@ -109,7 +109,7 @@ public class MaintainLanguage
             final boolean editButton, final boolean editRecord)
     {
         data.showColumn("Language", 0, recordId, editButton, Tables.LANGUAGE, Tables.LANGUAGE.CODE, "code", true);
-        data.showColumn("Languages", 1, 0, false, Tables.LANGUAGES, Tables.LANGUAGES.NAME, "name", false);
+        data.showColumn("LanguageGroup", 1, 0, false, Tables.LANGUAGEGROUP, Tables.LANGUAGEGROUP.NAME, "name", false);
         data.resetColumn(2);
         data.resetFormColumn();
         if (recordId != 0)
@@ -150,64 +150,64 @@ public class MaintainLanguage
 
     /*
      * *********************************************************************************************************
-     * ********************************************** LANGUAGES ************************************************
+     * ******************************************** LANGUAGEGROUP **********************************************
      * *********************************************************************************************************
      */
 
-    public static void showLanguages(final HttpSession session, final AdminData data, final int recordId,
+    public static void showLanguageGroup(final HttpSession session, final AdminData data, final int recordId,
             final boolean editButton, final boolean editRecord)
     {
         data.showColumn("Language", 0, 0, false, Tables.LANGUAGE, Tables.LANGUAGE.CODE, "code", false);
-        data.showColumn("Languages", 1, recordId, editButton, Tables.LANGUAGES, Tables.LANGUAGES.NAME, "name", true);
+        data.showColumn("LanguageGroup", 1, recordId, editButton, Tables.LANGUAGEGROUP, Tables.LANGUAGEGROUP.NAME, "name", true);
         data.resetColumn(2);
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("Label", 2, 0, false, Tables.LABEL, Tables.LABEL.KEY, "key", Tables.LABEL.LANGUAGES_ID,
+            data.showDependentColumn("Label", 2, 0, false, Tables.LABEL, Tables.LABEL.KEY, "key", Tables.LABEL.LANGUAGEGROUP_ID,
                     true);
-            editLanguages(session, data, recordId, editRecord);
+            editLanguageGroup(session, data, recordId, editRecord);
         }
     }
 
-    public static void editLanguages(final HttpSession session, final AdminData data, final int languagesId, final boolean edit)
+    public static void editLanguageGroup(final HttpSession session, final AdminData data, final int languagesId, final boolean edit)
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        LanguagesRecord languages = languagesId == 0 ? dslContext.newRecord(Tables.LANGUAGES) : dslContext
-                .selectFrom(Tables.LANGUAGES).where(Tables.LANGUAGES.ID.eq(UInteger.valueOf(languagesId))).fetchOne();
+        LanguagegroupRecord languages = languagesId == 0 ? dslContext.newRecord(Tables.LANGUAGEGROUP) : dslContext
+                .selectFrom(Tables.LANGUAGEGROUP).where(Tables.LANGUAGEGROUP.ID.eq(UInteger.valueOf(languagesId))).fetchOne();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
                 .setCancelMethod("language", data.getColumn(0).getSelectedRecordId())
-                .setEditMethod("editLanguages")
-                .setSaveMethod("saveLanguages")
-                .setDeleteMethod("deleteLanguages", "Delete", "<br>Note: Do not delete language group when"
+                .setEditMethod("editLanguageGroup")
+                .setSaveMethod("saveLanguageGroup")
+                .setDeleteMethod("deleteLanguageGroup", "Delete", "<br>Note: Do not delete language group when"
                         + "<br> it has been used in a game version")
                 .setRecordNr(languagesId)
                 .startForm()
-                .addEntry(new TableEntryString(Tables.LANGUAGES.NAME)
+                .addEntry(new TableEntryString(Tables.LANGUAGEGROUP.NAME)
                         .setRequired()
                         .setInitialValue(languages.getName(), "")
-                        .setLabel("Language code (ISO2)")
+                        .setLabel("Group name")
                         .setMaxChars(45))
-                .addEntry(new TableEntryPickRecordUInt(Tables.LANGUAGES.LANGUAGE_ID1)
+                .addEntry(new TableEntryPickRecordUInt(Tables.LANGUAGEGROUP.LANGUAGE_ID1)
                         .setRequired()
                         .setPickTable(data, Tables.LANGUAGE, Tables.LANGUAGE.ID,
                                 Tables.LANGUAGE.CODE)
                         .setInitialValue(languages.getLanguageId1(), UInteger.valueOf(0))
                         .setLabel("Language 1"))
-                .addEntry(new TableEntryPickRecordUInt(Tables.LANGUAGES.LANGUAGE_ID2)
+                .addEntry(new TableEntryPickRecordUInt(Tables.LANGUAGEGROUP.LANGUAGE_ID2)
                         .setRequired(false)
                         .setPickTable(data, Tables.LANGUAGE, Tables.LANGUAGE.ID,
                                 Tables.LANGUAGE.CODE)
                         .setInitialValue(languages.getLanguageId2(), UInteger.valueOf(0))
                         .setLabel("Language 2"))
-                .addEntry(new TableEntryPickRecordUInt(Tables.LANGUAGES.LANGUAGE_ID3)
+                .addEntry(new TableEntryPickRecordUInt(Tables.LANGUAGEGROUP.LANGUAGE_ID3)
                         .setRequired(false)
                         .setPickTable(data, Tables.LANGUAGE, Tables.LANGUAGE.ID,
                                 Tables.LANGUAGE.CODE)
                         .setInitialValue(languages.getLanguageId3(), UInteger.valueOf(0))
                         .setLabel("Language 3"))
-                .addEntry(new TableEntryPickRecordUInt(Tables.LANGUAGES.LANGUAGE_ID4)
+                .addEntry(new TableEntryPickRecordUInt(Tables.LANGUAGEGROUP.LANGUAGE_ID4)
                         .setRequired(false)
                         .setPickTable(data, Tables.LANGUAGE, Tables.LANGUAGE.ID,
                                 Tables.LANGUAGE.CODE)
@@ -215,7 +215,7 @@ public class MaintainLanguage
                         .setLabel("Language 4"))
                 .endForm();
         //@formatter:on
-        data.getFormColumn().setHeaderForm("Edit Language", form);
+        data.getFormColumn().setHeaderForm("Edit LanguageGroup", form);
     }
 
     /*
@@ -228,10 +228,10 @@ public class MaintainLanguage
             final boolean editRecord)
     {
         data.showColumn("Language", 0, 0, false, Tables.LANGUAGE, Tables.LANGUAGE.CODE, "code", false);
-        data.showColumn("Languages", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.LANGUAGES, Tables.LANGUAGES.NAME,
-                "name", false);
+        data.showColumn("LanguageGroup", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.LANGUAGEGROUP,
+                Tables.LANGUAGEGROUP.NAME, "name", false);
         data.showDependentColumn("Label", 2, recordId, editButton, Tables.LABEL, Tables.LABEL.KEY, "key",
-                Tables.LABEL.LANGUAGES_ID, true);
+                Tables.LABEL.LANGUAGEGROUP_ID, true);
         data.resetFormColumn();
         if (recordId != 0)
         {
@@ -245,8 +245,8 @@ public class MaintainLanguage
         LabelRecord label = labelId == 0 ? dslContext.newRecord(Tables.LABEL)
                 : dslContext.selectFrom(Tables.LABEL).where(Tables.LABEL.ID.eq(UInteger.valueOf(labelId))).fetchOne();
         UInteger languagesId =
-                labelId == 0 ? UInteger.valueOf(data.getColumn(1).getSelectedRecordId()) : label.getLanguagesId();
-        LanguagesRecord languages = SqlUtils.readRecordFromId(data, Tables.LANGUAGES, languagesId);
+                labelId == 0 ? UInteger.valueOf(data.getColumn(1).getSelectedRecordId()) : label.getLanguagegroupId();
+        LanguagegroupRecord languages = SqlUtils.readRecordFromId(data, Tables.LANGUAGEGROUP, languagesId);
         String[] language = new String[4];
         language[0] = languages.getLanguageId1() != null && languages.getLanguageId1().intValue() != 0
                 ? SqlUtils.readRecordFromId(data, Tables.LANGUAGE, languages.getLanguageId1()).getCode() : "EN";
@@ -288,9 +288,9 @@ public class MaintainLanguage
                         .setInitialValue(label.getValue4(), "")
                         .setLabel("Text in " + language[3])
                         .setRows(5))
-                .addEntry(new TableEntryUInt(Tables.LABEL.LANGUAGES_ID)
+                .addEntry(new TableEntryUInt(Tables.LABEL.LANGUAGEGROUP_ID)
                         .setInitialValue(languagesId, UInteger.valueOf(0))
-                        .setLabel("Languages id")
+                        .setLabel("LanguageGroup id")
                         .setHidden(true))
                 .endForm();
         //@formatter:on

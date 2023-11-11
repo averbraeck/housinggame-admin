@@ -187,11 +187,11 @@ public class MaintainScenario
                         .setInitialValue(gameVersion.getName(), "")
                         .setLabel("Game Version name")
                         .setMaxChars(255))
-                .addEntry(new TableEntryPickRecordUInt(Tables.GAMEVERSION.LANGUAGES_ID)
+                .addEntry(new TableEntryPickRecordUInt(Tables.GAMEVERSION.LANGUAGEGROUP_ID)
                         .setRequired()
-                        .setPickTable(data, Tables.LANGUAGES, Tables.LANGUAGES.ID,
-                                Tables.LANGUAGES.NAME)
-                        .setInitialValue(gameVersion.getLanguagesId(), UInteger.valueOf(0))
+                        .setPickTable(data, Tables.LANGUAGEGROUP, Tables.LANGUAGEGROUP.ID,
+                                Tables.LANGUAGEGROUP.NAME)
+                        .setInitialValue(gameVersion.getLanguagegroupId(), UInteger.valueOf(0))
                         .setLabel("Game languages"));
         //@formatter:on
         form.addAddtionalButton("cloneGameVersion", "Clone Entire GameVersion");
