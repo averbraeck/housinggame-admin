@@ -125,7 +125,7 @@ public class Languagegroup extends TableImpl<LanguagegroupRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.LANGUAGEGROUP_FK_LANGUAGES_LANGUAGE1_IDX, Indexes.LANGUAGEGROUP_FK_LANGUAGES_LANGUAGE2_IDX, Indexes.LANGUAGEGROUP_FK_LANGUAGES_LANGUAGE3_IDX, Indexes.LANGUAGEGROUP_FK_LANGUAGES_LANGUAGE4_IDX);
+        return Arrays.asList(Indexes.LANGUAGEGROUP_FK_LANGUAGEGROUP_LANGUAGE1_IDX, Indexes.LANGUAGEGROUP_FK_LANGUAGEGROUP_LANGUAGE2_IDX, Indexes.LANGUAGEGROUP_FK_LANGUAGEGROUP_LANGUAGE3_IDX, Indexes.LANGUAGEGROUP_FK_LANGUAGEGROUP_LANGUAGE4_IDX);
     }
 
     @Override
@@ -145,7 +145,7 @@ public class Languagegroup extends TableImpl<LanguagegroupRecord> {
 
     @Override
     public List<ForeignKey<LanguagegroupRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_LANGUAGES_LANGUAGE1, Keys.FK_LANGUAGES_LANGUAGE2, Keys.FK_LANGUAGES_LANGUAGE3, Keys.FK_LANGUAGES_LANGUAGE4);
+        return Arrays.asList(Keys.FK_LANGUAGEGROUP_LANGUAGE1, Keys.FK_LANGUAGEGROUP_LANGUAGE2, Keys.FK_LANGUAGEGROUP_LANGUAGE3, Keys.FK_LANGUAGEGROUP_LANGUAGE4);
     }
 
     private transient Language _fkLanguagesLanguage1;
@@ -159,7 +159,7 @@ public class Languagegroup extends TableImpl<LanguagegroupRecord> {
      */
     public Language fkLanguagesLanguage1() {
         if (_fkLanguagesLanguage1 == null)
-            _fkLanguagesLanguage1 = new Language(this, Keys.FK_LANGUAGES_LANGUAGE1);
+            _fkLanguagesLanguage1 = new Language(this, Keys.FK_LANGUAGEGROUP_LANGUAGE1);
 
         return _fkLanguagesLanguage1;
     }
@@ -170,7 +170,7 @@ public class Languagegroup extends TableImpl<LanguagegroupRecord> {
      */
     public Language fkLanguagesLanguage2() {
         if (_fkLanguagesLanguage2 == null)
-            _fkLanguagesLanguage2 = new Language(this, Keys.FK_LANGUAGES_LANGUAGE2);
+            _fkLanguagesLanguage2 = new Language(this, Keys.FK_LANGUAGEGROUP_LANGUAGE2);
 
         return _fkLanguagesLanguage2;
     }
@@ -181,7 +181,7 @@ public class Languagegroup extends TableImpl<LanguagegroupRecord> {
      */
     public Language fkLanguagesLanguage3() {
         if (_fkLanguagesLanguage3 == null)
-            _fkLanguagesLanguage3 = new Language(this, Keys.FK_LANGUAGES_LANGUAGE3);
+            _fkLanguagesLanguage3 = new Language(this, Keys.FK_LANGUAGEGROUP_LANGUAGE3);
 
         return _fkLanguagesLanguage3;
     }
@@ -192,7 +192,7 @@ public class Languagegroup extends TableImpl<LanguagegroupRecord> {
      */
     public Language fkLanguagesLanguage4() {
         if (_fkLanguagesLanguage4 == null)
-            _fkLanguagesLanguage4 = new Language(this, Keys.FK_LANGUAGES_LANGUAGE4);
+            _fkLanguagesLanguage4 = new Language(this, Keys.FK_LANGUAGEGROUP_LANGUAGE4);
 
         return _fkLanguagesLanguage4;
     }
