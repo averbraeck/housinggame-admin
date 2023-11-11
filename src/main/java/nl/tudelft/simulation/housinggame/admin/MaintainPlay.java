@@ -43,6 +43,8 @@ public class MaintainPlay
         HttpSession session = request.getSession();
         AdminData data = SessionUtils.getData(session);
 
+        System.out.println(click);
+
         if (click.equals("play"))
         {
             data.clearColumns("10%", "GameSession", "10%", "Group", "10%", "GroupRound", "10%", "Player", "10%", "PlayerRound",
@@ -335,8 +337,11 @@ public class MaintainPlay
         showGroupRoundColumn(data, "PlayGroupRound", 2, data.getColumn(2).getSelectedRecordId());
         data.showDependentColumn("PlayPlayer", 3, recordId, false, Tables.PLAYER, Tables.PLAYER.CODE, "code",
                 Tables.PLAYER.GROUP_ID, false, 1);
+        data.getColumn(3).setHeader("Player");
         data.resetColumn(4);
+        data.getColumn(4).setHeader("PlayerRound");
         data.resetColumn(5);
+        data.getColumn(5).setHeader("Measure");
         data.resetFormColumn();
         if (recordId != 0)
         {
@@ -667,9 +672,17 @@ public class MaintainPlay
         showGroupRoundColumn(data, "PlayGroupRound", 2, data.getColumn(2).getSelectedRecordId());
         showBidColumn(data, "PlayBid", 3, recordId);
 
+        data.getColumn(3).setHeader("Bid");
         data.resetColumn(4);
+        data.getColumn(4).setHeader("");
         data.resetColumn(5);
+        data.getColumn(5).setHeader("");
         data.resetFormColumn();
+
+        if (recordId != 0)
+        {
+            editPlayBid(session, data, recordId, editRecord);
+        }
     }
 
     public static void editPlayBid(final HttpSession session, final AdminData data, final int bidId, final boolean edit)
@@ -712,7 +725,7 @@ public class MaintainPlay
                         .setHidden(true))
                 .endForm();
         //@formatter:on
-        data.getFormColumn().setHeaderForm("Edit Measure", form);
+        data.getFormColumn().setHeaderForm("Edit Bid", form);
     }
 
     /*
@@ -747,8 +760,12 @@ public class MaintainPlay
         }
         s.append(AdminTable.endTable());
         s.append(AdminTable.finalButton("New GroupRound", "new" + columnName));
-        s.append(AdminTable.finalButton("Players", "viewPlayPlayer"));
-        s.append(AdminTable.finalButton("Bids", "viewPlayBid"));
+
+        if (recordId != 0)
+        {
+            s.append(AdminTable.finalButton("Players", "viewPlayPlayer"));
+            s.append(AdminTable.finalButton("Bids", "viewPlayBid"));
+        }
 
         data.getColumn(columnNr).setSelectedRecordId(recordId);
         data.getColumn(columnNr).setContent(s.toString());
@@ -783,7 +800,7 @@ public class MaintainPlay
         s.append(AdminTable.endTable());
         if (records.size() == 0)
             s.append(AdminTable.finalButton("New PlayerRound", "new" + columnName));
-        else
+        else if (recordId != 0)
         {
             s.append(AdminTable.finalButton("Measures", "viewPlayMeasure"));
             s.append(AdminTable.finalButton("Questions", "viewPlayQuestion"));
@@ -853,11 +870,9 @@ public class MaintainPlay
         s.append(AdminTable.startTable());
         for (BidRecord bid : records)
         {
-            GrouproundRecord groupRound = SqlUtils.readRecordFromId(data, Tables.GROUPROUND, bid.getGrouproundId());
-            RoundRecord round = SqlUtils.readRecordFromId(data, Tables.ROUND, groupRound.getRoundId());
             HouseRecord house = SqlUtils.readRecordFromId(data, Tables.HOUSE, bid.getHouseId());
-            TableRow tableRow = new TableRow(IdProvider.getId(bid), recordId,
-                    "Round " + String.valueOf(round.getRoundNumber()) + ", House " + house.getAddress(), "view" + columnName);
+            TableRow tableRow =
+                    new TableRow(IdProvider.getId(bid), recordId, "House " + house.getAddress(), "view" + columnName);
             tableRow.addButton("Edit", "edit" + columnName);
             s.append(tableRow.process());
         }
