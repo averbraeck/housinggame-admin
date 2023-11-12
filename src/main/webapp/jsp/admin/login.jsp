@@ -94,7 +94,7 @@ html, body {
   font-style: normal;
   font-weight: bold;
   font-size: 1.8em;
-  text-align: center;
+  text-align: left;
   color: orange;
 }
 
@@ -136,6 +136,16 @@ html, body {
   font-weight: bold;
 }
 
+.hg-logo-right {
+  display: block;
+}
+
+.hg-logo-right > img {
+  width: 150px;
+  float: right;
+  padding-top: 40px;
+}
+
 </style>
 </head>
 
@@ -151,15 +161,18 @@ html, body {
     <div class="hg-login-body">
     
       <div class="hg-login-top-message">
+        <div class="hg-logo-right">
+          <img src="images/hg-logo.png" />
+        </div>
         <h1>Housing Game Administration</h1> 
-          <p>The following functions are available:</p>
-          <ul>
-            <li>Creating and maintaining game scenarios</li>
-            <li>Creating and maintaining game-play instances</li>
-            <li>Creating and maintaining users (also in bulk)</li>
-            <li>Allocating users to game-play instances</li>
-            <li>Viewing and exporting results and log data</li>
-          </ul>
+        <p>The following functions are available:</p>
+        <ul>
+          <li>Creating and maintaining game scenarios</li>
+          <li>Creating and maintaining game-play instances</li>
+          <li>Creating and maintaining users (also in bulk)</li>
+          <li>Allocating users to game-play instances</li>
+          <li>Viewing and exporting results and log data</li>
+        </ul>
       </div>
 
       <div class="hg-login">
