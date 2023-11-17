@@ -38,8 +38,6 @@ public class UserLoginServlet extends HttpServlet
         try
         {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Class.forName("com.mysql.cj.protocol.a.NullValueEncoder");
-            Class.forName("com.mysql.cj.protocol.a.SqlDateValueEncoder");
         }
         catch (ClassNotFoundException e)
         {
@@ -74,7 +72,6 @@ public class UserLoginServlet extends HttpServlet
     @Override
     protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
     {
-
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         MessageDigest md;
