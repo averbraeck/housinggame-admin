@@ -15,6 +15,7 @@ import org.jooq.types.UInteger;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDouble;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecordUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
@@ -42,8 +43,6 @@ public class MaintainPlay
     {
         HttpSession session = request.getSession();
         AdminData data = SessionUtils.getData(session);
-
-        System.out.println(click);
 
         if (click.equals("play"))
         {
@@ -301,6 +300,10 @@ public class MaintainPlay
                                 Tables.ROUND.ID, Tables.ROUND.ROUND_NUMBER)
                         .setInitialValue(groupRound.getRoundId(), UInteger.valueOf(0))
                         .setLabel("Round number"))
+                .addEntry(new TableEntryString(Tables.GROUPROUND.ROUND_STATE)
+                        .setInitialValue(groupRound.getRoundState(), "")
+                        .setLabel("Round State")
+                        .setMaxChars(16))
                 .addEntry(new TableEntryInt(Tables.GROUPROUND.PLUVIAL_FLOOD_INTENSITY)
                         .setRequired()
                         .setInitialValue(groupRound.getPluvialFloodIntensity(), 0)
@@ -414,16 +417,25 @@ public class MaintainPlay
                                 Tables.HOUSE.ID, Tables.HOUSE.ADDRESS)
                         .setInitialValue(playerRound.getHouseId(), UInteger.valueOf(0))
                         .setLabel("House address"))
+                .addEntry(new TableEntryString(Tables.PLAYERROUND.PLAYER_STATE)
+                        .setInitialValue(playerRound.getPlayerState(), "")
+                        .setLabel("Player State")
+                        .setMaxChars(16))
                 .addEntry(new TableEntryUInt(Tables.PLAYERROUND.SATISFACTION)
                         .setRequired()
                         .setInitialValue(playerRound.getSatisfaction(), UInteger.valueOf(0))
                         .setLabel("Satisfaction")
                         .setMin(0)
                         .setMax(100))
-                .addEntry(new TableEntryUInt(Tables.PLAYERROUND.SAVING)
+                .addEntry(new TableEntryUInt(Tables.PLAYERROUND.SAVINGS)
                         .setRequired()
-                        .setInitialValue(playerRound.getSaving(), UInteger.valueOf(0))
+                        .setInitialValue(playerRound.getSavings(), UInteger.valueOf(0))
                         .setLabel("Savings")
+                        .setMin(0))
+                .addEntry(new TableEntryUInt(Tables.PLAYERROUND.MAXIMUM_MORTGAGE)
+                        .setRequired()
+                        .setInitialValue(playerRound.getMortgage(), UInteger.valueOf(0))
+                        .setLabel("Max Mortgage")
                         .setMin(0))
                 .addEntry(new TableEntryUInt(Tables.PLAYERROUND.MORTGAGE)
                         .setRequired()
