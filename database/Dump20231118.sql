@@ -137,7 +137,7 @@ CREATE TABLE `gamesession` (
 
 LOCK TABLES `gamesession` WRITE;
 /*!40000 ALTER TABLE `gamesession` DISABLE KEYS */;
-INSERT INTO `gamesession` VALUES (5,'Ommen23 Morning','ommen','Ommen EPA','2023-10-07 09:45:47','2023-09-26','2023-09-26 09:00:00','2023-09-26 12:00:00',3),(6,'Ommen23 Afternoon','ommen','Ommen EPA','2023-10-07 21:39:23','2023-09-26',NULL,NULL,3);
+INSERT INTO `gamesession` VALUES (5,'Ommen23 Morning','ommen','Ommen EPA','2023-10-07 09:45:47','2023-09-26','2023-09-26 09:00:00','2023-11-26 12:00:00',3),(6,'Ommen23 Afternoon','ommen','Ommen EPA','2023-10-07 21:39:23','2023-09-26','2023-11-10 09:00:00',NULL,3);
 /*!40000 ALTER TABLE `gamesession` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -217,6 +217,7 @@ CREATE TABLE `groupround` (
   `pluvial_flood_intensity` int(11) DEFAULT NULL,
   `fluvial_flood_intensity` int(11) DEFAULT NULL,
   `start_time` datetime DEFAULT NULL,
+  `round_state` varchar(16) DEFAULT 'INIT',
   `group_id` int(10) unsigned NOT NULL,
   `round_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
@@ -226,7 +227,7 @@ CREATE TABLE `groupround` (
   KEY `fk_groupround_round1_idx` (`round_id`),
   CONSTRAINT `fk_groupround_group1` FOREIGN KEY (`group_id`) REFERENCES `group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_groupround_round1` FOREIGN KEY (`round_id`) REFERENCES `round` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -235,7 +236,7 @@ CREATE TABLE `groupround` (
 
 LOCK TABLES `groupround` WRITE;
 /*!40000 ALTER TABLE `groupround` DISABLE KEYS */;
-INSERT INTO `groupround` VALUES (11,0,0,'2023-10-22 09:00:00',27,7);
+INSERT INTO `groupround` VALUES (11,0,0,'2023-10-22 09:00:00','INIT',27,7),(15,0,0,NULL,'INIT',29,13),(16,0,0,NULL,'HOUSE',30,14);
 /*!40000 ALTER TABLE `groupround` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -325,7 +326,7 @@ CREATE TABLE `label` (
   UNIQUE KEY `key_UNIQUE` (`languagegroup_id`,`key`),
   KEY `fk_label_languagegroup1_idx` (`languagegroup_id`),
   CONSTRAINT `fk_label_languagegroup1` FOREIGN KEY (`languagegroup_id`) REFERENCES `languagegroup` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -334,7 +335,7 @@ CREATE TABLE `label` (
 
 LOCK TABLES `label` WRITE;
 /*!40000 ALTER TABLE `label` DISABLE KEYS */;
-INSERT INTO `label` VALUES (1,'mortgage','mortgage','hypotheek','','',1),(2,'income','income','inkomsten','','',1);
+INSERT INTO `label` VALUES (8,'login/signin','Sign in','Inloggen','','',1),(9,'login/groupname','Group Name *','Groepsnaam *','','',1),(10,'login/password','Password *','Password *','','',1),(11,'login/playercode','Player Code *','Code Speler *','','',1),(13,'login/button/signin','SIGN IN','INLOGGEN','','',1),(14,'welcome/header','Welcome to Where We Move!','Welkom bij Where We Move!','','',1),(15,'welcome/button/back','BACK','TERUG','','',1),(16,'welcome/button/continue','CONTINUE','VERDER','','',1),(17,'welcome/1/header','At the top of the screen you can see your player information','Bovenaan het scherm staat de spelersinformatie','','',1),(18,'welcome/1/text','From the left to the right you can first see your group number $group$, then your player name $player$. After that you can find the round number $round$, and the preferred house rating which is $rating$. In the second line your yearly income $income$, the satisfaction score you have $satisfaction$, your savings amount $savings$ and the maximum mortgage you have $maxmortgage$. Your spendable wealth is the sum of your savings and your yearly income Hence it is $savings$ + $income$.','Van links naar rechts zie je eerst je groepsnummer $group$, daarna je spelersnaam $player$. Daarna vind je de ronde van het spel $round$, en de gewenste woningwaardering die $rating$ is. In de tweede regel vind je het jaarinkomen $income$, je tevredenheidsscore $satisfaction$, je spaarbedrag $savings$ en de maximale hypotheek die u heeft $maxmortgage$. Uw besteedbaar vermogen is de som van je spaargeld en je jaarinkomen. Het is dus $savings$ + $income$.','','',1),(19,'welcome/2/header','Please select a house to buy','Selecteer een huis om te kopen','','',1),(20,'welcome/2/text','Every round starts with choosing a house, you don\'t need to change your house every round though. Every round the houses which you can choose from can be found on your group table. If you have any questions, please ask your facilitator. Please don\'t choose a house which is already chosen by another player. Your input will always be validated!','Elke ronde begint met het kiezen van een huis, maar je hoeft niet elke ronde van huis te veranderen. Iedere ronde vind je op je groepstafel de huizen waaruit je kunt kiezen. Als je vragen hebt, kan je deze aan de facilitator stellen. Kies geen huis dat al door een andere speler is gekozen. Je keuzes worden altijd gevalideerd!','','',1),(21,'welcome/3/header','Optional: buy a measure to improve your house or buy satisfaction points','Optioneel: koop een maatregel om je huis te verbeteren, of koop tevredenheidspunten','','',1),(22,'welcome/3/text','Next, you can buy a measure to improve your house and reduce the damage you might get if a flood happen. You can also buy satisfaction points or you can save your money for later.','Vervolgens kan je een maatregel kopen om je huis te verbeteren en potenti&euml;schade te verminderen die je zou kunnen oplopen als er een overstroming plaatsvindt. Je kan ook tevredenheidspunten kopen of je geld bewaren voor later.','','',1),(23,'welcome/4/header','Please select two questions to answer','Selecteer de twee vragen om te beantwoorden','','',1),(24,'welcome/4/text','In every round you can select an answers for two different questions. Please, select two questions and answer them.','In elke ronde kun je een antwoord kiezen voor twee verschillende vragen. Selecteer de twee vragen en beantwoord ze.','','',1),(25,'welcome/5/header','What\'s next?','Wat volgt er dan?','','',1),(26,'welcome/5/text','After you have answered the questions, and entered your selections for all other steps, you can click on the \'Next Round\' button when the facilitator says so. When you click on this button, a new round starts. Note that you can not go back to the previous round and that a new round starts when the facilitator says so.','Nadat je de vragen hebt beantwoord en je de selecties voor alle overige stappen hebt ingevoerd, kan je op de knop \'Volgende ronde\' klikken als de facilitator dit aangeeft. Wanneer je op deze knop klikt, begint een nieuwe ronde. Houd er rekening mee dat je niet terug kunt naar de vorige ronde en dat een nieuwe ronde pas begint als de facilitator toestemming geeft.','','',1),(27,'welcome/6/header','Enjoy the game!','Veel plezier met het spel!','','',1),(28,'welcome/6/text','We hope you enjoy the game!','We hopen dat je het spel leuk vindt!','','',1),(29,'welcome/button/finish','FINISH','AFSLUITEN','','',1),(30,'welcome/footer/ready','Are you ready reading? - if yes, you can start the game','Klaar met lezen? Zo ja, dan kan je het spel starten','','',1),(31,'welcome/button/start','START THE GAME!','START HET SPEL!','','',1),(32,'general/header','The Housing Game','The Housing Game','','',1),(33,'house/instructions/header','Please select a house','Selecteer een huis','','',1),(34,'house/instructions/text','This is the house selection page. Please select a house from the list below. You will see the price and the rate of the selected house after making the selection. Please keep in mind that you will pay 10% of the house price as a yearly mortgage payment. And that you cannot select a house which price is higher than the maximum mortgage <import <AccountBalanceIcon /> + your savings <WalletIcon />.','Dit is de huizenselectiepagina. Selecteer een huis uit de onderstaande lijst. Na het maken van de selectie zie je de prijs en de klasse van de geselecteerde woning. Houd er rekening mee dat je jaarlijks 10% van de woningprijs als hypotheekbetaling betaalt. En dat je geen huis kunt kiezen waarvan de prijs hoger is dan de maximale hypotheek <AccountBalanceIcon /> + je spaargeld <WalletIcon />.','','',1),(35,'house/choice/house','House *','Huis *','','',1),(36,'house/choice/submit','SUBMIT CHOICES','BEVESTIG KEUZES','','',1),(37,'house/choice/skip','SKIP','OVERSLAAN','','',1),(38,'house/price/header','Price','Prijs','','',1),(39,'house/price/text','Yearly Mortgage (payment per round):','Jaarlijkse hypotheek (betaling per ronde):','','',1),(40,'house/rate/header','House Rate:','Waardering huis:','','',1),(41,'house/rate/text','Your satisfaction will be affected by this','Je tevredenheidsscore wordt hierdoor be&iuml;nvloed','','',1),(42,'house/pluvial/header','Pluvial protection:','Bescherming regen:','','',1),(43,'house/pluvial/text','This is the amount of protection you have from pluvial (rain) flooding','Dit is de bescherming die het huis heeft tegen overvloedige regenval','','',1),(44,'house/fluvial/header','Fluvial protection:','Bescherming overstroming:','','',1),(45,'house/fluvial/text','This is the amount of protection you have from fluvial (river) flooding','Dit is de bescherming die het huis heeft tegen overstroming van de rivier','','',1),(46,'error/roundnotstarted','Round did not start yet!','Ronde is nog niet begonnen!','','',1);
 /*!40000 ALTER TABLE `label` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -583,7 +584,8 @@ DROP TABLE IF EXISTS `playerround`;
 CREATE TABLE `playerround` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `satisfaction` int(10) unsigned NOT NULL,
-  `saving` int(10) unsigned NOT NULL,
+  `savings` int(10) unsigned NOT NULL,
+  `maximum_mortgage` int(10) unsigned NOT NULL,
   `mortgage` int(10) unsigned NOT NULL,
   `living_costs` int(10) unsigned NOT NULL,
   `income` int(10) unsigned NOT NULL,
@@ -602,6 +604,7 @@ CREATE TABLE `playerround` (
   `satisfaction_point_bought` int(10) unsigned DEFAULT NULL,
   `create_time` timestamp NULL DEFAULT current_timestamp(),
   `moving_reason` text DEFAULT NULL,
+  `player_state` varchar(16) NOT NULL DEFAULT 'INIT',
   `house_id` int(10) unsigned DEFAULT NULL,
   `player_id` int(10) unsigned NOT NULL,
   `groupround_id` int(10) unsigned NOT NULL,
@@ -614,7 +617,7 @@ CREATE TABLE `playerround` (
   CONSTRAINT `fk_playerround_groupround1` FOREIGN KEY (`groupround_id`) REFERENCES `groupround` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_playerround_house1` FOREIGN KEY (`house_id`) REFERENCES `house` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_playerround_player1` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -623,7 +626,7 @@ CREATE TABLE `playerround` (
 
 LOCK TABLES `playerround` WRITE;
 /*!40000 ALTER TABLE `playerround` DISABLE KEYS */;
-INSERT INTO `playerround` VALUES (76,3,0,0,30000,65000,0,0,4,6000,0,0,0,0,0,0,0,0,0,'2023-10-26 15:42:37','Initial move into the house. Player thought for a long time which house to choose.\r\n',29,156,11);
+INSERT INTO `playerround` VALUES (76,3,0,0,0,30000,65000,0,0,4,6000,0,0,0,0,0,0,0,0,0,'2023-10-26 15:42:37','Initial move into the house. Player thought for a long time which house to choose.\r\n','INIT',29,156,11),(80,5,5000,0,0,30000,65000,0,5000,4,6000,0,0,0,0,0,0,0,NULL,0,'2023-11-17 09:55:44','','INIT',NULL,172,15),(81,5,80000,0,0,105000,180000,0,80000,8,21000,0,0,0,0,0,0,0,NULL,0,'2023-11-17 10:01:10','','INIT',NULL,173,15),(82,5,50000,200000,0,65000,120000,0,50000,7,13000,0,0,0,0,0,0,0,NULL,0,'2023-11-17 17:42:32','','INIT',NULL,180,16),(83,5,15000,130000,0,40000,80000,0,15000,5,8000,0,0,0,0,0,0,0,NULL,0,'2023-11-17 19:39:59','','INIT',NULL,181,16),(84,5,30000,170000,0,50000,100000,0,30000,6,10000,0,0,0,0,0,0,0,NULL,0,'2023-11-17 19:40:09','','INIT',NULL,182,16);
 /*!40000 ALTER TABLE `playerround` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -871,7 +874,7 @@ CREATE TABLE `welfaretype` (
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_welfaretype_scenario1_idx` (`scenario_id`),
   CONSTRAINT `fk_welfaretype_scenario1` FOREIGN KEY (`scenario_id`) REFERENCES `scenario` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -893,4 +896,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-11 17:10:39
+-- Dump completed on 2023-11-18 13:49:47
