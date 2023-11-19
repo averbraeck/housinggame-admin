@@ -295,7 +295,7 @@ public class MaintainGameSession
                         .setLabel("Scenario to play"))
                 .addEntry(new TableEntryPickRecordUInt(Tables.GROUP.FACILITATOR_ID)
                         .setRequired(false)
-                        .setPickTable(data, Tables.FACILITATOR, Tables.FACILITATOR.ID, Tables.FACILITATOR.NAME)
+                        .setPickTable(data, Tables.USER, Tables.USER.ID, Tables.USER.USERNAME)
                         .setInitialValue(group.getFacilitatorId(), UInteger.valueOf(0))
                         .setLabel("Group facilitator"))
                 .endForm();

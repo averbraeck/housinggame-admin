@@ -237,7 +237,7 @@ public class AdminServlet extends HttpServlet
                 MaintainHouse.handleMenu(request, click, recordNr);
                 break;
 
-            // User - Facilitator
+            // User
             case "user":
             case "viewUser":
             case "editUser":
@@ -245,13 +245,6 @@ public class AdminServlet extends HttpServlet
             case "deleteUser":
             case "deleteUserOk":
             case "newUser":
-
-            case "viewFacilitator":
-            case "editFacilitator":
-            case "saveFacilitator":
-            case "deleteFacilitator":
-            case "deleteFacilitatorOk":
-            case "newFacilitator":
                 data.setMenuChoice("user");
                 MaintainUser.handleMenu(request, click, recordNr);
                 break;
@@ -395,7 +388,7 @@ public class AdminServlet extends HttpServlet
         topmenu(data, s, "house", "House"); // (GameVersion) - (Community) - House - InitialHouseMeasure
         topmenu(data, s, "round", "Round"); // (GameVersion) - (Scenario) - Round - NewsItem
         topmenu(data, s, "question", "Question"); // (GameVersion) - (Scenario) - Question
-        topmenu(data, s, "user", "User"); // User - Facilitator
+        topmenu(data, s, "user", "User"); // User
         topmenu(data, s, "gamesession", "Session"); // (GameVersion) - GameSession - Group - Player
         topmenu(data, s, "play", "Play"); // (GameSession) - (Group) - GroupRound - (Player) - PlayerRound - Measure/Question
         topmenu(data, s, "result", "Result"); // (GameSession) - (Group) - Result

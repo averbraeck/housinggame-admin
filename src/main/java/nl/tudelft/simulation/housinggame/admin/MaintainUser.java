@@ -10,10 +10,8 @@ import org.jooq.types.UInteger;
 
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryBoolean;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
-import nl.tudelft.simulation.housinggame.data.tables.records.FacilitatorRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.UserRecord;
 
 public class MaintainUser
@@ -26,8 +24,8 @@ public class MaintainUser
 
         if (click.equals("user"))
         {
-            data.clearColumns("25%", "User", "25%", "Facilitator");
-            data.clearFormColumn("50%", "Edit Properties");
+            data.clearColumns("25%", "User");
+            data.clearFormColumn("75%", "Edit Properties");
             showUser(session, data, 0, true, false);
         }
 
@@ -52,27 +50,6 @@ public class MaintainUser
             }
         }
 
-        else if (click.contains("Facilitator"))
-        {
-            if (click.startsWith("save"))
-                recordId = data.saveRecord(request, recordId, Tables.FACILITATOR, "user");
-            else if (click.startsWith("delete"))
-            {
-                FacilitatorRecord facilitator = SqlUtils.readRecordFromId(data, Tables.FACILITATOR, recordId);
-                if (click.endsWith("Ok"))
-                    data.deleteRecordOk(facilitator, "user");
-                else
-                    data.deleteRecord(facilitator, "Facilitator", facilitator.getName(), "deleteFacilitatorOk", "user");
-                recordId = 0;
-            }
-            if (!data.isError())
-            {
-                showFacilitator(session, data, recordId, true, !click.startsWith("view"));
-                if (click.startsWith("new"))
-                    editFacilitator(session, data, 0, true);
-            }
-        }
-
         AdminServlet.makeColumnContent(data);
     }
 
@@ -86,12 +63,9 @@ public class MaintainUser
             final boolean editRecord)
     {
         data.showColumn("User", 0, recordId, editButton, Tables.USER, Tables.USER.USERNAME, "username", true);
-        data.resetColumn(1);
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("Facilitator", 1, 0, false, Tables.FACILITATOR, Tables.FACILITATOR.NAME, "name",
-                    Tables.FACILITATOR.USER_ID, true);
             editUser(session, data, recordId, editRecord);
         }
     }
@@ -133,58 +107,6 @@ public class MaintainUser
                 .endForm();
         //@formatter:on
         data.getFormColumn().setHeaderForm("Edit User", form);
-    }
-
-    /*
-     * *********************************************************************************************************
-     * ******************************************** FACILITATOR ************************************************
-     * *********************************************************************************************************
-     */
-
-    public static void showFacilitator(final HttpSession session, final AdminData data, final int recordId,
-            final boolean editButton, final boolean editRecord)
-    {
-        data.showColumn("User", 0, data.getColumn(0).getSelectedRecordId(), editButton, Tables.USER, Tables.USER.USERNAME,
-                "username", true);
-        data.showDependentColumn("Facilitator", 1, recordId, editButton, Tables.FACILITATOR, Tables.FACILITATOR.NAME, "name",
-                Tables.FACILITATOR.USER_ID, true);
-        data.resetFormColumn();
-        if (recordId != 0)
-        {
-            editFacilitator(session, data, recordId, editRecord);
-        }
-    }
-
-    public static void editFacilitator(final HttpSession session, final AdminData data, final int facilitatorId,
-            final boolean edit)
-    {
-        DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        FacilitatorRecord facilitator = facilitatorId == 0 ? dslContext.newRecord(Tables.FACILITATOR) : dslContext
-                .selectFrom(Tables.FACILITATOR).where(Tables.FACILITATOR.ID.eq(UInteger.valueOf(facilitatorId))).fetchOne();
-        UInteger userId =
-                facilitatorId == 0 ? UInteger.valueOf(data.getColumn(0).getSelectedRecordId()) : facilitator.getUserId();
-        //@formatter:off
-        TableForm form = new TableForm()
-                .setEdit(edit)
-                .setCancelMethod("user", data.getColumn(0).getSelectedRecordId())
-                .setEditMethod("editFacilitator")
-                .setSaveMethod("saveFacilitator")
-                .setDeleteMethod("deleteFacilitator", "Delete", "<br>Note: Facilitator can only be deleted when it is has not"
-                        + "<br> been used, and when it has no linked gamesessions or groups")
-                .setRecordNr(facilitatorId)
-                .startForm()
-                .addEntry(new TableEntryString(Tables.FACILITATOR.NAME)
-                        .setRequired()
-                        .setInitialValue(facilitator.getName(), "")
-                        .setLabel("Facilitator name")
-                        .setMaxChars(16))
-                .addEntry(new TableEntryUInt(Tables.FACILITATOR.USER_ID)
-                        .setInitialValue(userId, UInteger.valueOf(0))
-                        .setLabel("User id")
-                        .setHidden(true))
-                .endForm();
-        //@formatter:on
-        data.getFormColumn().setHeaderForm("Edit Facilitator", form);
     }
 
 }
