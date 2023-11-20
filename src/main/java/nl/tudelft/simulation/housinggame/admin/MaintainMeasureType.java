@@ -8,6 +8,7 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.jooq.types.UInteger;
 
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryBoolean;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
@@ -147,6 +148,9 @@ public class MaintainMeasureType
                         .setInitialValue(measureType.getFluvialProtectionLevel(), 0)
                         .setLabel("Fluvial protection level")
                         .setMin(0))
+                .addEntry(new TableEntryBoolean(Tables.MEASURETYPE.VALID_TILL_USAGE)
+                        .setRequired()
+                        .setInitialValue(measureType.getValidTillUsage(), (byte) 0))
                 .addEntry(new TableEntryUInt(Tables.MEASURETYPE.GAMEVERSION_ID)
                         .setInitialValue(gameVersionId, UInteger.valueOf(0))
                         .setLabel("Scenario id")
