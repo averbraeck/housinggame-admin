@@ -28,6 +28,9 @@
         
         
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/.apt_generated"/>
+        <dependent-module archiveName="housinggame-common-1.4.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/housinggame-common/housinggame-common">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
                                         
         
         
