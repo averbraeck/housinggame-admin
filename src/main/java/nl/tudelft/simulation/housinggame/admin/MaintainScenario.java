@@ -261,6 +261,11 @@ public class MaintainScenario
                         .setInitialValue(scenario.getMaximumPlayers(), UInteger.valueOf(0))
                         .setLabel("Maximum # of players")
                         .setMin(0))
+                .addEntry(new TableEntryUInt(Tables.SCENARIO.NR_OF_ROUNDS)
+                        .setRequired()
+                        .setInitialValue(scenario.getNrOfRounds(), UInteger.valueOf(0))
+                        .setLabel("Highest round number")
+                        .setMin(0))
                 .addEntry(new TableEntryPickRecordUInt(Tables.SCENARIO.SCENARIOPARAMETERS_ID)
                         .setRequired()
                         .setPickTable(data, Tables.SCENARIOPARAMETERS, Tables.SCENARIOPARAMETERS.ID,
