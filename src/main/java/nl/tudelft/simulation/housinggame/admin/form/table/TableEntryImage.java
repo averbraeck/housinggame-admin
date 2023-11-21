@@ -144,12 +144,12 @@ public class TableEntryImage extends AbstractTableEntry<TableEntryImage, byte[]>
     {
         StringBuilder s = new StringBuilder();
         s.append("    <tr>\n");
-        s.append("      <td width=\"25%\">");
+        s.append("      <td width=\"" + getForm().getLabelLength() + "\">");
         s.append(getLabel());
         if (isRequired())
             s.append(" *");
         s.append("      </td>");
-        s.append("      <td width=\"75%\">\n");
+        s.append("      <td width=\"" + getForm().getFieldLength() + "\">\n");
         if (!isRequired())
         {
             s.append("        <input id=\"");

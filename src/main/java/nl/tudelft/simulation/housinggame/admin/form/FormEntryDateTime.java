@@ -61,12 +61,12 @@ public class FormEntryDateTime extends AbstractFormEntry<FormEntryDateTime, Loca
         }
 
         s.append("    <tr>\n");
-        s.append("      <td width=\"25%\">");
+        s.append("      <td width=\"" + getForm().getLabelLength() + "\">");
         s.append(getLabel());
         if (isRequired())
             s.append(" *");
         s.append("      </td>");
-        s.append("      <td width=\"75%\">");
+        s.append("      <td width=\"" + getForm().getFieldLength() + "\">");
         s.append("<input type=\"datetime-local\" ");
         if (isRequired())
             s.append("required name=\"");

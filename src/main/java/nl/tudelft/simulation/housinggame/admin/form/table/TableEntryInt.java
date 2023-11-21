@@ -115,12 +115,12 @@ public class TableEntryInt extends AbstractTableEntry<TableEntryInt, Integer>
         }
 
         s.append("    <tr>\n");
-        s.append("      <td width=\"25%\">");
+        s.append("      <td width=\"" + getForm().getLabelLength() + "\">");
         s.append(getLabel());
         if (isRequired())
             s.append(" *");
         s.append("      </td>");
-        s.append("      <td width=\"75%\">");
+        s.append("      <td width=\"" + getForm().getFieldLength() + "\">");
         s.append("<input type=\"number\" min=\"");
         s.append(getMin());
         s.append("\" max=\"");

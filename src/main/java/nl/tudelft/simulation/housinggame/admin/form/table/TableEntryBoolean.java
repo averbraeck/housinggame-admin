@@ -42,12 +42,12 @@ public class TableEntryBoolean extends AbstractTableEntry<TableEntryBoolean, Byt
         }
 
         s.append("    <tr>\n");
-        s.append("      <td width=\"25%\">");
+        s.append("      <td width=\"" + getForm().getLabelLength() + "\">");
         s.append(getLabel());
         if (isRequired())
             s.append(" *");
         s.append("      </td>");
-        s.append("      <td width=\"75%\">");
+        s.append("      <td width=\"" + getForm().getFieldLength() + "\">");
         s.append("<input type=\"checkbox\" name=\"");
         s.append(getTableField().getName());
         s.append("\" ");

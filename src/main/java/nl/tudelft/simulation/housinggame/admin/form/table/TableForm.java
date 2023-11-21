@@ -47,6 +47,10 @@ public class TableForm
 
     private boolean edit;
 
+    private String labelLength = "25%";
+
+    private String fieldLength = "75%";
+
     public TableForm()
     {
         this.s = new StringBuilder();
@@ -154,7 +158,7 @@ public class TableForm
         }
     }
 
-    public TableForm addEntry(AbstractTableEntry<?, ?> entry)
+    public TableForm addEntry(final AbstractTableEntry<?, ?> entry)
     {
         this.entries.add(entry);
         entry.setForm(this);
@@ -162,13 +166,13 @@ public class TableForm
         return this;
     }
 
-    public TableForm setCancelMethod(String cancelMethod)
+    public TableForm setCancelMethod(final String cancelMethod)
     {
         this.cancelMethod = cancelMethod;
         return this;
     }
 
-    public TableForm setCancelMethod(String cancelMethod, int cancelRecordNr)
+    public TableForm setCancelMethod(final String cancelMethod, final int cancelRecordNr)
     {
         this.cancelMethod = cancelMethod;
         this.cancelRecordNr = cancelRecordNr;
@@ -180,26 +184,26 @@ public class TableForm
         return this.cancelRecordNr;
     }
 
-    public TableForm setSaveMethod(String saveMethod)
+    public TableForm setSaveMethod(final String saveMethod)
     {
         this.saveMethod = saveMethod;
         return this;
     }
 
-    public TableForm setSaveMethod(String saveMethod, String saveText)
+    public TableForm setSaveMethod(final String saveMethod, final String saveText)
     {
         this.saveMethod = saveMethod;
         this.saveText = saveText;
         return this;
     }
 
-    public TableForm setEditMethod(String editMethod)
+    public TableForm setEditMethod(final String editMethod)
     {
         this.editMethod = editMethod;
         return this;
     }
 
-    public TableForm setDeleteMethod(String deleteeMethod)
+    public TableForm setDeleteMethod(final String deleteeMethod)
     {
         this.deleteMethod = deleteeMethod;
         this.deleteButton = "Delete";
@@ -207,7 +211,7 @@ public class TableForm
         return this;
     }
 
-    public TableForm setDeleteMethod(String deleteMethod, String deleteButton)
+    public TableForm setDeleteMethod(final String deleteMethod, final String deleteButton)
     {
         this.deleteMethod = deleteMethod;
         this.deleteButton = deleteButton;
@@ -215,7 +219,7 @@ public class TableForm
         return this;
     }
 
-    public TableForm setDeleteMethod(String deleteMethod, String deleteButton, String deleteText)
+    public TableForm setDeleteMethod(final String deleteMethod, final String deleteButton, final String deleteText)
     {
         this.deleteMethod = deleteMethod;
         this.deleteButton = deleteButton;
@@ -223,14 +227,14 @@ public class TableForm
         return this;
     }
 
-    public TableForm addAddtionalButton(String method, String buttonText)
+    public TableForm addAddtionalButton(final String method, final String buttonText)
     {
         this.additionalButtons.add(buttonText);
         this.additionalMethods.add(method);
         return this;
     }
 
-    public TableForm setRecordNr(int recordNr)
+    public TableForm setRecordNr(final int recordNr)
     {
         this.recordNr = recordNr;
         return this;
@@ -246,9 +250,31 @@ public class TableForm
         return this.edit;
     }
 
-    public TableForm setEdit(boolean edit)
+    public TableForm setEdit(final boolean edit)
     {
         this.edit = edit;
+        return this;
+    }
+
+    public String getLabelLength()
+    {
+        return this.labelLength;
+    }
+
+    public TableForm setLabelLength(final String labelLength)
+    {
+        this.labelLength = labelLength;
+        return this;
+    }
+
+    public String getFieldLength()
+    {
+        return this.fieldLength;
+    }
+
+    public TableForm setFieldLength(final String fieldLength)
+    {
+        this.fieldLength = fieldLength;
         return this;
     }
 
@@ -258,7 +284,7 @@ public class TableForm
     }
 
     // for multipart: https://stackoverflow.com/questions/2422468/how-to-upload-files-to-server-using-jsp-servlet
-    public String setFields(Record record, HttpServletRequest request, AdminData data)
+    public String setFields(final Record record, final HttpServletRequest request, final AdminData data)
     {
         String errors = "";
         for (AbstractTableEntry<?, ?> entry : this.entries)
