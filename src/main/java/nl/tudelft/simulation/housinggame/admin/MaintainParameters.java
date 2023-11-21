@@ -107,6 +107,8 @@ public class MaintainParameters
                 .setDeleteMethod("deleteParameters", "Delete", "<br>Note: Do not delete scenario parameters when"
                         + "<br> game with these parameters has been played")
                 .setRecordNr(parametersId)
+                .setLabelLength("75%")
+                .setFieldLength("25%")
                 .startForm()
                 .addEntry(new TableEntryString(Tables.SCENARIOPARAMETERS.NAME)
                         .setRequired()
