@@ -42,7 +42,7 @@ public class MaintainParameters
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(scenarioParameters, "parameters");
                 else
-                    data.deleteRecord(scenarioParameters, "Parameters", scenarioParameters.getName(), "deleteParametersOk",
+                    data.askDeleteRecord(scenarioParameters, "Parameters", scenarioParameters.getName(), "deleteParametersOk",
                             "parameters");
                 recordId = 0;
             }

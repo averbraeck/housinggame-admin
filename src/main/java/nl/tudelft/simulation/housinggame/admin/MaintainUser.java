@@ -39,7 +39,7 @@ public class MaintainUser
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(user, "user");
                 else
-                    data.deleteRecord(user, "User", user.getUsername(), "deleteUserOk", "user");
+                    data.askDeleteRecord(user, "User", user.getUsername(), "deleteUserOk", "user");
                 recordId = 0;
             }
             if (!data.isError())

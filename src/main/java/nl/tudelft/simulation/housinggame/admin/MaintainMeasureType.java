@@ -47,7 +47,7 @@ public class MaintainMeasureType
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(measureType, "measuretype");
                 else
-                    data.deleteRecord(measureType, "MeasureType", String.valueOf(measureType.getName()), "deleteMeasureTypeOk",
+                    data.askDeleteRecord(measureType, "MeasureType", String.valueOf(measureType.getName()), "deleteMeasureTypeOk",
                             "measuretype");
                 recordId = 0;
             }

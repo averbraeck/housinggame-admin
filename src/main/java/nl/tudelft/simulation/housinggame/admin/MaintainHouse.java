@@ -53,7 +53,7 @@ public class MaintainHouse
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(house, "house");
                 else
-                    data.deleteRecord(house, "House", house.getAddress(), "deleteHouseOk", "house");
+                    data.askDeleteRecord(house, "House", house.getAddress(), "deleteHouseOk", "house");
                 recordId = 0;
             }
             if (!data.isError())
@@ -75,7 +75,7 @@ public class MaintainHouse
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(initialHouseMeasure, "house");
                 else
-                    data.deleteRecord(initialHouseMeasure, "InitialHouseMeasure", initialHouseMeasure.getName(),
+                    data.askDeleteRecord(initialHouseMeasure, "InitialHouseMeasure", initialHouseMeasure.getName(),
                             "deleteInitialHouseMeasureOk", "house");
                 recordId = 0;
             }

@@ -76,7 +76,7 @@ public class MaintainPlay
                     DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
                     RoundRecord round =
                             dslContext.selectFrom(Tables.ROUND.where(Tables.ROUND.ID.eq(groupRound.getRoundId()))).fetchOne();
-                    data.deleteRecord(groupRound, "PlayGroupRound", String.valueOf(round.getRoundNumber()),
+                    data.askDeleteRecord(groupRound, "PlayGroupRound", String.valueOf(round.getRoundNumber()),
                             "deletePlayGroupRoundOk", "play");
                 }
                 recordId = 0;
@@ -103,7 +103,7 @@ public class MaintainPlay
                     GrouproundRecord groupRound = SqlUtils.readRecordFromId(data, Tables.GROUPROUND, bid.getGrouproundId());
                     RoundRecord round = SqlUtils.readRecordFromId(data, Tables.ROUND, groupRound.getRoundId());
                     HouseRecord house = SqlUtils.readRecordFromId(data, Tables.HOUSE, bid.getHouseId());
-                    data.deleteRecord(bid, "PlayBid",
+                    data.askDeleteRecord(bid, "PlayBid",
                             "Round " + String.valueOf(round.getRoundNumber()) + ", House " + house.getAddress(),
                             "deletePlayBidOk", "play");
                 }
@@ -137,7 +137,7 @@ public class MaintainPlay
                             SqlUtils.readRecordFromId(data, Tables.GROUPROUND, playerRound.getGrouproundId());
                     RoundRecord round = SqlUtils.readRecordFromId(data, Tables.ROUND, groupRound.getRoundId());
                     PlayerRecord player = SqlUtils.readRecordFromId(data, Tables.PLAYER, playerRound.getPlayerId());
-                    data.deleteRecord(playerRound, "PlayPlayerRound",
+                    data.askDeleteRecord(playerRound, "PlayPlayerRound",
                             "Player " + player.getCode() + ", round " + round.getRoundNumber(), "deletePlayPlayerRoundOk",
                             "play");
                 }
@@ -164,7 +164,7 @@ public class MaintainPlay
                 {
                     MeasuretypeRecord measureType =
                             SqlUtils.readRecordFromId(data, Tables.MEASURETYPE, measure.getMeasuretypeId());
-                    data.deleteRecord(measure, "PlayMeasure", measureType.getName(), "deletePlayMeasureOk", "play");
+                    data.askDeleteRecord(measure, "PlayMeasure", measureType.getName(), "deletePlayMeasureOk", "play");
                 }
                 recordId = 0;
             }
@@ -188,7 +188,7 @@ public class MaintainPlay
                 else
                 {
                     QuestionRecord question = SqlUtils.readRecordFromId(data, Tables.QUESTION, questionScore.getQuestionId());
-                    data.deleteRecord(questionScore, "PlayQuestion", question.getName(), "deletePlayQuestionOk", "play");
+                    data.askDeleteRecord(questionScore, "PlayQuestion", question.getName(), "deletePlayQuestionOk", "play");
                 }
                 recordId = 0;
             }

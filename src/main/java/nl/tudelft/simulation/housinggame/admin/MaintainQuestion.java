@@ -50,7 +50,7 @@ public class MaintainQuestion
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(question, "question");
                 else
-                    data.deleteRecord(question, "Question", String.valueOf(question.getName()), "deleteQuestionOk", "question");
+                    data.askDeleteRecord(question, "Question", String.valueOf(question.getName()), "deleteQuestionOk", "question");
                 recordId = 0;
             }
             if (!data.isError())

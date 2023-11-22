@@ -324,7 +324,7 @@ public class AdminData
         return Integer.valueOf(record.get("id").toString());
     }
 
-    public <R extends org.jooq.UpdatableRecord<R>> void deleteRecord(final R record, final String tableName,
+    public <R extends org.jooq.UpdatableRecord<R>> void askDeleteRecord(final R record, final String tableName,
             final String recordName, final String okButtonName, final String errorMenu)
     {
         ModalWindowUtils.make2ButtonModalWindow(this, "Delete " + tableName,

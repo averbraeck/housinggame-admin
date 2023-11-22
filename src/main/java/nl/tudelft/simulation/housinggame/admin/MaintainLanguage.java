@@ -43,7 +43,7 @@ public class MaintainLanguage
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(language, "language");
                 else
-                    data.deleteRecord(language, "Language", language.getCode(), "deleteLanguageOk", "language");
+                    data.askDeleteRecord(language, "Language", language.getCode(), "deleteLanguageOk", "language");
                 recordId = 0;
             }
             if (!data.isError())
@@ -64,7 +64,7 @@ public class MaintainLanguage
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(languages, "language");
                 else
-                    data.deleteRecord(languages, "LanguageGroup", languages.getName(), "deleteLanguageGroupOk", "language");
+                    data.askDeleteRecord(languages, "LanguageGroup", languages.getName(), "deleteLanguageGroupOk", "language");
                 recordId = 0;
             }
             if (!data.isError())
@@ -85,7 +85,7 @@ public class MaintainLanguage
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(label, "label");
                 else
-                    data.deleteRecord(label, "Label", label.getKey(), "deleteLabelOk", "label");
+                    data.askDeleteRecord(label, "Label", label.getKey(), "deleteLabelOk", "label");
                 recordId = 0;
             }
             if (!data.isError())

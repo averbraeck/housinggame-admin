@@ -56,7 +56,7 @@ public class MaintainRound
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(round, "round");
                 else
-                    data.deleteRecord(round, "Round", String.valueOf(round.getRoundNumber()), "deleteRoundOk", "round");
+                    data.askDeleteRecord(round, "Round", String.valueOf(round.getRoundNumber()), "deleteRoundOk", "round");
                 recordId = 0;
             }
             if (!data.isError())
@@ -77,7 +77,7 @@ public class MaintainRound
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(newsItem, "round");
                 else
-                    data.deleteRecord(newsItem, "NewsItem", newsItem.getName(), "deleteNewsItemOk", "round");
+                    data.askDeleteRecord(newsItem, "NewsItem", newsItem.getName(), "deleteNewsItemOk", "round");
                 recordId = 0;
             }
             if (!data.isError())
@@ -98,7 +98,7 @@ public class MaintainRound
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(newsParameters, "round");
                 else
-                    data.deleteRecord(newsParameters, "NewsEffects", newsParameters.getName(), "deleteNewsEffectsOk", "round");
+                    data.askDeleteRecord(newsParameters, "NewsEffects", newsParameters.getName(), "deleteNewsEffectsOk", "round");
                 recordId = 0;
             }
             if (!data.isError())

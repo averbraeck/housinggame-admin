@@ -42,7 +42,7 @@ public class MaintainScenario
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(gameVersion, "scenario");
                 else
-                    data.deleteRecord(gameVersion, "GameVersion", gameVersion.getName(), "deleteGameVersionOk", "scenario");
+                    data.askDeleteRecord(gameVersion, "GameVersion", gameVersion.getName(), "deleteGameVersionOk", "scenario");
                 recordId = 0;
             }
             else if (click.startsWith("clone"))
@@ -98,7 +98,7 @@ public class MaintainScenario
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(scenario, "scenario");
                 else
-                    data.deleteRecord(scenario, "Scenario", scenario.getName(), "deleteScenarioOk", "scenario");
+                    data.askDeleteRecord(scenario, "Scenario", scenario.getName(), "deleteScenarioOk", "scenario");
                 recordId = 0;
             }
             else if (click.startsWith("clone"))

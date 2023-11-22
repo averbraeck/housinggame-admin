@@ -47,7 +47,7 @@ public class MaintainCommunity
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(community, "community");
                 else
-                    data.deleteRecord(community, "Community", String.valueOf(community.getName()), "deleteCommunityOk",
+                    data.askDeleteRecord(community, "Community", String.valueOf(community.getName()), "deleteCommunityOk",
                             "community");
                 recordId = 0;
             }
@@ -69,7 +69,7 @@ public class MaintainCommunity
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(tax, "community");
                 else
-                    data.deleteRecord(tax, "Tax", tax.getName(), "deleteTaxOk", "community");
+                    data.askDeleteRecord(tax, "Tax", tax.getName(), "deleteTaxOk", "community");
                 recordId = 0;
             }
             if (!data.isError())

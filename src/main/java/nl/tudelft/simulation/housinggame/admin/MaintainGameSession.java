@@ -60,7 +60,7 @@ public class MaintainGameSession
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(gameSession, "gamesession");
                 else
-                    data.deleteRecord(gameSession, "GameSession", String.valueOf(gameSession.getName()), "deleteGameSessionOk",
+                    data.askDeleteRecord(gameSession, "GameSession", String.valueOf(gameSession.getName()), "deleteGameSessionOk",
                             "gamesession");
                 recordId = 0;
             }
@@ -92,7 +92,7 @@ public class MaintainGameSession
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(group, "gamesession");
                 else
-                    data.deleteRecord(group, "Group", group.getName(), "deleteGroupOk", "gamesession");
+                    data.askDeleteRecord(group, "Group", group.getName(), "deleteGroupOk", "gamesession");
                 recordId = 0;
             }
             if (!data.isError())
@@ -113,7 +113,7 @@ public class MaintainGameSession
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(player, "gamesession");
                 else
-                    data.deleteRecord(player, "Player", player.getCode(), "deletePlayerOk", "gamesession");
+                    data.askDeleteRecord(player, "Player", player.getCode(), "deletePlayerOk", "gamesession");
                 recordId = 0;
             }
             if (!data.isError())

@@ -49,7 +49,7 @@ public class MaintainWelfareType
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(welfareType, "welfaretype");
                 else
-                    data.deleteRecord(welfareType, "WelfareType", String.valueOf(welfareType.getName()), "deleteWelfareTypeOk",
+                    data.askDeleteRecord(welfareType, "WelfareType", String.valueOf(welfareType.getName()), "deleteWelfareTypeOk",
                             "welfaretype");
                 recordId = 0;
             }
