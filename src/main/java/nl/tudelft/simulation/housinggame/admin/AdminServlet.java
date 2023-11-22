@@ -283,6 +283,8 @@ public class AdminServlet extends HttpServlet
             case "play":
             case "viewPlayGameSession":
             case "viewPlayGroup":
+            case "destroyGamePlay":
+            case "destroyGamePlayOk":
 
             case "viewPlayGroupRound":
             case "editPlayGroupRound":

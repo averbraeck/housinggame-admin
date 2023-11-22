@@ -200,6 +200,21 @@ public class MaintainPlay
             }
         }
 
+        else if (click.contains("destroyGamePlay"))
+        {
+            GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, data.getColumn(1).getSelectedRecordId());
+            if (click.endsWith("Ok"))
+            {
+                destroyGamePlay(data, data.getColumn(1).getSelectedRecordId());
+                showGroup(session, data, 0);
+            }
+            else
+            {
+                data.askDestroyRecord(group, "GamePlay for Group", group.getName(), "destroyGamePlayOk", "play");
+            }
+            recordId = 0;
+        }
+
         AdminServlet.makeColumnContent(data);
     }
 
@@ -245,6 +260,7 @@ public class MaintainPlay
         if (recordId != 0)
         {
             showGroupRoundColumn(data, "PlayGroupRound", 2, 0);
+            data.getColumn(1).addContent(AdminTable.finalButton("DEL GAMEPLAY", "destroyGamePlay"));
         }
     }
 
@@ -895,4 +911,34 @@ public class MaintainPlay
         data.getColumn(columnNr).setContent(s.toString());
     }
 
+    public static void destroyGamePlay(final AdminData data, final int groupRecordId)
+    {
+        var dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
+        var group = SqlUtils.readRecordFromId(data, Tables.GROUP, groupRecordId);
+        // The gamesession, group and players stay. We delete groupround, playerround, measure, bid and questionscore.
+        List<GrouproundRecord> groupRoundList =
+                dslContext.selectFrom(Tables.GROUPROUND).where(Tables.GROUPROUND.GROUP_ID.eq(group.getId())).fetch();
+        for (var groupRound : groupRoundList)
+        {
+            List<BidRecord> bidList =
+                    dslContext.selectFrom(Tables.BID).where(Tables.BID.GROUPROUND_ID.eq(groupRound.getId())).fetch();
+            for (var bid : bidList)
+                bid.delete();
+            List<PlayerroundRecord> playerRoundList = dslContext.selectFrom(Tables.PLAYERROUND)
+                    .where(Tables.PLAYERROUND.GROUPROUND_ID.eq(groupRound.getId())).fetch();
+            for (var playerRound : playerRoundList)
+            {
+                List<MeasureRecord> measureList = dslContext.selectFrom(Tables.MEASURE)
+                        .where(Tables.MEASURE.PLAYERROUND_ID.eq(playerRound.getId())).fetch();
+                for (var measure : measureList)
+                    measure.delete();
+                List<QuestionscoreRecord> questionScoreList = dslContext.selectFrom(Tables.QUESTIONSCORE)
+                        .where(Tables.QUESTIONSCORE.PLAYERROUND_ID.eq(playerRound.getId())).fetch();
+                for (var questionScore : questionScoreList)
+                    questionScore.delete();
+                playerRound.delete();
+            }
+            groupRound.delete();
+        }
+    }
 }

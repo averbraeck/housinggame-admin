@@ -68,7 +68,7 @@ public class MaintainScenario
                     if (click.endsWith("Ok"))
                         SqlUtils.destroyGameVersion(data, gameVersion);
                     else
-                        data.destroyRecord(gameVersion, "GameVersion", gameVersion.getName(), "destroyGameVersionOk",
+                        data.askDestroyRecord(gameVersion, "GameVersion", gameVersion.getName(), "destroyGameVersionOk",
                                 "scenario");
                     recordId = 0;
                 }
@@ -124,7 +124,7 @@ public class MaintainScenario
                     if (click.endsWith("Ok"))
                         SqlUtils.destroyScenario(data, scenario);
                     else
-                        data.destroyRecord(scenario, "Scenario", scenario.getName(), "destroyScenarioOk", "scenario");
+                        data.askDestroyRecord(scenario, "Scenario", scenario.getName(), "destroyScenarioOk", "scenario");
                     recordId = 0;
                 }
                 catch (Exception e)
