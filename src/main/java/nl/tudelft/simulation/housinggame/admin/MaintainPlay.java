@@ -578,6 +578,7 @@ public class MaintainPlay
                 : dslContext.selectFrom(Tables.MEASURE).where(Tables.MEASURE.ID.eq(UInteger.valueOf(measureId))).fetchOne();
         UInteger playerRoundId =
                 measureId == 0 ? UInteger.valueOf(data.getColumn(4).getSelectedRecordId()) : measure.getPlayerroundId();
+        PlayerroundRecord playerRound = SqlUtils.readRecordFromId(data, Tables.PLAYERROUND, playerRoundId);
         GamesessionRecord gameSession =
                 SqlUtils.readRecordFromId(data, Tables.GAMESESSION, data.getColumn(0).getSelectedRecordId());
         GameversionRecord gameVersion = SqlUtils.readRecordFromId(data, Tables.GAMEVERSION, gameSession.getGameversionId());
@@ -599,6 +600,13 @@ public class MaintainPlay
                                 Tables.MEASURETYPE.ID, Tables.MEASURETYPE.NAME)
                         .setInitialValue(measure.getMeasuretypeId(), null)
                         .setLabel("Measuretype"))
+                .addEntry(new TableEntryPickRecordUInt(Tables.MEASURE.HOUSE_ID)
+                        .setRequired()
+                        .setPickTable(data, Tables.HOUSE.where
+                                (Tables.HOUSE.ID.eq(playerRound.getHouseId())),
+                                Tables.HOUSE.ID, Tables.HOUSE.ADDRESS)
+                        .setInitialValue(playerRound.getHouseId(), null)
+                        .setLabel("House"))
                 .addEntry(new TableEntryDouble(Tables.MEASURE.VALUE)
                         .setRequired()
                         .setInitialValue(measure.getValue(), 0.0)
