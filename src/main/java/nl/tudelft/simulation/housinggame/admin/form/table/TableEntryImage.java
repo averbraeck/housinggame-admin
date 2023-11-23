@@ -24,7 +24,7 @@ public class TableEntryImage extends AbstractTableEntry<TableEntryImage, byte[]>
     /** large image (200x200). */
     private boolean largeImage;
 
-    public TableEntryImage(TableField<?, byte[]> tableField)
+    public TableEntryImage(final TableField<?, byte[]> tableField)
     {
         super(tableField);
         this.filename = "";
@@ -34,20 +34,20 @@ public class TableEntryImage extends AbstractTableEntry<TableEntryImage, byte[]>
     }
 
     @Override
-    public void validate(String s)
+    public void validate(final String s)
     {
         // Nothing to validate on the filename itself
     }
 
     @Override
-    public String codeForEdit(byte[] image)
+    public String codeForEdit(final byte[] image)
     {
         this.image = image;
         return this.filename;
     }
 
     @Override
-    public byte[] codeForType(String s)
+    public byte[] codeForType(final String s)
     {
         this.filename = s;
         return this.image;
@@ -58,7 +58,7 @@ public class TableEntryImage extends AbstractTableEntry<TableEntryImage, byte[]>
         return this.image;
     }
 
-    public void setImage(byte[] image)
+    public void setImage(final byte[] image)
     {
         this.image = image;
     }
@@ -68,17 +68,17 @@ public class TableEntryImage extends AbstractTableEntry<TableEntryImage, byte[]>
         return this.filename;
     }
 
-    public void setFilename(String filename)
+    public void setFilename(final String filename)
     {
         this.filename = filename;
     }
 
     public String getImageServlet()
     {
-        return imageServlet;
+        return this.imageServlet;
     }
 
-    public TableEntryImage setImageServlet(String imageServlet)
+    public TableEntryImage setImageServlet(final String imageServlet)
     {
         this.imageServlet = imageServlet;
         return this;
@@ -86,10 +86,10 @@ public class TableEntryImage extends AbstractTableEntry<TableEntryImage, byte[]>
 
     public int getImageRecordNr()
     {
-        return imageRecordNr;
+        return this.imageRecordNr;
     }
 
-    public TableEntryImage setImageRecordNr(int imageRecordNr)
+    public TableEntryImage setImageRecordNr(final int imageRecordNr)
     {
         this.imageRecordNr = imageRecordNr;
         return this;
@@ -97,10 +97,10 @@ public class TableEntryImage extends AbstractTableEntry<TableEntryImage, byte[]>
 
     public boolean isLargeImage()
     {
-        return largeImage;
+        return this.largeImage;
     }
 
-    public TableEntryImage setLargeImage(boolean largeImage)
+    public TableEntryImage setLargeImage(final boolean largeImage)
     {
         this.largeImage = largeImage;
         return this;
@@ -114,23 +114,23 @@ public class TableEntryImage extends AbstractTableEntry<TableEntryImage, byte[]>
 
     public int getImageNr()
     {
-        return imageNr;
+        return this.imageNr;
     }
 
-    public TableEntryImage setImageNr(int imageNr)
+    public TableEntryImage setImageNr(final int imageNr)
     {
         this.imageNr = imageNr;
         return this;
     }
 
     @SuppressWarnings("unchecked")
-    public String setRecordValue(Record record, byte[] value)
+    public String setRecordValue(final Record record, final byte[] value)
     {
         this.image = value;
         this.errors = "";
         try
         {
-            record.set((TableField<?, byte[]>) getTableField(), image);
+            record.set((TableField<?, byte[]>) getTableField(), this.image);
         }
         catch (Exception exception)
         {
@@ -144,12 +144,14 @@ public class TableEntryImage extends AbstractTableEntry<TableEntryImage, byte[]>
     {
         StringBuilder s = new StringBuilder();
         s.append("    <tr>\n");
-        s.append("      <td width=\"" + getForm().getLabelLength() + "\">");
+        String labelLength = getForm().getLabelLength() == null ? "25%" : getForm().getLabelLength();
+        s.append("      <td width=\"" + labelLength + "\">");
         s.append(getLabel());
         if (isRequired())
             s.append(" *");
         s.append("      </td>");
-        s.append("      <td width=\"" + getForm().getFieldLength() + "\">\n");
+        String fieldLength = getForm().getFieldLength() == null ? "75%" : getForm().getFieldLength();
+        s.append("      <td width=\"" + fieldLength + "\">");
         if (!isRequired())
         {
             s.append("        <input id=\"");

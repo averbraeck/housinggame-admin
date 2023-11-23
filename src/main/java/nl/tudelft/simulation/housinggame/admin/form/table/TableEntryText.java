@@ -78,12 +78,14 @@ public class TableEntryText extends AbstractTableEntry<TableEntryText, String>
         }
 
         s.append("    <tr>\n");
-        s.append("      <td width=\"" + getForm().getLabelLength() + "\">");
+        String labelLength = getForm().getLabelLength() == null ? "25%" : getForm().getLabelLength();
+        s.append("      <td width=\"" + labelLength + "\">");
         s.append(getLabel());
         if (isRequired())
             s.append(" *");
         s.append("      </td>");
-        s.append("      <td width=\"" + getForm().getFieldLength() + "\">");
+        String fieldLength = getForm().getFieldLength() == null ? "75%" : getForm().getFieldLength();
+        s.append("      <td width=\"" + fieldLength + "\">");
         s.append("<textarea rows=\"");
         s.append(getRows());
         s.append("\" style=\"width:97%;\" maxlength=\"");

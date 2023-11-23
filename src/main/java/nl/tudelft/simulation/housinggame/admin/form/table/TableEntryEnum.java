@@ -59,12 +59,14 @@ public class TableEntryEnum<T extends EnumType> extends AbstractTableEntry<Table
         }
 
         s.append("    <tr>\n");
-        s.append("      <td width=\"" + getForm().getLabelLength() + "\">");
+        String labelLength = getForm().getLabelLength() == null ? "25%" : getForm().getLabelLength();
+        s.append("      <td width=\"" + labelLength + "\">");
         s.append(getLabel());
         if (isRequired())
             s.append(" *");
         s.append("      </td>");
-        s.append("      <td width=\"" + getForm().getFieldLength() + "\">\n");
+        String fieldLength = getForm().getFieldLength() == null ? "75%" : getForm().getFieldLength();
+        s.append("      <td width=\"" + fieldLength + "\">");
         s.append("        <select ");
         if (isRequired())
             s.append(" required name=\"");
