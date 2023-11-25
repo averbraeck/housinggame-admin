@@ -6,15 +6,13 @@ import javax.servlet.http.HttpSession;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
-import org.jooq.types.UInteger;
 
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryBoolean;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDouble;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecordUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecord;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.NewseffectsRecord;
@@ -98,7 +96,8 @@ public class MaintainRound
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(newsParameters, "round");
                 else
-                    data.askDeleteRecord(newsParameters, "NewsEffects", newsParameters.getName(), "deleteNewsEffectsOk", "round");
+                    data.askDeleteRecord(newsParameters, "NewsEffects", newsParameters.getName(), "deleteNewsEffectsOk",
+                            "round");
                 recordId = 0;
             }
             if (!data.isError())
@@ -186,8 +185,8 @@ public class MaintainRound
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         RoundRecord round = roundId == 0 ? dslContext.newRecord(Tables.ROUND)
-                : dslContext.selectFrom(Tables.ROUND).where(Tables.ROUND.ID.eq(UInteger.valueOf(roundId))).fetchOne();
-        UInteger scenarioId = roundId == 0 ? UInteger.valueOf(data.getColumn(1).getSelectedRecordId()) : round.getScenarioId();
+                : dslContext.selectFrom(Tables.ROUND).where(Tables.ROUND.ID.eq(roundId)).fetchOne();
+        int scenarioId = roundId == 0 ? data.getColumn(1).getSelectedRecordId() : round.getScenarioId();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -203,8 +202,8 @@ public class MaintainRound
                         .setInitialValue(round.getRoundNumber(), 1)
                         .setLabel("Round number")
                         .setMin(0))
-                .addEntry(new TableEntryUInt(Tables.ROUND.SCENARIO_ID)
-                        .setInitialValue(scenarioId, UInteger.valueOf(0))
+                .addEntry(new TableEntryInt(Tables.ROUND.SCENARIO_ID)
+                        .setInitialValue(scenarioId, 0)
                         .setLabel("Scenario id")
                         .setHidden(true))
                 .endForm();
@@ -243,8 +242,8 @@ public class MaintainRound
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         NewsitemRecord newsItem = newsItemId == 0 ? dslContext.newRecord(Tables.NEWSITEM)
-                : dslContext.selectFrom(Tables.NEWSITEM).where(Tables.NEWSITEM.ID.eq(UInteger.valueOf(newsItemId))).fetchOne();
-        UInteger roundId = newsItemId == 0 ? UInteger.valueOf(data.getColumn(2).getSelectedRecordId()) : newsItem.getRoundId();
+                : dslContext.selectFrom(Tables.NEWSITEM).where(Tables.NEWSITEM.ID.eq(newsItemId)).fetchOne();
+        int roundId = newsItemId == 0 ? data.getColumn(2).getSelectedRecordId() : newsItem.getRoundId();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -268,8 +267,8 @@ public class MaintainRound
                         .setRequired()
                         .setInitialValue(newsItem.getContent(), "")
                         .setLabel("News Content"))
-                .addEntry(new TableEntryUInt(Tables.NEWSITEM.ROUND_ID)
-                        .setInitialValue(roundId, UInteger.valueOf(0))
+                .addEntry(new TableEntryInt(Tables.NEWSITEM.ROUND_ID)
+                        .setInitialValue(roundId, 0)
                         .setLabel("Round id")
                         .setHidden(true))
                 .endForm();
@@ -307,11 +306,10 @@ public class MaintainRound
             final boolean edit)
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        NewseffectsRecord newsEffects = newsEffectsId == 0 ? dslContext.newRecord(Tables.NEWSEFFECTS) : dslContext
-                .selectFrom(Tables.NEWSEFFECTS).where(Tables.NEWSEFFECTS.ID.eq(UInteger.valueOf(newsEffectsId))).fetchOne();
-        UInteger newsItemId =
-                newsEffectsId == 0 ? UInteger.valueOf(data.getColumn(3).getSelectedRecordId()) : newsEffects.getNewsitemId();
-        UInteger gameVersionId = UInteger.valueOf(data.getColumn(0).getSelectedRecordId());
+        NewseffectsRecord newsEffects = newsEffectsId == 0 ? dslContext.newRecord(Tables.NEWSEFFECTS)
+                : dslContext.selectFrom(Tables.NEWSEFFECTS).where(Tables.NEWSEFFECTS.ID.eq(newsEffectsId)).fetchOne();
+        int newsItemId = newsEffectsId == 0 ? data.getColumn(3).getSelectedRecordId() : newsEffects.getNewsitemId();
+        int gameVersionId = data.getColumn(0).getSelectedRecordId();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -327,11 +325,11 @@ public class MaintainRound
                         .setInitialValue(newsEffects.getName(), "")
                         .setLabel("Effects name")
                         .setMaxChars(45))
-                .addEntry(new TableEntryPickRecordUInt(Tables.NEWSEFFECTS.COMMUNITY_ID)
+                .addEntry(new TableEntryPickRecord(Tables.NEWSEFFECTS.COMMUNITY_ID)
                         .setRequired(false)
                         .setPickTable(data, Tables.COMMUNITY.where(Tables.COMMUNITY.GAMEVERSION_ID.eq(gameVersionId)),
                                 Tables.COMMUNITY.ID, Tables.COMMUNITY.NAME)
-                        .setInitialValue(newsEffects.getCommunityId(), UInteger.valueOf(0))
+                        .setInitialValue(newsEffects.getCommunityId(), 0)
                         .setLabel("Affected community (blank = all)"))
                 .addEntry(new TableEntryBoolean(Tables.NEWSEFFECTS.HOUSE_DISCOUNT_EUROS)
                         .setRequired()
@@ -341,19 +339,19 @@ public class MaintainRound
                         .setRequired()
                         .setInitialValue(newsEffects.getHouseDiscountPercent(), (byte) 0)
                         .setLabel("Discount Percent?"))
-                .addEntry(new TableEntryUInt(Tables.NEWSEFFECTS.HOUSE_DISCOUNT_YEAR1)
+                .addEntry(new TableEntryInt(Tables.NEWSEFFECTS.HOUSE_DISCOUNT_YEAR1)
                         .setRequired()
-                        .setInitialValue(newsEffects.getHouseDiscountYear1(), UInteger.valueOf(0))
+                        .setInitialValue(newsEffects.getHouseDiscountYear1(), 0)
                         .setLabel("Discount Year 1")
                         .setMin(0))
-                .addEntry(new TableEntryUInt(Tables.NEWSEFFECTS.HOUSE_DISCOUNT_YEAR2)
+                .addEntry(new TableEntryInt(Tables.NEWSEFFECTS.HOUSE_DISCOUNT_YEAR2)
                         .setRequired()
-                        .setInitialValue(newsEffects.getHouseDiscountYear2(), UInteger.valueOf(0))
+                        .setInitialValue(newsEffects.getHouseDiscountYear2(), 0)
                         .setLabel("Discount Year 2")
                         .setMin(0))
-                .addEntry(new TableEntryUInt(Tables.NEWSEFFECTS.HOUSE_DISCOUNT_YEAR3)
+                .addEntry(new TableEntryInt(Tables.NEWSEFFECTS.HOUSE_DISCOUNT_YEAR3)
                         .setRequired()
-                        .setInitialValue(newsEffects.getHouseDiscountYear3(), UInteger.valueOf(0))
+                        .setInitialValue(newsEffects.getHouseDiscountYear3(), 0)
                         .setLabel("Discount Year 3")
                         .setMin(0))
                 .addEntry(new TableEntryInt(Tables.NEWSEFFECTS.PLUVIAL_PROTECTION_CHANGE)
@@ -376,8 +374,8 @@ public class MaintainRound
                         .setRequired()
                         .setInitialValue(newsEffects.getSatisfactionMoveChange(), 0)
                         .setLabel("Sat move change"))
-                .addEntry(new TableEntryUInt(Tables.NEWSEFFECTS.NEWSITEM_ID)
-                        .setInitialValue(newsItemId, UInteger.valueOf(0))
+                .addEntry(new TableEntryInt(Tables.NEWSEFFECTS.NEWSITEM_ID)
+                        .setInitialValue(newsItemId, 0)
                         .setLabel("Newsitem id")
                         .setHidden(true))
                 .endForm();

@@ -6,13 +6,11 @@ import javax.servlet.http.HttpSession;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
-import org.jooq.types.UInteger;
 
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryBoolean;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.MeasuretypeRecord;
@@ -47,8 +45,8 @@ public class MaintainMeasureType
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(measureType, "measuretype");
                 else
-                    data.askDeleteRecord(measureType, "MeasureType", String.valueOf(measureType.getName()), "deleteMeasureTypeOk",
-                            "measuretype");
+                    data.askDeleteRecord(measureType, "MeasureType", String.valueOf(measureType.getName()),
+                            "deleteMeasureTypeOk", "measuretype");
                 recordId = 0;
             }
             if (!data.isError())
@@ -105,10 +103,9 @@ public class MaintainMeasureType
             final boolean edit)
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        MeasuretypeRecord measureType = measureTypeId == 0 ? dslContext.newRecord(Tables.MEASURETYPE) : dslContext
-                .selectFrom(Tables.MEASURETYPE).where(Tables.MEASURETYPE.ID.eq(UInteger.valueOf(measureTypeId))).fetchOne();
-        UInteger gameVersionId =
-                measureTypeId == 0 ? UInteger.valueOf(data.getColumn(0).getSelectedRecordId()) : measureType.getGameversionId();
+        MeasuretypeRecord measureType = measureTypeId == 0 ? dslContext.newRecord(Tables.MEASURETYPE)
+                : dslContext.selectFrom(Tables.MEASURETYPE).where(Tables.MEASURETYPE.ID.eq(measureTypeId)).fetchOne();
+        int gameVersionId = measureTypeId == 0 ? data.getColumn(0).getSelectedRecordId() : measureType.getGameversionId();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -128,9 +125,9 @@ public class MaintainMeasureType
                         .setRequired()
                         .setInitialValue(measureType.getDescription(), "")
                         .setLabel("Description"))
-                .addEntry(new TableEntryUInt(Tables.MEASURETYPE.PRICE)
+                .addEntry(new TableEntryInt(Tables.MEASURETYPE.PRICE)
                         .setRequired()
-                        .setInitialValue(measureType.getPrice(), UInteger.valueOf(0))
+                        .setInitialValue(measureType.getPrice(), 0)
                         .setLabel("Price")
                         .setMin(0))
                 .addEntry(new TableEntryInt(Tables.MEASURETYPE.SATISFACTION)
@@ -151,8 +148,8 @@ public class MaintainMeasureType
                 .addEntry(new TableEntryBoolean(Tables.MEASURETYPE.VALID_TILL_USAGE)
                         .setRequired()
                         .setInitialValue(measureType.getValidTillUsage(), (byte) 0))
-                .addEntry(new TableEntryUInt(Tables.MEASURETYPE.GAMEVERSION_ID)
-                        .setInitialValue(gameVersionId, UInteger.valueOf(0))
+                .addEntry(new TableEntryInt(Tables.MEASURETYPE.GAMEVERSION_ID)
+                        .setInitialValue(gameVersionId, 0)
                         .setLabel("Scenario id")
                         .setHidden(true))
                 .endForm();

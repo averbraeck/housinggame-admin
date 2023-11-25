@@ -11,7 +11,6 @@ import org.jooq.SQLDialect;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.impl.DSL;
-import org.jooq.types.UInteger;
 
 import nl.tudelft.simulation.housinggame.admin.column.FormColumn;
 import nl.tudelft.simulation.housinggame.admin.column.TableColumn;
@@ -40,7 +39,7 @@ public class AdminData
      * filled by the UserLoginServlet.<br>
      * used by: server.
      */
-    private Integer userId;
+    private int userId;
 
     /**
      * the admin User record for the logged in user.<br>
@@ -105,12 +104,12 @@ public class AdminData
         this.username = username;
     }
 
-    public Integer getUserId()
+    public int getUserId()
     {
         return this.userId;
     }
 
-    public void setUserId(final Integer userId)
+    public void setUserId(final int userId)
     {
         this.userId = userId;
     }
@@ -256,7 +255,7 @@ public class AdminData
 
     public <R extends org.jooq.Record, T extends Comparable<? super T>> void showDependentColumn(final String columnName,
             final int columnNr, final int recordId, final boolean editButton, final Table<R> table, final Field<T> sortField,
-            final String nameField, final TableField<R, UInteger> selectField, final boolean newButton)
+            final String nameField, final TableField<R, Integer> selectField, final boolean newButton)
     {
         showDependentColumn(columnName, columnNr, recordId, editButton, table, sortField, nameField, selectField, newButton,
                 columnNr - 1);
@@ -264,13 +263,12 @@ public class AdminData
 
     public <R extends org.jooq.Record, T extends Comparable<? super T>> void showDependentColumn(final String columnName,
             final int columnNr, final int recordId, final boolean editButton, final Table<R> table, final Field<T> sortField,
-            final String nameField, final TableField<R, UInteger> selectField, final boolean newButton, final int whereColumn)
+            final String nameField, final TableField<R, Integer> selectField, final boolean newButton, final int whereColumn)
     {
         StringBuilder s = new StringBuilder();
         DSLContext dslContext = DSL.using(getDataSource(), SQLDialect.MYSQL);
-        List<R> records = dslContext.selectFrom(table)
-                .where(selectField.eq(UInteger.valueOf(getColumn(whereColumn).getSelectedRecordId()))).fetch()
-                .sortAsc(sortField);
+        List<R> records = dslContext.selectFrom(table).where(selectField.eq(getColumn(whereColumn).getSelectedRecordId()))
+                .fetch().sortAsc(sortField);
 
         s.append(AdminTable.startTable());
         for (R record : records)
@@ -295,8 +293,8 @@ public class AdminData
             final Table<R> table, final String errorMenu)
     {
         DSLContext dslContext = DSL.using(getDataSource(), SQLDialect.MYSQL);
-        R record = recordId == 0 ? dslContext.newRecord(table) : dslContext.selectFrom(table)
-                .where(((TableField<R, UInteger>) table.field("id")).eq(UInteger.valueOf(recordId))).fetchOne();
+        R record = recordId == 0 ? dslContext.newRecord(table)
+                : dslContext.selectFrom(table).where(((TableField<R, Integer>) table.field("id")).eq(recordId)).fetchOne();
         String errors = getFormColumn().getForm().setFields(record, request, this);
         if (errors.length() > 0)
         {

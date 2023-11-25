@@ -42,7 +42,7 @@ public class TableEntryPickRecord extends AbstractTableEntry<TableEntryPickRecor
     }
 
     public TableEntryPickRecord setPickTable(final AdminData data, final Table<?> table, final TableField<?, Integer> id,
-            final TableField<?, String> name)
+            final TableField<?, ?> name)
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         List<? extends Record> tableRecords = dslContext.selectFrom(table).fetch();
@@ -50,7 +50,7 @@ public class TableEntryPickRecord extends AbstractTableEntry<TableEntryPickRecor
             this.records.put("", null);
         for (Record record : tableRecords)
         {
-            this.records.put(record.get(name), record.get(id));
+            this.records.put(record.get(name).toString(), record.get(id));
         }
         return this;
     }
@@ -94,7 +94,7 @@ public class TableEntryPickRecord extends AbstractTableEntry<TableEntryPickRecor
             s.append("\">\n");
         for (String name : this.records.keySet())
         {
-            int id = this.records.get(name);
+            Integer id = this.records.get(name); // TODO: int is not possible here -- could be null?
             s.append("        <option value=\"");
             s.append(id);
             s.append("\"");

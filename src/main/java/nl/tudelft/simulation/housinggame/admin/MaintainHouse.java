@@ -6,13 +6,11 @@ import javax.servlet.http.HttpSession;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
-import org.jooq.types.UInteger;
 
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecordUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecord;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.HouseRecord;
@@ -127,8 +125,8 @@ public class MaintainHouse
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("House", 2, 0, true, Tables.HOUSE, Tables.HOUSE.ADDRESS, "address", Tables.HOUSE.COMMUNITY_ID,
-                    true);
+            data.showDependentColumn("House", 2, 0, true, Tables.HOUSE, Tables.HOUSE.ADDRESS, "address",
+                    Tables.HOUSE.COMMUNITY_ID, true);
         }
     }
 
@@ -161,9 +159,8 @@ public class MaintainHouse
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         HouseRecord house = houseId == 0 ? dslContext.newRecord(Tables.HOUSE)
-                : dslContext.selectFrom(Tables.HOUSE).where(Tables.HOUSE.ID.eq(UInteger.valueOf(houseId))).fetchOne();
-        UInteger communityId =
-                houseId == 0 ? UInteger.valueOf(data.getColumn(1).getSelectedRecordId()) : house.getCommunityId();
+                : dslContext.selectFrom(Tables.HOUSE).where(Tables.HOUSE.ID.eq(houseId)).fetchOne();
+        int communityId = houseId == 0 ? data.getColumn(1).getSelectedRecordId() : house.getCommunityId();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -179,19 +176,19 @@ public class MaintainHouse
                         .setInitialValue(house.getAddress(), "")
                         .setLabel("House address (eg U01)")
                         .setMaxChars(45))
-                .addEntry(new TableEntryUInt(Tables.HOUSE.PRICE)
+                .addEntry(new TableEntryInt(Tables.HOUSE.PRICE)
                         .setRequired()
-                        .setInitialValue(house.getPrice(), UInteger.valueOf(0))
+                        .setInitialValue(house.getPrice(), 0)
                         .setLabel("Price")
                         .setMin(0))
-                .addEntry(new TableEntryUInt(Tables.HOUSE.RATING)
+                .addEntry(new TableEntryInt(Tables.HOUSE.RATING)
                         .setRequired()
-                        .setInitialValue(house.getRating(), UInteger.valueOf(0))
+                        .setInitialValue(house.getRating(), 0)
                         .setLabel("Rating")
                         .setMin(0))
-                .addEntry(new TableEntryUInt(Tables.HOUSE.AVAILABLE_ROUND)
+                .addEntry(new TableEntryInt(Tables.HOUSE.AVAILABLE_ROUND)
                         .setRequired()
-                        .setInitialValue(house.getAvailableRound(), UInteger.valueOf(0))
+                        .setInitialValue(house.getAvailableRound(), 0)
                         .setLabel("Available from round")
                         .setMin(1))
                 .addEntry(new TableEntryText(Tables.HOUSE.DESCRIPTION)
@@ -208,8 +205,8 @@ public class MaintainHouse
                         .setInitialValue(house.getInitialFluvialProtection(), 0)
                         .setLabel("Initial fluvial protection")
                         .setMin(0))
-                .addEntry(new TableEntryUInt(Tables.HOUSE.COMMUNITY_ID)
-                        .setInitialValue(communityId, UInteger.valueOf(0))
+                .addEntry(new TableEntryInt(Tables.HOUSE.COMMUNITY_ID)
+                        .setInitialValue(communityId, 0)
                         .setLabel("Community id")
                         .setHidden(true))
                 .endForm();
@@ -247,10 +244,9 @@ public class MaintainHouse
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         InitialhousemeasureRecord initialHouseMeasure = initialHouseMeasureId == 0
                 ? dslContext.newRecord(Tables.INITIALHOUSEMEASURE) : dslContext.selectFrom(Tables.INITIALHOUSEMEASURE)
-                        .where(Tables.INITIALHOUSEMEASURE.ID.eq(UInteger.valueOf(initialHouseMeasureId))).fetchOne();
-        UInteger houseId = initialHouseMeasureId == 0 ? UInteger.valueOf(data.getColumn(2).getSelectedRecordId())
-                : initialHouseMeasure.getHouseId();
-        UInteger gameVersionId = UInteger.valueOf(data.getColumn(0).getSelectedRecordId());
+                        .where(Tables.INITIALHOUSEMEASURE.ID.eq(initialHouseMeasureId)).fetchOne();
+        int houseId = initialHouseMeasureId == 0 ? data.getColumn(2).getSelectedRecordId() : initialHouseMeasure.getHouseId();
+        int gameVersionId = data.getColumn(0).getSelectedRecordId();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -266,19 +262,19 @@ public class MaintainHouse
                         .setInitialValue(initialHouseMeasure.getName(), "")
                         .setLabel("Measure name")
                         .setMaxChars(45))
-                .addEntry(new TableEntryUInt(Tables.INITIALHOUSEMEASURE.ROUND)
+                .addEntry(new TableEntryInt(Tables.INITIALHOUSEMEASURE.ROUND)
                         .setRequired()
-                        .setInitialValue(initialHouseMeasure.getRound(), UInteger.valueOf(0))
+                        .setInitialValue(initialHouseMeasure.getRound(), 0)
                         .setLabel("Effective in round")
                         .setMin(1))
-                .addEntry(new TableEntryPickRecordUInt(Tables.INITIALHOUSEMEASURE.MEASURETYPE_ID)
+                .addEntry(new TableEntryPickRecord(Tables.INITIALHOUSEMEASURE.MEASURETYPE_ID)
                         .setRequired()
                         .setPickTable(data, Tables.MEASURETYPE.where(Tables.MEASURETYPE.GAMEVERSION_ID.eq(gameVersionId)),
                                 Tables.MEASURETYPE.ID, Tables.MEASURETYPE.NAME)
-                        .setInitialValue(initialHouseMeasure.getMeasuretypeId(), UInteger.valueOf(0))
+                        .setInitialValue(initialHouseMeasure.getMeasuretypeId(), 0)
                         .setLabel("Measure type"))
-                .addEntry(new TableEntryUInt(Tables.INITIALHOUSEMEASURE.HOUSE_ID)
-                        .setInitialValue(houseId, UInteger.valueOf(0))
+                .addEntry(new TableEntryInt(Tables.INITIALHOUSEMEASURE.HOUSE_ID)
+                        .setInitialValue(houseId, 0)
                         .setLabel("House id")
                         .setHidden(true))
                 .endForm();

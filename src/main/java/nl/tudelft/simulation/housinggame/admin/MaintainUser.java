@@ -6,7 +6,6 @@ import javax.servlet.http.HttpSession;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
-import org.jooq.types.UInteger;
 
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryBoolean;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
@@ -74,7 +73,7 @@ public class MaintainUser
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         UserRecord user = userId == 0 ? dslContext.newRecord(Tables.USER)
-                : dslContext.selectFrom(Tables.USER).where(Tables.USER.ID.eq(UInteger.valueOf(userId))).fetchOne();
+                : dslContext.selectFrom(Tables.USER).where(Tables.USER.ID.eq(userId)).fetchOne();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)

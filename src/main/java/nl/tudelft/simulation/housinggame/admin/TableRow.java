@@ -3,8 +3,6 @@ package nl.tudelft.simulation.housinggame.admin;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jooq.types.UInteger;
-
 public class TableRow
 {
 
@@ -20,7 +18,7 @@ public class TableRow
 
     private List<String> editMethods = new ArrayList<>();
 
-    public TableRow(int id, int selectedId, String name, String viewMethod)
+    public TableRow(final int id, final int selectedId, final String name, final String viewMethod)
     {
         this.id = id;
         this.selectedId = selectedId;
@@ -28,15 +26,7 @@ public class TableRow
         this.viewMethod = viewMethod;
     }
 
-    public TableRow(UInteger id, int selectedId, String name, String viewMethod)
-    {
-        this.id = id.intValue();
-        this.selectedId = selectedId;
-        this.name = name;
-        this.viewMethod = viewMethod;
-    }
-
-    public void addButton(String buttonText, String buttonMethod)
+    public void addButton(final String buttonText, final String buttonMethod)
     {
         this.editButtons.add(buttonText);
         this.editMethods.add(buttonMethod);

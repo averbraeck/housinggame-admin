@@ -6,12 +6,11 @@ import javax.servlet.http.HttpSession;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
-import org.jooq.types.UInteger;
 
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecordUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecord;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.LabelRecord;
@@ -122,7 +121,7 @@ public class MaintainLanguage
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         LanguageRecord language = languageId == 0 ? dslContext.newRecord(Tables.LANGUAGE)
-                : dslContext.selectFrom(Tables.LANGUAGE).where(Tables.LANGUAGE.ID.eq(UInteger.valueOf(languageId))).fetchOne();
+                : dslContext.selectFrom(Tables.LANGUAGE).where(Tables.LANGUAGE.ID.eq(languageId)).fetchOne();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -158,7 +157,8 @@ public class MaintainLanguage
             final boolean editButton, final boolean editRecord)
     {
         data.showColumn("Language", 0, 0, false, Tables.LANGUAGE, Tables.LANGUAGE.CODE, "code", false);
-        data.showColumn("LanguageGroup", 1, recordId, editButton, Tables.LANGUAGEGROUP, Tables.LANGUAGEGROUP.NAME, "name", true);
+        data.showColumn("LanguageGroup", 1, recordId, editButton, Tables.LANGUAGEGROUP, Tables.LANGUAGEGROUP.NAME, "name",
+                true);
         data.resetColumn(2);
         data.resetFormColumn();
         if (recordId != 0)
@@ -169,11 +169,12 @@ public class MaintainLanguage
         }
     }
 
-    public static void editLanguageGroup(final HttpSession session, final AdminData data, final int languagesId, final boolean edit)
+    public static void editLanguageGroup(final HttpSession session, final AdminData data, final int languagesId,
+            final boolean edit)
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        LanguagegroupRecord languages = languagesId == 0 ? dslContext.newRecord(Tables.LANGUAGEGROUP) : dslContext
-                .selectFrom(Tables.LANGUAGEGROUP).where(Tables.LANGUAGEGROUP.ID.eq(UInteger.valueOf(languagesId))).fetchOne();
+        LanguagegroupRecord languages = languagesId == 0 ? dslContext.newRecord(Tables.LANGUAGEGROUP)
+                : dslContext.selectFrom(Tables.LANGUAGEGROUP).where(Tables.LANGUAGEGROUP.ID.eq(languagesId)).fetchOne();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -189,29 +190,29 @@ public class MaintainLanguage
                         .setInitialValue(languages.getName(), "")
                         .setLabel("Group name")
                         .setMaxChars(45))
-                .addEntry(new TableEntryPickRecordUInt(Tables.LANGUAGEGROUP.LANGUAGE_ID1)
+                .addEntry(new TableEntryPickRecord(Tables.LANGUAGEGROUP.LANGUAGE_ID1)
                         .setRequired()
                         .setPickTable(data, Tables.LANGUAGE, Tables.LANGUAGE.ID,
                                 Tables.LANGUAGE.CODE)
-                        .setInitialValue(languages.getLanguageId1(), UInteger.valueOf(0))
+                        .setInitialValue(languages.getLanguageId1(), 0)
                         .setLabel("Language 1"))
-                .addEntry(new TableEntryPickRecordUInt(Tables.LANGUAGEGROUP.LANGUAGE_ID2)
+                .addEntry(new TableEntryPickRecord(Tables.LANGUAGEGROUP.LANGUAGE_ID2)
                         .setRequired(false)
                         .setPickTable(data, Tables.LANGUAGE, Tables.LANGUAGE.ID,
                                 Tables.LANGUAGE.CODE)
-                        .setInitialValue(languages.getLanguageId2(), UInteger.valueOf(0))
+                        .setInitialValue(languages.getLanguageId2(), 0)
                         .setLabel("Language 2"))
-                .addEntry(new TableEntryPickRecordUInt(Tables.LANGUAGEGROUP.LANGUAGE_ID3)
+                .addEntry(new TableEntryPickRecord(Tables.LANGUAGEGROUP.LANGUAGE_ID3)
                         .setRequired(false)
                         .setPickTable(data, Tables.LANGUAGE, Tables.LANGUAGE.ID,
                                 Tables.LANGUAGE.CODE)
-                        .setInitialValue(languages.getLanguageId3(), UInteger.valueOf(0))
+                        .setInitialValue(languages.getLanguageId3(), 0)
                         .setLabel("Language 3"))
-                .addEntry(new TableEntryPickRecordUInt(Tables.LANGUAGEGROUP.LANGUAGE_ID4)
+                .addEntry(new TableEntryPickRecord(Tables.LANGUAGEGROUP.LANGUAGE_ID4)
                         .setRequired(false)
                         .setPickTable(data, Tables.LANGUAGE, Tables.LANGUAGE.ID,
                                 Tables.LANGUAGE.CODE)
-                        .setInitialValue(languages.getLanguageId4(), UInteger.valueOf(0))
+                        .setInitialValue(languages.getLanguageId4(), 0)
                         .setLabel("Language 4"))
                 .endForm();
         //@formatter:on
@@ -243,18 +244,17 @@ public class MaintainLanguage
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         LabelRecord label = labelId == 0 ? dslContext.newRecord(Tables.LABEL)
-                : dslContext.selectFrom(Tables.LABEL).where(Tables.LABEL.ID.eq(UInteger.valueOf(labelId))).fetchOne();
-        UInteger languagesId =
-                labelId == 0 ? UInteger.valueOf(data.getColumn(1).getSelectedRecordId()) : label.getLanguagegroupId();
+                : dslContext.selectFrom(Tables.LABEL).where(Tables.LABEL.ID.eq(labelId)).fetchOne();
+        int languagesId = labelId == 0 ? data.getColumn(1).getSelectedRecordId() : label.getLanguagegroupId();
         LanguagegroupRecord languages = SqlUtils.readRecordFromId(data, Tables.LANGUAGEGROUP, languagesId);
         String[] language = new String[4];
-        language[0] = languages.getLanguageId1() != null && languages.getLanguageId1().intValue() != 0
+        language[0] = languages.getLanguageId1() != null && languages.getLanguageId1() != 0
                 ? SqlUtils.readRecordFromId(data, Tables.LANGUAGE, languages.getLanguageId1()).getCode() : "EN";
-        language[1] = languages.getLanguageId2() != null && languages.getLanguageId2().intValue() != 0
+        language[1] = languages.getLanguageId2() != null && languages.getLanguageId2() != 0
                 ? SqlUtils.readRecordFromId(data, Tables.LANGUAGE, languages.getLanguageId2()).getCode() : "language 2";
-        language[2] = languages.getLanguageId3() != null && languages.getLanguageId3().intValue() != 0
+        language[2] = languages.getLanguageId3() != null && languages.getLanguageId3() != 0
                 ? SqlUtils.readRecordFromId(data, Tables.LANGUAGE, languages.getLanguageId3()).getCode() : "language 3";
-        language[3] = languages.getLanguageId4() != null && languages.getLanguageId4().intValue() != 0
+        language[3] = languages.getLanguageId4() != null && languages.getLanguageId4() != 0
                 ? SqlUtils.readRecordFromId(data, Tables.LANGUAGE, languages.getLanguageId4()).getCode() : "language 4";
         //@formatter:off
         TableForm form = new TableForm()
@@ -288,8 +288,8 @@ public class MaintainLanguage
                         .setInitialValue(label.getValue4(), "")
                         .setLabel("Text in " + language[3])
                         .setRows(5))
-                .addEntry(new TableEntryUInt(Tables.LABEL.LANGUAGEGROUP_ID)
-                        .setInitialValue(languagesId, UInteger.valueOf(0))
+                .addEntry(new TableEntryInt(Tables.LABEL.LANGUAGEGROUP_ID)
+                        .setInitialValue(languagesId, 0)
                         .setLabel("LanguageGroup id")
                         .setHidden(true))
                 .endForm();

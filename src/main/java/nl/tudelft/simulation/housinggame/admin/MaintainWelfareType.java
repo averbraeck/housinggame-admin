@@ -6,10 +6,9 @@ import javax.servlet.http.HttpSession;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
-import org.jooq.types.UInteger;
 
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.WelfaretypeRecord;
@@ -49,8 +48,8 @@ public class MaintainWelfareType
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(welfareType, "welfaretype");
                 else
-                    data.askDeleteRecord(welfareType, "WelfareType", String.valueOf(welfareType.getName()), "deleteWelfareTypeOk",
-                            "welfaretype");
+                    data.askDeleteRecord(welfareType, "WelfareType", String.valueOf(welfareType.getName()),
+                            "deleteWelfareTypeOk", "welfaretype");
                 recordId = 0;
             }
             if (!data.isError())
@@ -131,10 +130,9 @@ public class MaintainWelfareType
             final boolean edit)
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        WelfaretypeRecord welfareType = welfareTypeId == 0 ? dslContext.newRecord(Tables.WELFARETYPE) : dslContext
-                .selectFrom(Tables.WELFARETYPE).where(Tables.WELFARETYPE.ID.eq(UInteger.valueOf(welfareTypeId))).fetchOne();
-        UInteger scenarioId =
-                welfareTypeId == 0 ? UInteger.valueOf(data.getColumn(1).getSelectedRecordId()) : welfareType.getScenarioId();
+        WelfaretypeRecord welfareType = welfareTypeId == 0 ? dslContext.newRecord(Tables.WELFARETYPE)
+                : dslContext.selectFrom(Tables.WELFARETYPE).where(Tables.WELFARETYPE.ID.eq(welfareTypeId)).fetchOne();
+        int scenarioId = welfareTypeId == 0 ? data.getColumn(1).getSelectedRecordId() : welfareType.getScenarioId();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -150,43 +148,43 @@ public class MaintainWelfareType
                         .setInitialValue(welfareType.getName(), "")
                         .setLabel("WelfareType identifying name")
                         .setMaxChars(255))
-                .addEntry(new TableEntryUInt(Tables.WELFARETYPE.INITIAL_SATISFACTION)
+                .addEntry(new TableEntryInt(Tables.WELFARETYPE.INITIAL_SATISFACTION)
                         .setRequired()
-                        .setInitialValue(welfareType.getInitialSatisfaction(), UInteger.valueOf(0))
+                        .setInitialValue(welfareType.getInitialSatisfaction(), 0)
                         .setLabel("Initial Satisfaction")
                         .setMin(0))
-                .addEntry(new TableEntryUInt(Tables.WELFARETYPE.INITIAL_MONEY)
+                .addEntry(new TableEntryInt(Tables.WELFARETYPE.INITIAL_MONEY)
                         .setRequired()
-                        .setInitialValue(welfareType.getInitialMoney(), UInteger.valueOf(0))
+                        .setInitialValue(welfareType.getInitialMoney(), 0)
                         .setLabel("Initial Money")
                         .setMin(0))
-                .addEntry(new TableEntryUInt(Tables.WELFARETYPE.MAXIMUM_MORTGAGE)
+                .addEntry(new TableEntryInt(Tables.WELFARETYPE.MAXIMUM_MORTGAGE)
                         .setRequired()
-                        .setInitialValue(welfareType.getMaximumMortgage(), UInteger.valueOf(0))
+                        .setInitialValue(welfareType.getMaximumMortgage(), 0)
                         .setLabel("Maximum Mortgage")
                         .setMin(0))
-                .addEntry(new TableEntryUInt(Tables.WELFARETYPE.LIVING_COSTS)
+                .addEntry(new TableEntryInt(Tables.WELFARETYPE.LIVING_COSTS)
                         .setRequired()
-                        .setInitialValue(welfareType.getLivingCosts(), UInteger.valueOf(0))
+                        .setInitialValue(welfareType.getLivingCosts(), 0)
                         .setLabel("Living Costs")
                         .setMin(0))
-                .addEntry(new TableEntryUInt(Tables.WELFARETYPE.INCOME_PER_ROUND)
+                .addEntry(new TableEntryInt(Tables.WELFARETYPE.INCOME_PER_ROUND)
                         .setRequired()
-                        .setInitialValue(welfareType.getIncomePerRound(), UInteger.valueOf(0))
+                        .setInitialValue(welfareType.getIncomePerRound(), 0)
                         .setLabel("Income per round")
                         .setMin(0))
-                .addEntry(new TableEntryUInt(Tables.WELFARETYPE.SATISFACTION_COST_PER_POINT)
+                .addEntry(new TableEntryInt(Tables.WELFARETYPE.SATISFACTION_COST_PER_POINT)
                         .setRequired()
-                        .setInitialValue(welfareType.getSatisfactionCostPerPoint(), UInteger.valueOf(0))
+                        .setInitialValue(welfareType.getSatisfactionCostPerPoint(), 0)
                         .setLabel("Satisfaction Cost per Point")
                         .setMin(0))
-                .addEntry(new TableEntryUInt(Tables.WELFARETYPE.PREFERRED_HOUSE_RATING)
+                .addEntry(new TableEntryInt(Tables.WELFARETYPE.PREFERRED_HOUSE_RATING)
                         .setRequired()
-                        .setInitialValue(welfareType.getPreferredHouseRating(), UInteger.valueOf(0))
+                        .setInitialValue(welfareType.getPreferredHouseRating(), 0)
                         .setLabel("Preferred House Rating")
                         .setMin(0))
-                .addEntry(new TableEntryUInt(Tables.WELFARETYPE.SCENARIO_ID)
-                        .setInitialValue(scenarioId, UInteger.valueOf(0))
+                .addEntry(new TableEntryInt(Tables.WELFARETYPE.SCENARIO_ID)
+                        .setInitialValue(scenarioId, 0)
                         .setLabel("Scenario id")
                         .setHidden(true))
                 .endForm();

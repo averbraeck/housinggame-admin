@@ -6,12 +6,10 @@ import javax.servlet.http.HttpSession;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
-import org.jooq.types.UInteger;
 
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDouble;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.CommunityRecord;
@@ -127,10 +125,9 @@ public class MaintainCommunity
     public static void editCommunity(final HttpSession session, final AdminData data, final int communityId, final boolean edit)
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        CommunityRecord community = communityId == 0 ? dslContext.newRecord(Tables.COMMUNITY) : dslContext
-                .selectFrom(Tables.COMMUNITY).where(Tables.COMMUNITY.ID.eq(UInteger.valueOf(communityId))).fetchOne();
-        UInteger gameVersionId =
-                communityId == 0 ? UInteger.valueOf(data.getColumn(0).getSelectedRecordId()) : community.getGameversionId();
+        CommunityRecord community = communityId == 0 ? dslContext.newRecord(Tables.COMMUNITY)
+                : dslContext.selectFrom(Tables.COMMUNITY).where(Tables.COMMUNITY.ID.eq(communityId)).fetchOne();
+        int gameVersionId = communityId == 0 ? data.getColumn(0).getSelectedRecordId() : community.getGameversionId();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -161,8 +158,8 @@ public class MaintainCommunity
                         .setInitialValue(community.getProtectionRiverFlood(), 0)
                         .setLabel("Protection river flood")
                         .setMin(0))
-                .addEntry(new TableEntryUInt(Tables.COMMUNITY.GAMEVERSION_ID)
-                        .setInitialValue(gameVersionId, UInteger.valueOf(0))
+                .addEntry(new TableEntryInt(Tables.COMMUNITY.GAMEVERSION_ID)
+                        .setInitialValue(gameVersionId, 0)
                         .setLabel("Scenario id")
                         .setHidden(true))
                 .endForm();
@@ -195,8 +192,8 @@ public class MaintainCommunity
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         TaxRecord tax = taxId == 0 ? dslContext.newRecord(Tables.TAX)
-                : dslContext.selectFrom(Tables.TAX).where(Tables.TAX.ID.eq(UInteger.valueOf(taxId))).fetchOne();
-        UInteger communityId = taxId == 0 ? UInteger.valueOf(data.getColumn(1).getSelectedRecordId()) : tax.getCommunityId();
+                : dslContext.selectFrom(Tables.TAX).where(Tables.TAX.ID.eq(taxId)).fetchOne();
+        int communityId = taxId == 0 ? data.getColumn(1).getSelectedRecordId() : tax.getCommunityId();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -212,14 +209,14 @@ public class MaintainCommunity
                         .setInitialValue(tax.getName(), "")
                         .setLabel("Tax name")
                         .setMaxChars(45))
-                .addEntry(new TableEntryUInt(Tables.TAX.MINIMUM_INHABITANTS)
+                .addEntry(new TableEntryInt(Tables.TAX.MINIMUM_INHABITANTS)
                         .setRequired()
-                        .setInitialValue(tax.getMinimumInhabitants(), UInteger.valueOf(0))
+                        .setInitialValue(tax.getMinimumInhabitants(), 0)
                         .setLabel("Minimum inhabitants")
                         .setMin(0))
-                .addEntry(new TableEntryUInt(Tables.TAX.MAXIMUM_INHABITANTS)
+                .addEntry(new TableEntryInt(Tables.TAX.MAXIMUM_INHABITANTS)
                         .setRequired()
-                        .setInitialValue(tax.getMaximumInhabitants(), UInteger.valueOf(0))
+                        .setInitialValue(tax.getMaximumInhabitants(), 0)
                         .setLabel("Maximum inhabitants")
                         .setMin(0))
                 .addEntry(new TableEntryDouble(Tables.TAX.TAX_COST)
@@ -227,8 +224,8 @@ public class MaintainCommunity
                         .setInitialValue(tax.getTaxCost(), 0.0)
                         .setLabel("Tax cost")
                         .setMin(0))
-                .addEntry(new TableEntryUInt(Tables.TAX.COMMUNITY_ID)
-                        .setInitialValue(communityId, UInteger.valueOf(0))
+                .addEntry(new TableEntryInt(Tables.TAX.COMMUNITY_ID)
+                        .setInitialValue(communityId, 0)
                         .setLabel("Community id")
                         .setHidden(true))
                 .endForm();

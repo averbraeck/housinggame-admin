@@ -6,12 +6,10 @@ import javax.servlet.http.HttpSession;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
-import org.jooq.types.UInteger;
 
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecordUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecord;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.GameversionRecord;
@@ -170,8 +168,8 @@ public class MaintainScenario
             final boolean edit)
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        GameversionRecord gameVersion = gameVersionId == 0 ? dslContext.newRecord(Tables.GAMEVERSION) : dslContext
-                .selectFrom(Tables.GAMEVERSION).where(Tables.GAMEVERSION.ID.eq(UInteger.valueOf(gameVersionId))).fetchOne();
+        GameversionRecord gameVersion = gameVersionId == 0 ? dslContext.newRecord(Tables.GAMEVERSION)
+                : dslContext.selectFrom(Tables.GAMEVERSION).where(Tables.GAMEVERSION.ID.eq(gameVersionId)).fetchOne();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -187,11 +185,11 @@ public class MaintainScenario
                         .setInitialValue(gameVersion.getName(), "")
                         .setLabel("Game Version name")
                         .setMaxChars(255))
-                .addEntry(new TableEntryPickRecordUInt(Tables.GAMEVERSION.LANGUAGEGROUP_ID)
+                .addEntry(new TableEntryPickRecord(Tables.GAMEVERSION.LANGUAGEGROUP_ID)
                         .setRequired()
                         .setPickTable(data, Tables.LANGUAGEGROUP, Tables.LANGUAGEGROUP.ID,
                                 Tables.LANGUAGEGROUP.NAME)
-                        .setInitialValue(gameVersion.getLanguagegroupId(), UInteger.valueOf(0))
+                        .setInitialValue(gameVersion.getLanguagegroupId(), 0)
                         .setLabel("Game languages"));
         //@formatter:on
         form.addAddtionalButton("cloneGameVersion", "Clone Entire GameVersion");
@@ -224,9 +222,8 @@ public class MaintainScenario
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         ScenarioRecord scenario = scenarioId == 0 ? dslContext.newRecord(Tables.SCENARIO)
-                : dslContext.selectFrom(Tables.SCENARIO).where(Tables.SCENARIO.ID.eq(UInteger.valueOf(scenarioId))).fetchOne();
-        UInteger gameVersionId =
-                scenarioId == 0 ? UInteger.valueOf(data.getColumn(0).getSelectedRecordId()) : scenario.getGameversionId();
+                : dslContext.selectFrom(Tables.SCENARIO).where(Tables.SCENARIO.ID.eq(scenarioId)).fetchOne();
+        int gameVersionId = scenarioId == 0 ? data.getColumn(0).getSelectedRecordId() : scenario.getGameversionId();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -247,30 +244,30 @@ public class MaintainScenario
                         .setInitialValue(scenario.getInformationAmount(), 0)
                         .setLabel("Information amount")
                         .setMin(0))
-                .addEntry(new TableEntryUInt(Tables.SCENARIO.GAMEVERSION_ID)
-                        .setInitialValue(gameVersionId, UInteger.valueOf(0))
+                .addEntry(new TableEntryInt(Tables.SCENARIO.GAMEVERSION_ID)
+                        .setInitialValue(gameVersionId, 0)
                         .setLabel("GameVersion id")
                         .setHidden(true))
-                .addEntry(new TableEntryUInt(Tables.SCENARIO.MINIMUM_PLAYERS)
+                .addEntry(new TableEntryInt(Tables.SCENARIO.MINIMUM_PLAYERS)
                         .setRequired()
-                        .setInitialValue(scenario.getMinimumPlayers(), UInteger.valueOf(0))
+                        .setInitialValue(scenario.getMinimumPlayers(), 0)
                         .setLabel("Minimum # of players")
                         .setMin(0))
-                .addEntry(new TableEntryUInt(Tables.SCENARIO.MAXIMUM_PLAYERS)
+                .addEntry(new TableEntryInt(Tables.SCENARIO.MAXIMUM_PLAYERS)
                         .setRequired()
-                        .setInitialValue(scenario.getMaximumPlayers(), UInteger.valueOf(0))
+                        .setInitialValue(scenario.getMaximumPlayers(), 0)
                         .setLabel("Maximum # of players")
                         .setMin(0))
-                .addEntry(new TableEntryUInt(Tables.SCENARIO.HIGHEST_ROUND_NUMBER)
+                .addEntry(new TableEntryInt(Tables.SCENARIO.HIGHEST_ROUND_NUMBER)
                         .setRequired()
-                        .setInitialValue(scenario.getHighestRoundNumber(), UInteger.valueOf(0))
+                        .setInitialValue(scenario.getHighestRoundNumber(), 0)
                         .setLabel("Highest round number")
                         .setMin(0))
-                .addEntry(new TableEntryPickRecordUInt(Tables.SCENARIO.SCENARIOPARAMETERS_ID)
+                .addEntry(new TableEntryPickRecord(Tables.SCENARIO.SCENARIOPARAMETERS_ID)
                         .setRequired()
                         .setPickTable(data, Tables.SCENARIOPARAMETERS, Tables.SCENARIOPARAMETERS.ID,
                                 Tables.SCENARIOPARAMETERS.NAME)
-                        .setInitialValue(scenario.getScenarioparametersId(), UInteger.valueOf(0))
+                        .setInitialValue(scenario.getScenarioparametersId(), 0)
                         .setLabel("Scenario parameters"));
         //@formatter:on
         form.addAddtionalButton("cloneScenario", "Clone Entire Scenario");

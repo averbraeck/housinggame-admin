@@ -94,7 +94,7 @@ public class FormEntryPickRecord extends AbstractFormEntry<FormEntryPickRecord, 
             s.append("\">\n");
         for (String name : this.records.keySet())
         {
-            int id = this.records.get(name);
+            Integer id = this.records.get(name); // TODO: int is not possible here -- could be null?
             s.append("        <option value=\"");
             s.append(id);
             s.append("\"");

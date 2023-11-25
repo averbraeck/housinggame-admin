@@ -4,7 +4,7 @@ package nl.tudelft.simulation.housinggame.admin;
  * HousingGameException.java.
  * <p>
  * Copyright (c) 2020-2020 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
- * BSD-style license. 
+ * BSD-style license.
  * </p>
  * @author <a href="https://www.tudelft.nl/averbraeck">Alexander Verbraeck</a>
  */
@@ -51,7 +51,8 @@ public class HousingGameException extends Exception
      * @param enableSuppression
      * @param writableStackTrace
      */
-    public HousingGameException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace)
+    public HousingGameException(final String message, final Throwable cause, final boolean enableSuppression,
+            final boolean writableStackTrace)
     {
         super(message, cause, enableSuppression, writableStackTrace);
     }

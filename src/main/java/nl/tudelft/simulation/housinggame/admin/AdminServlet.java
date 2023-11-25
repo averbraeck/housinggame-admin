@@ -96,7 +96,7 @@ public class AdminServlet extends HttpServlet
             case "deleteLabelGameVersionOk":
             case "newLabelGameVersion":
 
-            // GameVersion - Scenario
+                // GameVersion - Scenario
             case "scenario":
             case "viewGameVersion":
             case "editGameVersion":
@@ -327,7 +327,7 @@ public class AdminServlet extends HttpServlet
                 break;
 
             /*-
-
+            
             // (GameSession) - (Group) - Result
             case "play-result":
             case "viewPlayResultGameSession":
@@ -336,7 +336,7 @@ public class AdminServlet extends HttpServlet
                 data.setMenuChoice("play-result");
                 MaintainPlayResult.handleMenu(request, click, recordNr);
                 break;
-
+            
             */
 
             default:

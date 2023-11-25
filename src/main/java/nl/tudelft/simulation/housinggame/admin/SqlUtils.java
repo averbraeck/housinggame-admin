@@ -17,7 +17,6 @@ import org.jooq.SQLDialect;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.impl.DSL;
-import org.jooq.types.UInteger;
 
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.CommunityRecord;
@@ -55,16 +54,16 @@ public final class SqlUtils
         return DriverManager.getConnection(jdbcURL, dbUser, dbPassword);
     }
 
-    public static RoundRecord readRoundFromRoundId(final AdminData data, final Integer roundId)
+    public static RoundRecord readRoundFromRoundId(final AdminData data, final int roundId)
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        return dslContext.selectFrom(Tables.ROUND).where(Tables.ROUND.ID.eq(UInteger.valueOf(roundId))).fetchAny();
+        return dslContext.selectFrom(Tables.ROUND).where(Tables.ROUND.ID.eq(roundId)).fetchAny();
     }
 
-    public static UserRecord readUserFromUserId(final AdminData data, final Integer userId)
+    public static UserRecord readUserFromUserId(final AdminData data, final int userId)
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        return dslContext.selectFrom(Tables.USER).where(Tables.USER.ID.eq(UInteger.valueOf(userId))).fetchAny();
+        return dslContext.selectFrom(Tables.USER).where(Tables.USER.ID.eq(userId)).fetchAny();
     }
 
     public static UserRecord readUserFromUsername(final AdminData data, final String username)
@@ -79,18 +78,12 @@ public final class SqlUtils
         data.setMenuChoice("");
     }
 
+    @SuppressWarnings("unchecked")
     public static <R extends org.jooq.UpdatableRecord<R>> R readRecordFromId(final AdminData data, final Table<R> table,
             final int recordId)
     {
-        return readRecordFromId(data, table, UInteger.valueOf(recordId));
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <R extends org.jooq.UpdatableRecord<R>> R readRecordFromId(final AdminData data, final Table<R> table,
-            final UInteger recordId)
-    {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        return dslContext.selectFrom(table).where(((TableField<R, UInteger>) table.field("id")).eq(recordId)).fetchOne();
+        return dslContext.selectFrom(table).where(((TableField<R, Integer>) table.field("id")).eq(recordId)).fetchOne();
     }
 
     /**
@@ -118,7 +111,7 @@ public final class SqlUtils
         ScenarioRecord newScenario = oldScenario.copy();
         newScenario.setName(newScenarioName);
         newScenario.store();
-        UInteger newScenarioId = newScenario.getId();
+        int newScenarioId = newScenario.getId();
 
         // 2. For the scenario, clone the questions, using the new scenarioId.
         List<QuestionRecord> questionList =
@@ -148,7 +141,7 @@ public final class SqlUtils
             RoundRecord newRound = oldRound.copy();
             newRound.setScenarioId(newScenarioId);
             newRound.store();
-            UInteger newRoundId = newRound.getId();
+            int newRoundId = newRound.getId();
 
             // 5. For each round, clone the newsitems using the new roundid.
             List<NewsitemRecord> newsItemList =
@@ -158,7 +151,7 @@ public final class SqlUtils
                 NewsitemRecord newNewsItem = oldNewsitem.copy();
                 newNewsItem.setRoundId(newRoundId);
                 newNewsItem.store();
-                UInteger newNewsItemId = newNewsItem.getId();
+                int newNewsItemId = newNewsItem.getId();
 
                 // 6. For each newsitem, clone the newseffects using the new newsitemId; link to the old communityId.
                 List<NewseffectsRecord> newsEffectsList = dslContext.selectFrom(Tables.NEWSEFFECTS)
@@ -241,12 +234,12 @@ public final class SqlUtils
         GameversionRecord newGameVersion = oldGameVersion.copy();
         newGameVersion.setName(newGameVersionName);
         newGameVersion.store();
-        UInteger newGameVersionId = newGameVersion.getId();
+        int newGameVersionId = newGameVersion.getId();
 
         // 2. For the gameversion, clone the measuretypes; make a map of old measuretypeId to new measuretypeId.
         List<MeasuretypeRecord> measureTypeList = dslContext.selectFrom(Tables.MEASURETYPE)
                 .where(Tables.MEASURETYPE.GAMEVERSION_ID.eq(oldGameVersion.getId())).fetch();
-        Map<UInteger, UInteger> measureTypeMap = new HashMap<>();
+        Map<Integer, Integer> measureTypeMap = new HashMap<>();
         for (MeasuretypeRecord oldMeasureType : measureTypeList)
         {
             MeasuretypeRecord newMeasureType = oldMeasureType.copy();
@@ -259,7 +252,7 @@ public final class SqlUtils
         // make a map of old communityId to new communityId.
         List<CommunityRecord> communityList = dslContext.selectFrom(Tables.COMMUNITY)
                 .where(Tables.COMMUNITY.GAMEVERSION_ID.eq(oldGameVersion.getId())).fetch();
-        Map<UInteger, UInteger> communityMap = new HashMap<>();
+        Map<Integer, Integer> communityMap = new HashMap<>();
         for (CommunityRecord oldCommunity : communityList)
         {
             CommunityRecord newCommunity = oldCommunity.copy();
@@ -309,7 +302,7 @@ public final class SqlUtils
             ScenarioRecord newScenario = oldScenario.copy();
             newScenario.setGameversionId(newGameVersionId);
             newScenario.store();
-            UInteger newScenarioId = newScenario.getId();
+            int newScenarioId = newScenario.getId();
 
             // 8. For each scenario, clone the questions, using the new scenarioId.
             List<QuestionRecord> questionList =
@@ -339,7 +332,7 @@ public final class SqlUtils
                 RoundRecord newRound = oldRound.copy();
                 newRound.setScenarioId(newScenarioId);
                 newRound.store();
-                UInteger newRoundId = newRound.getId();
+                int newRoundId = newRound.getId();
 
                 // 11. For each round, clone the newsitems using the new roundid.
                 List<NewsitemRecord> newsItemList =
@@ -349,7 +342,7 @@ public final class SqlUtils
                     NewsitemRecord newNewsItem = oldNewsitem.copy();
                     newNewsItem.setRoundId(newRoundId);
                     newNewsItem.store();
-                    UInteger newNewsItemId = newNewsItem.getId();
+                    int newNewsItemId = newNewsItem.getId();
 
                     // 12. For each newsitem, clone the newseffects using the new newsitemId;
                     // use the MAP to set new communityId.

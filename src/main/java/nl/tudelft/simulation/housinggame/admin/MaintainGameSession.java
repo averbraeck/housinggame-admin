@@ -13,16 +13,15 @@ import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
-import org.jooq.types.UInteger;
 
 import nl.tudelft.simulation.housinggame.admin.form.FormEntryInt;
-import nl.tudelft.simulation.housinggame.admin.form.FormEntryPickRecordUInt;
+import nl.tudelft.simulation.housinggame.admin.form.FormEntryPickRecord;
 import nl.tudelft.simulation.housinggame.admin.form.FormEntryString;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDate;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDateTime;
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecordUInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecord;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.GamesessionRecord;
@@ -60,8 +59,8 @@ public class MaintainGameSession
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(gameSession, "gamesession");
                 else
-                    data.askDeleteRecord(gameSession, "GameSession", String.valueOf(gameSession.getName()), "deleteGameSessionOk",
-                            "gamesession");
+                    data.askDeleteRecord(gameSession, "GameSession", String.valueOf(gameSession.getName()),
+                            "deleteGameSessionOk", "gamesession");
                 recordId = 0;
             }
             if (!data.isError())
@@ -180,10 +179,9 @@ public class MaintainGameSession
             final boolean edit)
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        GamesessionRecord gameSession = gameSessionId == 0 ? dslContext.newRecord(Tables.GAMESESSION) : dslContext
-                .selectFrom(Tables.GAMESESSION).where(Tables.GAMESESSION.ID.eq(UInteger.valueOf(gameSessionId))).fetchOne();
-        UInteger gameVersionId =
-                gameSessionId == 0 ? UInteger.valueOf(data.getColumn(0).getSelectedRecordId()) : gameSession.getGameversionId();
+        GamesessionRecord gameSession = gameSessionId == 0 ? dslContext.newRecord(Tables.GAMESESSION)
+                : dslContext.selectFrom(Tables.GAMESESSION).where(Tables.GAMESESSION.ID.eq(gameSessionId)).fetchOne();
+        int gameVersionId = gameSessionId == 0 ? data.getColumn(0).getSelectedRecordId() : gameSession.getGameversionId();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -221,8 +219,8 @@ public class MaintainGameSession
                         .setRequired(false)
                         .setInitialValue(gameSession.getEndTime(), null)
                         .setLabel("End time login"))
-                .addEntry(new TableEntryUInt(Tables.GAMESESSION.GAMEVERSION_ID)
-                        .setInitialValue(gameVersionId, UInteger.valueOf(0))
+                .addEntry(new TableEntryInt(Tables.GAMESESSION.GAMEVERSION_ID)
+                        .setInitialValue(gameVersionId, 0)
                         .setLabel("Game version id")
                         .setHidden(true))
                 .endForm();
@@ -259,10 +257,9 @@ public class MaintainGameSession
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         GroupRecord group = groupId == 0 ? dslContext.newRecord(Tables.GROUP)
-                : dslContext.selectFrom(Tables.GROUP).where(Tables.GROUP.ID.eq(UInteger.valueOf(groupId))).fetchOne();
-        UInteger gameVersionId = UInteger.valueOf(data.getColumn(0).getSelectedRecordId());
-        UInteger sessionId =
-                groupId == 0 ? UInteger.valueOf(data.getColumn(1).getSelectedRecordId()) : group.getGamesessionId();
+                : dslContext.selectFrom(Tables.GROUP).where(Tables.GROUP.ID.eq(groupId)).fetchOne();
+        int gameVersionId = data.getColumn(0).getSelectedRecordId();
+        int sessionId = groupId == 0 ? data.getColumn(1).getSelectedRecordId() : group.getGamesessionId();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -283,20 +280,20 @@ public class MaintainGameSession
                         .setInitialValue(group.getPassword(), "")
                         .setLabel("Password")
                         .setMaxChars(32))
-                .addEntry(new TableEntryUInt(Tables.GROUP.GAMESESSION_ID)
-                        .setInitialValue(sessionId, UInteger.valueOf(0))
+                .addEntry(new TableEntryInt(Tables.GROUP.GAMESESSION_ID)
+                        .setInitialValue(sessionId, 0)
                         .setLabel("GameSession id")
                         .setHidden(true))
-                .addEntry(new TableEntryPickRecordUInt(Tables.GROUP.SCENARIO_ID)
+                .addEntry(new TableEntryPickRecord(Tables.GROUP.SCENARIO_ID)
                         .setRequired()
                         .setPickTable(data, Tables.SCENARIO.where(Tables.SCENARIO.GAMEVERSION_ID.eq(gameVersionId)),
                                 Tables.SCENARIO.ID, Tables.SCENARIO.NAME)
-                        .setInitialValue(group.getScenarioId(), UInteger.valueOf(0))
+                        .setInitialValue(group.getScenarioId(), 0)
                         .setLabel("Scenario to play"))
-                .addEntry(new TableEntryPickRecordUInt(Tables.GROUP.FACILITATOR_ID)
+                .addEntry(new TableEntryPickRecord(Tables.GROUP.FACILITATOR_ID)
                         .setRequired(false)
                         .setPickTable(data, Tables.USER, Tables.USER.ID, Tables.USER.USERNAME)
-                        .setInitialValue(group.getFacilitatorId(), UInteger.valueOf(0))
+                        .setInitialValue(group.getFacilitatorId(), 0)
                         .setLabel("Group facilitator"))
                 .endForm();
         //@formatter:on
@@ -331,8 +328,8 @@ public class MaintainGameSession
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         PlayerRecord player = playerId == 0 ? dslContext.newRecord(Tables.PLAYER)
-                : dslContext.selectFrom(Tables.PLAYER).where(Tables.PLAYER.ID.eq(UInteger.valueOf(playerId))).fetchOne();
-        UInteger groupId = playerId == 0 ? UInteger.valueOf(data.getColumn(2).getSelectedRecordId()) : player.getGroupId();
+                : dslContext.selectFrom(Tables.PLAYER).where(Tables.PLAYER.ID.eq(playerId)).fetchOne();
+        int groupId = playerId == 0 ? data.getColumn(2).getSelectedRecordId() : player.getGroupId();
         GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, groupId);
         //@formatter:off
         TableForm form = new TableForm()
@@ -349,20 +346,20 @@ public class MaintainGameSession
                         .setInitialValue(player.getCode(), "")
                         .setLabel("Player name")
                         .setMaxChars(16))
-                .addEntry(new TableEntryUInt(Tables.PLAYER.GROUP_ID)
-                        .setInitialValue(groupId, UInteger.valueOf(0))
+                .addEntry(new TableEntryInt(Tables.PLAYER.GROUP_ID)
+                        .setInitialValue(groupId, 0)
                         .setLabel("Group id")
                         .setHidden(true))
-                .addEntry(new TableEntryPickRecordUInt(Tables.PLAYER.WELFARETYPE_ID)
+                .addEntry(new TableEntryPickRecord(Tables.PLAYER.WELFARETYPE_ID)
                         .setRequired()
                         .setPickTable(data, Tables.WELFARETYPE.where(Tables.WELFARETYPE.SCENARIO_ID.eq(group.getScenarioId())),
                                 Tables.WELFARETYPE.ID, Tables.WELFARETYPE.NAME)
-                        .setInitialValue(player.getWelfaretypeId(), UInteger.valueOf(0))
+                        .setInitialValue(player.getWelfaretypeId(), 0)
                         .setLabel("Player welfare type"))
-                .addEntry(new TableEntryPickRecordUInt(Tables.PLAYER.USER_ID)
+                .addEntry(new TableEntryPickRecord(Tables.PLAYER.USER_ID)
                         .setRequired(false)
                         .setPickTable(data, Tables.USER, Tables.USER.ID, Tables.USER.USERNAME)
-                        .setInitialValue(player.getUserId(), UInteger.valueOf(0))
+                        .setInitialValue(player.getUserId(), 0)
                         .setLabel("User (can be blank)"))
                 .endForm();
         //@formatter:on
@@ -385,7 +382,7 @@ public class MaintainGameSession
                 Tables.GROUP.GAMESESSION_ID, true);
         data.resetColumn(3);
         data.resetFormColumn();
-        UInteger gameVersionId = UInteger.valueOf(data.getColumn(0).getSelectedRecordId());
+        int gameVersionId = data.getColumn(0).getSelectedRecordId();
 
         StringBuilder s = new StringBuilder();
         s.append("<p>Note: The group numbers will be generated at the places of the #-sign in the group name, \n"
@@ -406,10 +403,10 @@ public class MaintainGameSession
                 .makeHtml());
         s.append(new FormEntryInt("Number of groups", "nrgroups").setMin(1).setRequired().setInitialValue(6, 1).makeHtml());
         s.append(new FormEntryString("Group password (# allowed)", "password").setMaxChars(32).setRequired().makeHtml());
-        s.append(new FormEntryPickRecordUInt("Scenario to play", "scenarioId")
-                .setRequired().setPickTable(data, Tables.SCENARIO.where(Tables.SCENARIO.GAMEVERSION_ID.eq(gameVersionId)),
-                        Tables.SCENARIO.ID, Tables.SCENARIO.NAME)
-                .setInitialValue(UInteger.valueOf(0), UInteger.valueOf(0)).makeHtml());
+        s.append(new FormEntryPickRecord("Scenario to play", "scenarioId").setRequired()
+                .setPickTable(data, Tables.SCENARIO.where(Tables.SCENARIO.GAMEVERSION_ID.eq(gameVersionId)), Tables.SCENARIO.ID,
+                        Tables.SCENARIO.NAME)
+                .setInitialValue(0, 0).makeHtml());
         s.append(new FormEntryString("Player names (with # and %)", "playername").setMaxChars(16).setRequired()
                 .setInitialValue("t#p%", "t#p%").makeHtml());
         s.append(new FormEntryInt("Player start number", "playerstartnr").setMin(1).setRequired().setInitialValue(1, 1)
@@ -528,15 +525,15 @@ public class MaintainGameSession
         int nrGroups = Integer.parseInt(sNrGroups);
         int playerStartNr = Integer.parseInt(sPlayerStartNr);
         int nrPlayers = Integer.parseInt(sNrPlayers);
-        UInteger scenarioId = UInteger.valueOf(sScenarioId);
+        int scenarioId = Integer.valueOf(sScenarioId);
 
         Random random = new Random();
-        SortedMap<Double, UInteger> randomRecords = new TreeMap<>();
+        SortedMap<Double, Integer> randomRecords = new TreeMap<>();
         List<WelfaretypeRecord> tableRecords =
                 dslContext.selectFrom(Tables.WELFARETYPE).where(Tables.WELFARETYPE.SCENARIO_ID.eq(scenarioId)).fetch();
         for (WelfaretypeRecord record : tableRecords)
             randomRecords.put(random.nextDouble(), record.getId());
-        List<UInteger> welfareTypeRecords = new ArrayList<>(randomRecords.values());
+        List<Integer> welfareTypeRecords = new ArrayList<>(randomRecords.values());
 
         // make the groups
         for (int i = groupStartNr; i < groupStartNr + nrGroups; i++)
@@ -556,9 +553,9 @@ public class MaintainGameSession
 
             group.setName(gname);
             group.setPassword(pwd);
-            group.setGamesessionId(UInteger.valueOf(gameSessionId));
+            group.setGamesessionId(gameSessionId);
             group.setScenarioId(scenarioId);
-            UInteger groupId;
+            int groupId;
             try
             {
                 group.store();
@@ -579,7 +576,7 @@ public class MaintainGameSession
                 PlayerRecord player = dslContext.newRecord(Tables.PLAYER);
                 String pnr = "" + j;
                 String pname = playerName.replaceFirst("#", gnr).replaceFirst("\\%", pnr);
-                UInteger welfareTypeId = welfareTypeRecords.get(j % welfareTypeRecords.size());
+                int welfareTypeId = welfareTypeRecords.get(j % welfareTypeRecords.size());
                 // System.out.println("welfareTypeId player " + pname + " = " + welfareTypeId);
 
                 player.setCode(pname);

@@ -70,7 +70,8 @@ public class UserLoginServlet extends HttpServlet
     }
 
     @Override
-    protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
+    protected void doPost(final HttpServletRequest request, final HttpServletResponse response)
+            throws ServletException, IOException
     {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
@@ -104,10 +105,10 @@ public class UserLoginServlet extends HttpServlet
         UserRecord user = SqlUtils.readUserFromUsername(data, username);
         String userPassword = user == null ? "" : user.getPassword() == null ? "" : user.getPassword();
         // TODO: hashedPassword
-        if (user != null && userPassword.equals(password) && user.getAdministrator().intValue() == 1)
+        if (user != null && userPassword.equals(password) && user.getAdministrator() == 1)
         {
             data.setUsername(user.getUsername());
-            data.setUserId(user.getId().intValue());
+            data.setUserId(user.getId());
             data.setUser(user);
             response.sendRedirect("jsp/admin/admin.jsp");
         }
@@ -119,7 +120,8 @@ public class UserLoginServlet extends HttpServlet
     }
 
     @Override
-    protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
+    protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
+            throws ServletException, IOException
     {
         response.sendRedirect("jsp/admin/login.jsp");
     }

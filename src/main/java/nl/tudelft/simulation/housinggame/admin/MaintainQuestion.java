@@ -6,11 +6,10 @@ import javax.servlet.http.HttpSession;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
-import org.jooq.types.UInteger;
 
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryUInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.QuestionRecord;
@@ -50,7 +49,8 @@ public class MaintainQuestion
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(question, "question");
                 else
-                    data.askDeleteRecord(question, "Question", String.valueOf(question.getName()), "deleteQuestionOk", "question");
+                    data.askDeleteRecord(question, "Question", String.valueOf(question.getName()), "deleteQuestionOk",
+                            "question");
                 recordId = 0;
             }
             if (!data.isError())
@@ -130,9 +130,8 @@ public class MaintainQuestion
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         QuestionRecord question = questionId == 0 ? dslContext.newRecord(Tables.QUESTION)
-                : dslContext.selectFrom(Tables.QUESTION).where(Tables.QUESTION.ID.eq(UInteger.valueOf(questionId))).fetchOne();
-        UInteger scenarioId =
-                questionId == 0 ? UInteger.valueOf(data.getColumn(1).getSelectedRecordId()) : question.getScenarioId();
+                : dslContext.selectFrom(Tables.QUESTION).where(Tables.QUESTION.ID.eq(questionId)).fetchOne();
+        int scenarioId = questionId == 0 ? data.getColumn(1).getSelectedRecordId() : question.getScenarioId();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -143,9 +142,9 @@ public class MaintainQuestion
                         + "<br>has not been used in a scenario")
                 .setRecordNr(questionId)
                 .startForm()
-                .addEntry(new TableEntryUInt(Tables.QUESTION.QUESTION_NUMBER)
+                .addEntry(new TableEntryInt(Tables.QUESTION.QUESTION_NUMBER)
                         .setRequired()
-                        .setInitialValue(question.getQuestionNumber(), UInteger.valueOf(1))
+                        .setInitialValue(question.getQuestionNumber(), 1)
                         .setLabel("Question number"))
                 .addEntry(new TableEntryString(Tables.QUESTION.NAME)
                         .setRequired()
@@ -156,8 +155,8 @@ public class MaintainQuestion
                         .setRequired()
                         .setInitialValue(question.getDescription(), "")
                         .setLabel("Description"))
-                .addEntry(new TableEntryUInt(Tables.QUESTION.SCENARIO_ID)
-                        .setInitialValue(scenarioId, UInteger.valueOf(0))
+                .addEntry(new TableEntryInt(Tables.QUESTION.SCENARIO_ID)
+                        .setInitialValue(scenarioId, 0)
                         .setLabel("Scenario id")
                         .setHidden(true))
                 .endForm();
