@@ -17,6 +17,7 @@ import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.NewseffectsRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.NewsitemRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.ScenarioRecord;
 
 public class MaintainNews
 {
@@ -162,6 +163,7 @@ public class MaintainNews
         NewsitemRecord newsItem = newsItemId == 0 ? dslContext.newRecord(Tables.NEWSITEM)
                 : dslContext.selectFrom(Tables.NEWSITEM).where(Tables.NEWSITEM.ID.eq(newsItemId)).fetchOne();
         int scenarioId = newsItemId == 0 ? data.getColumn(1).getSelectedRecordId() : newsItem.getScenarioId();
+        ScenarioRecord scenario = SqlUtils.readRecordFromId(data, Tables.SCENARIO, scenarioId);
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -177,6 +179,12 @@ public class MaintainNews
                         .setInitialValue(newsItem.getName(), "")
                         .setLabel("NewsItem name")
                         .setMaxChars(255))
+                .addEntry(new TableEntryInt(Tables.NEWSITEM.ROUND_NUMBER)
+                        .setRequired()
+                        .setInitialValue(newsItem.getRoundNumber(), 0)
+                        .setLabel("Round number")
+                        .setMin(0)
+                        .setMax(scenario.getHighestRoundNumber()))
                 .addEntry(new TableEntryText(Tables.NEWSITEM.SUMMARY)
                         .setRequired()
                         .setInitialValue(newsItem.getSummary(), "")
