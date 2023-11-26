@@ -382,7 +382,7 @@ public class AdminServlet extends HttpServlet
         topmenu(data, s, "user", "User"); // User
         topmenu(data, s, "gamesession", "Session"); // (GameVersion) - GameSession - Group - Player
         topmenu(data, s, "play", "Play"); // (GameSession) - (Group) - GroupRound - (Player) - PlayerRound - QuestionScore
-        topmenu(data, s, "measure", "Measure"); // (GameSession) - (Group) - (GroupRound) - HouseRound - Measure
+        topmenu(data, s, "measure", "HouseMeasure"); // (GameSession) - (Group) - (GroupRound) - HouseRound - Measure
         return s.toString();
     }
 
