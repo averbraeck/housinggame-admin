@@ -521,7 +521,7 @@ public class MaintainPlay
                         .setPickTable(data, Tables.HOUSEROUND.join(Tables.HOUSE)
                                 .on(Tables.HOUSEROUND.HOUSE_ID.eq(Tables.HOUSE.ID))
                                 .and(Tables.HOUSEROUND.GROUPROUND_ID.eq(groupRound.getId())),
-                                Tables.HOUSEROUND.ID, Tables.HOUSE.ADDRESS)
+                                Tables.HOUSEROUND.ID, Tables.HOUSE.CODE)
                         .setInitialValue(playerRound.getStartHouseroundId(), 0)
                         .setLabel("Start house"))
                 .addEntry(new TableEntryInt(Tables.PLAYERROUND.HOUSE_PRICE_SOLD)
@@ -542,7 +542,7 @@ public class MaintainPlay
                         .setPickTable(data, Tables.HOUSEROUND.join(Tables.HOUSE)
                                 .on(Tables.HOUSEROUND.HOUSE_ID.eq(Tables.HOUSE.ID))
                                 .and(Tables.HOUSEROUND.GROUPROUND_ID.eq(groupRound.getId())),
-                                Tables.HOUSEROUND.ID, Tables.HOUSE.ADDRESS)
+                                Tables.HOUSEROUND.ID, Tables.HOUSE.CODE)
                         .setInitialValue(playerRound.getFinalHouseroundId(), 0)
                         .setLabel("Final house"))
                 .addEntry(new TableEntryInt(Tables.PLAYERROUND.NEW_MORTGAGE)
