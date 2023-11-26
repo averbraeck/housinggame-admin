@@ -272,7 +272,7 @@ public class AdminServlet extends HttpServlet
                 MaintainGameSession.handleMenu(request, click, recordNr);
                 break;
 
-            // (GameSession) - (Group) - GroupRound - (Player) - PlayerRound - Measure/QuestionScore
+            // (GameSession) - (Group) - GroupRound - (Player) - PlayerRound - QuestionScore
             case "play":
             case "viewPlayGameSession":
             case "viewPlayGroup":
@@ -286,13 +286,6 @@ public class AdminServlet extends HttpServlet
             case "deletePlayGroupRoundOk":
             case "newPlayGroupRound":
 
-            case "viewPlayBid":
-            case "editPlayBid":
-            case "savePlayBid":
-            case "deletePlayBid":
-            case "deletePlayBidOk":
-            case "newPlayBid":
-
             case "viewPlayPlayer":
 
             case "viewPlayPlayerRound":
@@ -301,13 +294,6 @@ public class AdminServlet extends HttpServlet
             case "deletePlayPlayerRound":
             case "deletePlayPlayerRoundOk":
             case "newPlayPlayerRound":
-
-            case "viewPlayMeasure":
-            case "editPlayMeasure":
-            case "savePlayMeasure":
-            case "deletePlayMeasure":
-            case "deletePlayMeasureOk":
-            case "newPlayMeasure":
 
             case "viewPlayQuestion":
             case "editPlayQuestion":
@@ -319,18 +305,28 @@ public class AdminServlet extends HttpServlet
                 MaintainPlay.handleMenu(request, click, recordNr);
                 break;
 
-            /*-
+            // (GameSession) - (Group) - (GroupRound) - HouseRound - Measure
+            case "measure":
+            case "viewMeasureGameSession":
+            case "viewMeasureGroup":
+            case "viewMeasureGroupRound":
 
-            // (GameSession) - (Group) - Result
-            case "play-result":
-            case "viewPlayResultGameSession":
-            case "viewPlayResultGroup":
-            case "viewPlayResultResult":
-                data.setMenuChoice("play-result");
-                MaintainPlayResult.handleMenu(request, click, recordNr);
+            case "viewHouseRound":
+            case "editHouseRound":
+            case "saveHouseRound":
+            case "deleteHouseRound":
+            case "deleteHouseRoundOk":
+            case "newHouseRound":
+
+            case "viewMeasure":
+            case "editMeasure":
+            case "saveMeasure":
+            case "deleteMeasure":
+            case "deleteMeasureOk":
+            case "newMeasure":
+                data.setMenuChoice("measure");
+                MaintainMeasure.handleMenu(request, click, recordNr);
                 break;
-
-            */
 
             default:
                 break;
@@ -385,8 +381,8 @@ public class AdminServlet extends HttpServlet
         topmenu(data, s, "question", "Question"); // (GameVersion) - (Scenario) - Question
         topmenu(data, s, "user", "User"); // User
         topmenu(data, s, "gamesession", "Session"); // (GameVersion) - GameSession - Group - Player
-        topmenu(data, s, "play", "Play"); // (GameSession) - (Group) - GroupRound - (Player) - PlayerRound - Measure/Question
-        topmenu(data, s, "result", "Result"); // (GameSession) - (Group) - Result
+        topmenu(data, s, "play", "Play"); // (GameSession) - (Group) - GroupRound - (Player) - PlayerRound - QuestionScore
+        topmenu(data, s, "measure", "Measure"); // (GameSession) - (Group) - (GroupRound) - HouseRound - Measure
         return s.toString();
     }
 
