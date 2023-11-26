@@ -10,7 +10,6 @@ import org.jooq.impl.DSL;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecord;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.HouseRecord;
@@ -51,7 +50,7 @@ public class MaintainHouse
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(house, "house");
                 else
-                    data.askDeleteRecord(house, "House", house.getAddress(), "deleteHouseOk", "house");
+                    data.askDeleteRecord(house, "House", house.getCode(), "deleteHouseOk", "house");
                 recordId = 0;
             }
             if (!data.isError())
@@ -125,7 +124,7 @@ public class MaintainHouse
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("House", 2, 0, true, Tables.HOUSE, Tables.HOUSE.ADDRESS, "address",
+            data.showDependentColumn("House", 2, 0, true, Tables.HOUSE, Tables.HOUSE.CODE, "address",
                     Tables.HOUSE.COMMUNITY_ID, true);
         }
     }
@@ -143,7 +142,7 @@ public class MaintainHouse
                 Tables.GAMEVERSION.NAME, "name", false);
         data.showDependentColumn("HouseCommunity", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.COMMUNITY,
                 Tables.COMMUNITY.NAME, "name", Tables.COMMUNITY.GAMEVERSION_ID, false);
-        data.showDependentColumn("House", 2, recordId, true, Tables.HOUSE, Tables.HOUSE.ADDRESS, "address",
+        data.showDependentColumn("House", 2, recordId, true, Tables.HOUSE, Tables.HOUSE.CODE, "address",
                 Tables.HOUSE.COMMUNITY_ID, true);
         data.resetColumn(3);
         data.resetFormColumn();
@@ -171,10 +170,10 @@ public class MaintainHouse
                         + "<br>has not been used in a community")
                 .setRecordNr(houseId)
                 .startForm()
-                .addEntry(new TableEntryString(Tables.HOUSE.ADDRESS)
+                .addEntry(new TableEntryString(Tables.HOUSE.CODE)
                         .setRequired()
-                        .setInitialValue(house.getAddress(), "")
-                        .setLabel("House address (eg U01)")
+                        .setInitialValue(house.getCode(), "")
+                        .setLabel("House code (eg U01)")
                         .setMaxChars(45))
                 .addEntry(new TableEntryInt(Tables.HOUSE.PRICE)
                         .setRequired()
@@ -191,10 +190,10 @@ public class MaintainHouse
                         .setInitialValue(house.getAvailableRound(), 0)
                         .setLabel("Available from round")
                         .setMin(1))
-                .addEntry(new TableEntryText(Tables.HOUSE.DESCRIPTION)
+                .addEntry(new TableEntryString(Tables.HOUSE.ADDRESS)
                         .setRequired()
-                        .setInitialValue(house.getDescription(), "")
-                        .setLabel("Description"))
+                        .setInitialValue(house.getAddress(), "")
+                        .setLabel("House address"))
                 .addEntry(new TableEntryInt(Tables.HOUSE.INITIAL_PLUVIAL_PROTECTION)
                         .setRequired()
                         .setInitialValue(house.getInitialPluvialProtection(), 0)
@@ -227,7 +226,7 @@ public class MaintainHouse
                 Tables.GAMEVERSION.NAME, "name", false);
         data.showDependentColumn("HouseCommunity", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.COMMUNITY,
                 Tables.COMMUNITY.NAME, "name", Tables.COMMUNITY.GAMEVERSION_ID, false);
-        data.showDependentColumn("House", 2, data.getColumn(2).getSelectedRecordId(), true, Tables.HOUSE, Tables.HOUSE.ADDRESS,
+        data.showDependentColumn("House", 2, data.getColumn(2).getSelectedRecordId(), true, Tables.HOUSE, Tables.HOUSE.CODE,
                 "address", Tables.HOUSE.COMMUNITY_ID, true);
         data.showDependentColumn("InitialHouseMeasure", 3, recordId, true, Tables.INITIALHOUSEMEASURE,
                 Tables.INITIALHOUSEMEASURE.NAME, "name", Tables.INITIALHOUSEMEASURE.HOUSE_ID, true);
