@@ -121,17 +121,10 @@ public class AdminServlet extends HttpServlet
                 MaintainScenario.handleMenu(request, click, recordNr);
                 break;
 
-            // (GameVersion) - (Scenario) - Round - NewsItem
-            case "round":
-            case "viewRoundGameVersion":
-            case "viewRoundScenario":
-
-            case "viewRound":
-            case "editRound":
-            case "saveRound":
-            case "deleteRound":
-            case "deleteRoundOk":
-            case "newRound":
+            // (GameVersion) - (Scenario) - NewsItem - NewsEffects
+            case "news":
+            case "viewNewsGameVersion":
+            case "viewNewsScenario":
 
             case "viewNewsItem":
             case "editNewsItem":
@@ -146,8 +139,8 @@ public class AdminServlet extends HttpServlet
             case "deleteNewsEffects":
             case "deleteNewsEffectsOk":
             case "newNewsEffects":
-                data.setMenuChoice("round");
-                MaintainRound.handleMenu(request, click, recordNr);
+                data.setMenuChoice("news");
+                MaintainNews.handleMenu(request, click, recordNr);
                 break;
 
             // (GameVersion) - (Scenario) - WelfareType
@@ -327,7 +320,7 @@ public class AdminServlet extends HttpServlet
                 break;
 
             /*-
-            
+
             // (GameSession) - (Group) - Result
             case "play-result":
             case "viewPlayResultGameSession":
@@ -336,7 +329,7 @@ public class AdminServlet extends HttpServlet
                 data.setMenuChoice("play-result");
                 MaintainPlayResult.handleMenu(request, click, recordNr);
                 break;
-            
+
             */
 
             default:
@@ -388,7 +381,7 @@ public class AdminServlet extends HttpServlet
         topmenu(data, s, "measuretype", "Measure"); // (GameVersion) - MeasureType
         topmenu(data, s, "community", "Community"); // (GameVersion) - Community - Tax
         topmenu(data, s, "house", "House"); // (GameVersion) - (Community) - House - InitialHouseMeasure
-        topmenu(data, s, "round", "Round"); // (GameVersion) - (Scenario) - Round - NewsItem
+        topmenu(data, s, "news", "News"); // (GameVersion) - (Scenario) - NewsItem - NewsEffects
         topmenu(data, s, "question", "Question"); // (GameVersion) - (Scenario) - Question
         topmenu(data, s, "user", "User"); // User
         topmenu(data, s, "gamesession", "Session"); // (GameVersion) - GameSession - Group - Player

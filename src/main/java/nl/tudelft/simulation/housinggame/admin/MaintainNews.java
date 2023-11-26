@@ -17,9 +17,8 @@ import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.NewseffectsRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.NewsitemRecord;
-import nl.tudelft.simulation.housinggame.data.tables.records.RoundRecord;
 
-public class MaintainRound
+public class MaintainNews
 {
 
     public static void handleMenu(final HttpServletRequest request, final String click, int recordId)
@@ -27,55 +26,34 @@ public class MaintainRound
         HttpSession session = request.getSession();
         AdminData data = SessionUtils.getData(session);
 
-        if (click.equals("round"))
+        if (click.equals("news"))
         {
-            data.clearColumns("12%", "GameVersion", "12%", "Scenario", "12%", "Round", "12%", "NewsItem", "12%", "NewsEffects");
+            data.clearColumns("15%", "GameVersion", "15%", "Scenario", "15%", "NewsItem", "15%", "NewsEffects");
             data.clearFormColumn("40%", "Edit Properties");
             showGameVersion(session, data, 0);
         }
 
-        else if (click.contains("RoundGameVersion"))
+        else if (click.contains("NewsGameVersion"))
         {
             showGameVersion(session, data, recordId);
         }
 
-        else if (click.contains("RoundScenario"))
+        else if (click.contains("NewsScenario"))
         {
             showScenario(session, data, recordId);
-        }
-
-        else if (click.contains("Round"))
-        {
-            if (click.startsWith("save"))
-                recordId = data.saveRecord(request, recordId, Tables.ROUND, "round");
-            else if (click.startsWith("delete"))
-            {
-                RoundRecord round = SqlUtils.readRecordFromId(data, Tables.ROUND, recordId);
-                if (click.endsWith("Ok"))
-                    data.deleteRecordOk(round, "round");
-                else
-                    data.askDeleteRecord(round, "Round", String.valueOf(round.getRoundNumber()), "deleteRoundOk", "round");
-                recordId = 0;
-            }
-            if (!data.isError())
-            {
-                showRound(session, data, recordId, true, !click.startsWith("view"));
-                if (click.startsWith("new"))
-                    editRound(session, data, 0, true);
-            }
         }
 
         else if (click.contains("NewsItem"))
         {
             if (click.startsWith("save"))
-                recordId = data.saveRecord(request, recordId, Tables.NEWSITEM, "round");
+                recordId = data.saveRecord(request, recordId, Tables.NEWSITEM, "news");
             else if (click.startsWith("delete"))
             {
                 NewsitemRecord newsItem = SqlUtils.readRecordFromId(data, Tables.NEWSITEM, recordId);
                 if (click.endsWith("Ok"))
-                    data.deleteRecordOk(newsItem, "round");
+                    data.deleteRecordOk(newsItem, "news");
                 else
-                    data.askDeleteRecord(newsItem, "NewsItem", newsItem.getName(), "deleteNewsItemOk", "round");
+                    data.askDeleteRecord(newsItem, "NewsItem", newsItem.getName(), "deleteNewsItemOk", "news");
                 recordId = 0;
             }
             if (!data.isError())
@@ -89,15 +67,15 @@ public class MaintainRound
         else if (click.contains("NewsEffects"))
         {
             if (click.startsWith("save"))
-                recordId = data.saveRecord(request, recordId, Tables.NEWSEFFECTS, "round");
+                recordId = data.saveRecord(request, recordId, Tables.NEWSEFFECTS, "news");
             else if (click.startsWith("delete"))
             {
                 NewseffectsRecord newsParameters = SqlUtils.readRecordFromId(data, Tables.NEWSEFFECTS, recordId);
                 if (click.endsWith("Ok"))
-                    data.deleteRecordOk(newsParameters, "round");
+                    data.deleteRecordOk(newsParameters, "news");
                 else
                     data.askDeleteRecord(newsParameters, "NewsEffects", newsParameters.getName(), "deleteNewsEffectsOk",
-                            "round");
+                            "news");
                 recordId = 0;
             }
             if (!data.isError())
@@ -119,15 +97,14 @@ public class MaintainRound
 
     public static void showGameVersion(final HttpSession session, final AdminData data, final int recordId)
     {
-        data.showColumn("RoundGameVersion", 0, recordId, false, Tables.GAMEVERSION, Tables.GAMEVERSION.NAME, "name", false);
+        data.showColumn("NewsGameVersion", 0, recordId, false, Tables.GAMEVERSION, Tables.GAMEVERSION.NAME, "name", false);
         data.resetColumn(1);
         data.resetColumn(2);
         data.resetColumn(3);
-        data.resetColumn(4);
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("RoundScenario", 1, 0, false, Tables.SCENARIO, Tables.SCENARIO.NAME, "name",
+            data.showDependentColumn("NewsScenario", 1, 0, false, Tables.SCENARIO, Tables.SCENARIO.NAME, "name",
                     Tables.SCENARIO.GAMEVERSION_ID, false);
         }
     }
@@ -140,75 +117,18 @@ public class MaintainRound
 
     public static void showScenario(final HttpSession session, final AdminData data, final int recordId)
     {
-        data.showColumn("RoundGameVersion", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMEVERSION,
+        data.showColumn("NewsGameVersion", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMEVERSION,
                 Tables.GAMEVERSION.NAME, "name", false);
-        data.showDependentColumn("RoundScenario", 1, recordId, false, Tables.SCENARIO, Tables.SCENARIO.NAME, "name",
+        data.showDependentColumn("NewsScenario", 1, recordId, false, Tables.SCENARIO, Tables.SCENARIO.NAME, "name",
                 Tables.SCENARIO.GAMEVERSION_ID, false);
         data.resetColumn(2);
         data.resetColumn(3);
-        data.resetColumn(4);
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("Round", 2, 0, true, Tables.ROUND, Tables.ROUND.ROUND_NUMBER, "round_number",
-                    Tables.ROUND.SCENARIO_ID, true);
+            data.showDependentColumn("NewsItem", 2, 0, true, Tables.NEWSITEM, Tables.NEWSITEM.NAME, "name",
+                    Tables.NEWSITEM.SCENARIO_ID, true);
         }
-    }
-
-    /*
-     * *********************************************************************************************************
-     * ***************************************** ROUND **********************************************
-     * *********************************************************************************************************
-     */
-
-    public static void showRound(final HttpSession session, final AdminData data, final int recordId, final boolean editButton,
-            final boolean editRecord)
-    {
-        data.showColumn("RoundGameVersion", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMEVERSION,
-                Tables.GAMEVERSION.NAME, "name", false);
-        data.showDependentColumn("RoundScenario", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.SCENARIO,
-                Tables.SCENARIO.NAME, "name", Tables.SCENARIO.GAMEVERSION_ID, false);
-        data.showDependentColumn("Round", 2, recordId, true, Tables.ROUND, Tables.ROUND.ROUND_NUMBER, "round_number",
-                Tables.ROUND.SCENARIO_ID, true);
-        data.resetColumn(3);
-        data.resetColumn(4);
-        data.resetFormColumn();
-        if (recordId != 0)
-        {
-            data.showDependentColumn("NewsItem", 3, 0, true, Tables.NEWSITEM, Tables.NEWSITEM.NAME, "name",
-                    Tables.NEWSITEM.ROUND_ID, true);
-            editRound(session, data, recordId, editRecord);
-        }
-    }
-
-    public static void editRound(final HttpSession session, final AdminData data, final int roundId, final boolean edit)
-    {
-        DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        RoundRecord round = roundId == 0 ? dslContext.newRecord(Tables.ROUND)
-                : dslContext.selectFrom(Tables.ROUND).where(Tables.ROUND.ID.eq(roundId)).fetchOne();
-        int scenarioId = roundId == 0 ? data.getColumn(1).getSelectedRecordId() : round.getScenarioId();
-        //@formatter:off
-        TableForm form = new TableForm()
-                .setEdit(edit)
-                .setCancelMethod("round", data.getColumn(0).getSelectedRecordId())
-                .setEditMethod("editRound")
-                .setSaveMethod("saveRound")
-                .setDeleteMethod("deleteRound", "Delete", "<br>Note: Round can only be deleted when it "
-                        + "<br>has not been used in a game play")
-                .setRecordNr(roundId)
-                .startForm()
-                .addEntry(new TableEntryInt(Tables.ROUND.ROUND_NUMBER)
-                        .setRequired()
-                        .setInitialValue(round.getRoundNumber(), 1)
-                        .setLabel("Round number")
-                        .setMin(0))
-                .addEntry(new TableEntryInt(Tables.ROUND.SCENARIO_ID)
-                        .setInitialValue(scenarioId, 0)
-                        .setLabel("Scenario id")
-                        .setHidden(true))
-                .endForm();
-        //@formatter:on
-        data.getFormColumn().setHeaderForm("Edit Round", form);
     }
 
     /*
@@ -220,19 +140,17 @@ public class MaintainRound
     public static void showNewsItem(final HttpSession session, final AdminData data, final int recordId,
             final boolean editButton, final boolean editRecord)
     {
-        data.showColumn("RoundGameVersion", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMEVERSION,
+        data.showColumn("NewsGameVersion", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMEVERSION,
                 Tables.GAMEVERSION.NAME, "name", false);
-        data.showDependentColumn("RoundScenario", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.SCENARIO,
+        data.showDependentColumn("NewsScenario", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.SCENARIO,
                 Tables.SCENARIO.NAME, "name", Tables.SCENARIO.GAMEVERSION_ID, false);
-        data.showDependentColumn("Round", 2, data.getColumn(2).getSelectedRecordId(), true, Tables.ROUND,
-                Tables.ROUND.ROUND_NUMBER, "round_number", Tables.ROUND.SCENARIO_ID, true);
-        data.showDependentColumn("NewsItem", 3, recordId, true, Tables.NEWSITEM, Tables.NEWSITEM.NAME, "name",
-                Tables.NEWSITEM.ROUND_ID, true);
-        data.resetColumn(4);
+        data.showDependentColumn("NewsItem", 2, recordId, true, Tables.NEWSITEM, Tables.NEWSITEM.NAME, "name",
+                Tables.NEWSITEM.SCENARIO_ID, true);
+        data.resetColumn(3);
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("NewsEffects", 4, 0, true, Tables.NEWSEFFECTS, Tables.NEWSEFFECTS.NAME, "name",
+            data.showDependentColumn("NewsEffects", 3, 0, true, Tables.NEWSEFFECTS, Tables.NEWSEFFECTS.NAME, "name",
                     Tables.NEWSEFFECTS.NEWSITEM_ID, true);
             editNewsItem(session, data, recordId, editRecord);
         }
@@ -243,15 +161,15 @@ public class MaintainRound
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         NewsitemRecord newsItem = newsItemId == 0 ? dslContext.newRecord(Tables.NEWSITEM)
                 : dslContext.selectFrom(Tables.NEWSITEM).where(Tables.NEWSITEM.ID.eq(newsItemId)).fetchOne();
-        int roundId = newsItemId == 0 ? data.getColumn(2).getSelectedRecordId() : newsItem.getRoundId();
+        int scenarioId = newsItemId == 0 ? data.getColumn(1).getSelectedRecordId() : newsItem.getScenarioId();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
-                .setCancelMethod("round", data.getColumn(0).getSelectedRecordId())
+                .setCancelMethod("news", data.getColumn(0).getSelectedRecordId())
                 .setEditMethod("editNewsItem")
                 .setSaveMethod("saveNewsItem")
                 .setDeleteMethod("deleteNewsItem", "Delete", "<br>Note: NewsItem can only be deleted when it "
-                        + "<br>has not been used in a round")
+                        + "<br>has not been used.")
                 .setRecordNr(newsItemId)
                 .startForm()
                 .addEntry(new TableEntryString(Tables.NEWSITEM.NAME)
@@ -267,9 +185,9 @@ public class MaintainRound
                         .setRequired()
                         .setInitialValue(newsItem.getContent(), "")
                         .setLabel("News Content"))
-                .addEntry(new TableEntryInt(Tables.NEWSITEM.ROUND_ID)
-                        .setInitialValue(roundId, 0)
-                        .setLabel("Round id")
+                .addEntry(new TableEntryInt(Tables.NEWSITEM.SCENARIO_ID)
+                        .setInitialValue(scenarioId, 0)
+                        .setLabel("Scenario id")
                         .setHidden(true))
                 .endForm();
         //@formatter:on
@@ -285,15 +203,13 @@ public class MaintainRound
     public static void showNewsEffects(final HttpSession session, final AdminData data, final int recordId,
             final boolean editButton, final boolean editRecord)
     {
-        data.showColumn("RoundGameVersion", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMEVERSION,
+        data.showColumn("NewsGameVersion", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMEVERSION,
                 Tables.GAMEVERSION.NAME, "name", false);
-        data.showDependentColumn("RoundScenario", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.SCENARIO,
+        data.showDependentColumn("NewsScenario", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.SCENARIO,
                 Tables.SCENARIO.NAME, "name", Tables.SCENARIO.GAMEVERSION_ID, false);
-        data.showDependentColumn("Round", 2, data.getColumn(2).getSelectedRecordId(), true, Tables.ROUND,
-                Tables.ROUND.ROUND_NUMBER, "round_number", Tables.ROUND.SCENARIO_ID, true);
-        data.showDependentColumn("NewsItem", 3, data.getColumn(3).getSelectedRecordId(), true, Tables.NEWSITEM,
-                Tables.NEWSITEM.NAME, "name", Tables.NEWSITEM.ROUND_ID, true);
-        data.showDependentColumn("NewsEffects", 4, recordId, true, Tables.NEWSEFFECTS, Tables.NEWSEFFECTS.NAME, "name",
+        data.showDependentColumn("NewsItem", 2, data.getColumn(2).getSelectedRecordId(), true, Tables.NEWSITEM,
+                Tables.NEWSITEM.NAME, "name", Tables.NEWSITEM.SCENARIO_ID, true);
+        data.showDependentColumn("NewsEffects", 3, recordId, true, Tables.NEWSEFFECTS, Tables.NEWSEFFECTS.NAME, "name",
                 Tables.NEWSEFFECTS.NEWSITEM_ID, true);
         data.resetFormColumn();
         if (recordId != 0)
@@ -308,12 +224,12 @@ public class MaintainRound
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         NewseffectsRecord newsEffects = newsEffectsId == 0 ? dslContext.newRecord(Tables.NEWSEFFECTS)
                 : dslContext.selectFrom(Tables.NEWSEFFECTS).where(Tables.NEWSEFFECTS.ID.eq(newsEffectsId)).fetchOne();
-        int newsItemId = newsEffectsId == 0 ? data.getColumn(3).getSelectedRecordId() : newsEffects.getNewsitemId();
+        int newsItemId = newsEffectsId == 0 ? data.getColumn(2).getSelectedRecordId() : newsEffects.getNewsitemId();
         int gameVersionId = data.getColumn(0).getSelectedRecordId();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
-                .setCancelMethod("round", data.getColumn(0).getSelectedRecordId())
+                .setCancelMethod("news", data.getColumn(0).getSelectedRecordId())
                 .setEditMethod("editNewsEffects")
                 .setSaveMethod("saveNewsEffects")
                 .setDeleteMethod("deleteNewsEffects", "Delete", "<br>Note: NewsEffects can only be deleted when it "
