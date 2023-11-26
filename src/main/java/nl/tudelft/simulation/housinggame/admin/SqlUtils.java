@@ -29,7 +29,6 @@ import nl.tudelft.simulation.housinggame.data.tables.records.MeasuretypeRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.NewseffectsRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.NewsitemRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.QuestionRecord;
-import nl.tudelft.simulation.housinggame.data.tables.records.RoundRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.ScenarioRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.ScenarioparametersRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.TaxRecord;
@@ -52,12 +51,6 @@ public final class SqlUtils
 
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(jdbcURL, dbUser, dbPassword);
-    }
-
-    public static RoundRecord readRoundFromRoundId(final AdminData data, final int roundId)
-    {
-        DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        return dslContext.selectFrom(Tables.ROUND).where(Tables.ROUND.ID.eq(roundId)).fetchAny();
     }
 
     public static UserRecord readUserFromUserId(final AdminData data, final int userId)
@@ -94,9 +87,8 @@ public final class SqlUtils
      * 1. Clone scenario with new name. scenarioparametersId and gameversionId stay the same.
      * 2. For the scenario, clone the questions, using the new scenarioId.
      * 3. For the scenario, clone the welfaretypes, using the new scenarioId.
-     * 4. For the scenario, clone the rounds using the new scenarioId.
-     *    5. For each round, clone the newsitems using the new roundid.
-     *       6. For each newsitem, clone the newseffects using the new newsitemId; link to the old communityId.
+     * 4. For the scenario, clone the newsitems using the new scenarioid.
+     *    5. For each newsitem, clone the newseffects using the new newsitemId; link to the old communityId.
      * </pre>
      *
      * @param data AdminData; record with all session relevant information
@@ -133,35 +125,24 @@ public final class SqlUtils
             newWelfareType.store();
         }
 
-        // 4. For the scenario, clone the rounds using the new scenarioId.
-        List<RoundRecord> roundList =
-                dslContext.selectFrom(Tables.ROUND).where(Tables.ROUND.SCENARIO_ID.eq(oldScenario.getId())).fetch();
-        for (RoundRecord oldRound : roundList)
+        // 4. For the scenario, clone the newsitems using the new scenarioId.
+        List<NewsitemRecord> newsItemList =
+                dslContext.selectFrom(Tables.NEWSITEM).where(Tables.NEWSITEM.SCENARIO_ID.eq(oldScenario.getId())).fetch();
+        for (NewsitemRecord oldNewsitem : newsItemList)
         {
-            RoundRecord newRound = oldRound.copy();
-            newRound.setScenarioId(newScenarioId);
-            newRound.store();
-            int newRoundId = newRound.getId();
+            NewsitemRecord newNewsItem = oldNewsitem.copy();
+            newNewsItem.setScenarioId(newScenarioId);
+            newNewsItem.store();
+            int newNewsItemId = newNewsItem.getId();
 
-            // 5. For each round, clone the newsitems using the new roundid.
-            List<NewsitemRecord> newsItemList =
-                    dslContext.selectFrom(Tables.NEWSITEM).where(Tables.NEWSITEM.ROUND_ID.eq(oldRound.getId())).fetch();
-            for (NewsitemRecord oldNewsitem : newsItemList)
+            // 5. For each newsitem, clone the newseffects using the new newsitemId; link to the old communityId.
+            List<NewseffectsRecord> newsEffectsList = dslContext.selectFrom(Tables.NEWSEFFECTS)
+                    .where(Tables.NEWSEFFECTS.NEWSITEM_ID.eq(oldNewsitem.getId())).fetch();
+            for (NewseffectsRecord oldNewsEffects : newsEffectsList)
             {
-                NewsitemRecord newNewsItem = oldNewsitem.copy();
-                newNewsItem.setRoundId(newRoundId);
-                newNewsItem.store();
-                int newNewsItemId = newNewsItem.getId();
-
-                // 6. For each newsitem, clone the newseffects using the new newsitemId; link to the old communityId.
-                List<NewseffectsRecord> newsEffectsList = dslContext.selectFrom(Tables.NEWSEFFECTS)
-                        .where(Tables.NEWSEFFECTS.NEWSITEM_ID.eq(oldNewsitem.getId())).fetch();
-                for (NewseffectsRecord oldNewsEffects : newsEffectsList)
-                {
-                    NewseffectsRecord newNewsEffects = oldNewsEffects.copy();
-                    newNewsEffects.setNewsitemId(newNewsItemId);
-                    newNewsEffects.store();
-                }
+                NewseffectsRecord newNewsEffects = oldNewsEffects.copy();
+                newNewsEffects.setNewsitemId(newNewsItemId);
+                newNewsEffects.store();
             }
         }
     }
@@ -216,9 +197,8 @@ public final class SqlUtils
      * 7. For the gameversion, clone each scenario with new name and new gameversionId. scenarioparametersId stays the same.
      *    8.  For each scenario, clone the questions, using the new scenarioId.
      *    9.  For each scenario, clone the welfaretypes, using the new scenarioId.
-     *    10. For each scenario, clone the rounds using the new scenarioId.
-     *        11. For each round, clone the newsitems using the new roundid.
-     *            12. For each newsitem, clone the newseffects using the new newsitemId; use the MAP to set new communityId.
+     *    10. For each scenario, clone the newsitems using the new scenarioid.
+     *        11. For each newsitem, clone the newseffects using the new newsitemId; use the MAP to set new communityId.
      * </pre>
      *
      * @param data AdminData; record with all session relevant information
@@ -324,37 +304,26 @@ public final class SqlUtils
                 newWelfareType.store();
             }
 
-            // 10. For each scenario, clone the rounds using the new scenarioId.
-            List<RoundRecord> roundList =
-                    dslContext.selectFrom(Tables.ROUND).where(Tables.ROUND.SCENARIO_ID.eq(oldScenario.getId())).fetch();
-            for (RoundRecord oldRound : roundList)
+            // 10. For each scenario, clone the newsitems using the new scenarioid.
+            List<NewsitemRecord> newsItemList =
+                    dslContext.selectFrom(Tables.NEWSITEM).where(Tables.NEWSITEM.SCENARIO_ID.eq(oldScenario.getId())).fetch();
+            for (NewsitemRecord oldNewsitem : newsItemList)
             {
-                RoundRecord newRound = oldRound.copy();
-                newRound.setScenarioId(newScenarioId);
-                newRound.store();
-                int newRoundId = newRound.getId();
+                NewsitemRecord newNewsItem = oldNewsitem.copy();
+                newNewsItem.setScenarioId(newScenarioId);
+                newNewsItem.store();
+                int newNewsItemId = newNewsItem.getId();
 
-                // 11. For each round, clone the newsitems using the new roundid.
-                List<NewsitemRecord> newsItemList =
-                        dslContext.selectFrom(Tables.NEWSITEM).where(Tables.NEWSITEM.ROUND_ID.eq(oldRound.getId())).fetch();
-                for (NewsitemRecord oldNewsitem : newsItemList)
+                // 11. For each newsitem, clone the newseffects using the new newsitemId;
+                // use the MAP to set new communityId.
+                List<NewseffectsRecord> newsEffectsList = dslContext.selectFrom(Tables.NEWSEFFECTS)
+                        .where(Tables.NEWSEFFECTS.NEWSITEM_ID.eq(oldNewsitem.getId())).fetch();
+                for (NewseffectsRecord oldNewsEffects : newsEffectsList)
                 {
-                    NewsitemRecord newNewsItem = oldNewsitem.copy();
-                    newNewsItem.setRoundId(newRoundId);
-                    newNewsItem.store();
-                    int newNewsItemId = newNewsItem.getId();
-
-                    // 12. For each newsitem, clone the newseffects using the new newsitemId;
-                    // use the MAP to set new communityId.
-                    List<NewseffectsRecord> newsEffectsList = dslContext.selectFrom(Tables.NEWSEFFECTS)
-                            .where(Tables.NEWSEFFECTS.NEWSITEM_ID.eq(oldNewsitem.getId())).fetch();
-                    for (NewseffectsRecord oldNewsEffects : newsEffectsList)
-                    {
-                        NewseffectsRecord newNewsEffects = oldNewsEffects.copy();
-                        newNewsEffects.setNewsitemId(newNewsItemId);
-                        newNewsEffects.setCommunityId(communityMap.get(oldNewsEffects.getCommunityId()));
-                        newNewsEffects.store();
-                    }
+                    NewseffectsRecord newNewsEffects = oldNewsEffects.copy();
+                    newNewsEffects.setNewsitemId(newNewsItemId);
+                    newNewsEffects.setCommunityId(communityMap.get(oldNewsEffects.getCommunityId()));
+                    newNewsEffects.store();
                 }
             }
         }
@@ -378,14 +347,12 @@ public final class SqlUtils
      * <pre>
      * 1. Check whether the scenario has an associated group; if yes, throw exception.
      * 2. For the scenario, for each round:
-     *    3. For each round, for each newsitem:
-     *       4. For each newsitem, for each newseffects:
-     *          - delete newseffects
-     *       - delete newsitem
-     *    - delete round
-     * 5. For the scenario, for each question:
+     *    3. For each newsitem, for each newseffects:
+     *       - delete newseffects
+     *    - delete newsitem
+     * 4. For the scenario, for each question:
      *    - delete the question
-     * 6. For the scenario, for each welfaretype:
+     * 5. For the scenario, for each welfaretype:
      *    - delete the welfaretype
      * - delete the scenario
      * </pre>
@@ -404,29 +371,22 @@ public final class SqlUtils
             throw new HousingGameException(
                     "Scenario had associated groups (gameplay) <br>and could therefore not be destroyed");
 
-        // 2. For the scenario, for each round:
-        List<RoundRecord> roundList =
-                dslContext.selectFrom(Tables.ROUND).where(Tables.ROUND.SCENARIO_ID.eq(scenario.getId())).fetch();
-        for (RoundRecord round : roundList)
+        // 2. For the scenario, for each newsitem:
+        List<NewsitemRecord> newsItemList =
+                dslContext.selectFrom(Tables.NEWSITEM).where(Tables.NEWSITEM.SCENARIO_ID.eq(scenario.getId())).fetch();
+        for (NewsitemRecord newsItem : newsItemList)
         {
-            // 3. For each round, for each newsitem:
-            List<NewsitemRecord> newsItemList =
-                    dslContext.selectFrom(Tables.NEWSITEM).where(Tables.NEWSITEM.ROUND_ID.eq(round.getId())).fetch();
-            for (NewsitemRecord newsItem : newsItemList)
+            // 3. For each newsitem, for each newseffects:
+            List<NewseffectsRecord> newsEffectsList = dslContext.selectFrom(Tables.NEWSEFFECTS)
+                    .where(Tables.NEWSEFFECTS.NEWSITEM_ID.eq(newsItem.getId())).fetch();
+            for (NewseffectsRecord newsEffects : newsEffectsList)
             {
-                // 4. For each newsitem, for each newseffects:
-                List<NewseffectsRecord> newsEffectsList = dslContext.selectFrom(Tables.NEWSEFFECTS)
-                        .where(Tables.NEWSEFFECTS.NEWSITEM_ID.eq(newsItem.getId())).fetch();
-                for (NewseffectsRecord newsEffects : newsEffectsList)
-                {
-                    newsEffects.delete();
-                }
-                newsItem.delete();
+                newsEffects.delete();
             }
-            round.delete();
+            newsItem.delete();
         }
 
-        // For the scenario, for each question: delete the question
+        // 4. For the scenario, for each question: delete the question
         List<QuestionRecord> questionList =
                 dslContext.selectFrom(Tables.QUESTION).where(Tables.QUESTION.SCENARIO_ID.eq(scenario.getId())).fetch();
         for (QuestionRecord question : questionList)
@@ -434,7 +394,7 @@ public final class SqlUtils
             question.delete();
         }
 
-        // For the scenario, for each welfaretype:: delete the welfaretype
+        // 5. For the scenario, for each welfaretype:: delete the welfaretype
         List<WelfaretypeRecord> welfareTypeList =
                 dslContext.selectFrom(Tables.WELFARETYPE).where(Tables.WELFARETYPE.SCENARIO_ID.eq(scenario.getId())).fetch();
         for (WelfaretypeRecord welfareType : welfareTypeList)
