@@ -124,7 +124,7 @@ public class MaintainMeasure
 
     public static void showGameSession(final HttpSession session, final AdminData data, final int recordId)
     {
-        data.showColumn("PlayGameSession", 0, recordId, false, Tables.GAMESESSION, Tables.GAMESESSION.NAME, "name", false);
+        data.showColumn("MeasureGameSession", 0, recordId, false, Tables.GAMESESSION, Tables.GAMESESSION.NAME, "name", false);
         data.resetColumn(1);
         data.resetColumn(2);
         data.resetColumn(3);
@@ -132,7 +132,7 @@ public class MaintainMeasure
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("PlayGroup", 1, 0, false, Tables.GROUP, Tables.GROUP.NAME, "name",
+            data.showDependentColumn("MeasureGroup", 1, 0, false, Tables.GROUP, Tables.GROUP.NAME, "name",
                     Tables.GROUP.GAMESESSION_ID, false);
         }
     }
@@ -145,9 +145,9 @@ public class MaintainMeasure
 
     public static void showGroup(final HttpSession session, final AdminData data, final int recordId)
     {
-        data.showColumn("PlayGameSession", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMESESSION,
+        data.showColumn("MeasureGameSession", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMESESSION,
                 Tables.GAMESESSION.NAME, "name", false);
-        data.showDependentColumn("PlayGroup", 1, recordId, false, Tables.GROUP, Tables.GROUP.NAME, "name",
+        data.showDependentColumn("MeasureGroup", 1, recordId, false, Tables.GROUP, Tables.GROUP.NAME, "name",
                 Tables.GROUP.GAMESESSION_ID, false);
         data.resetColumn(2);
         data.resetColumn(3);
@@ -168,9 +168,9 @@ public class MaintainMeasure
 
     public static void showGroupRound(final HttpSession session, final AdminData data, final int recordId)
     {
-        data.showColumn("PlayGameSession", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMESESSION,
+        data.showColumn("MeasureGameSession", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMESESSION,
                 Tables.GAMESESSION.NAME, "name", false);
-        data.showDependentColumn("PlayGroup", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.GROUP,
+        data.showDependentColumn("MeasureGroup", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.GROUP,
                 Tables.GROUP.NAME, "name", Tables.GROUP.GAMESESSION_ID, false);
         data.showDependentColumn("GroupRound", 2, recordId, false, Tables.GROUPROUND, Tables.GROUPROUND.ROUND_NUMBER,
                 "round_number", Tables.GROUPROUND.GROUP_ID, false);
@@ -192,9 +192,9 @@ public class MaintainMeasure
     public static void showHouseRound(final HttpSession session, final AdminData data, final int recordId,
             final boolean editButton, final boolean editRecord)
     {
-        data.showColumn("PlayGameSession", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMESESSION,
+        data.showColumn("MeasureGameSession", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMESESSION,
                 Tables.GAMESESSION.NAME, "name", false);
-        data.showDependentColumn("PlayGroup", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.GROUP,
+        data.showDependentColumn("MeasureGroup", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.GROUP,
                 Tables.GROUP.NAME, "name", Tables.GROUP.GAMESESSION_ID, false);
         data.showDependentColumn("GroupRound", 2, data.getColumn(2).getSelectedRecordId(), false, Tables.GROUPROUND,
                 Tables.GROUPROUND.ROUND_NUMBER, "round_number", Tables.GROUPROUND.GROUP_ID, false);
@@ -203,7 +203,7 @@ public class MaintainMeasure
         data.resetFormColumn();
         if (recordId != 0)
         {
-            showMeasureColumn(data, "PlayMeasure", 4, 0);
+            showMeasureColumn(data, "MeasureMeasure", 4, 0);
             editHouseRound(session, data, recordId, editRecord);
         }
     }
@@ -263,7 +263,7 @@ public class MaintainMeasure
                         .setHidden(true))
                 .endForm();
         //@formatter:on
-        data.getFormColumn().setHeaderForm("Edit PlayerRound", form);
+        data.getFormColumn().setHeaderForm("Edit MeasureerRound", form);
     }
 
     /*
@@ -275,9 +275,9 @@ public class MaintainMeasure
     public static void showMeasure(final HttpSession session, final AdminData data, final int recordId,
             final boolean editButton, final boolean editRecord)
     {
-        data.showColumn("PlayGameSession", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMESESSION,
+        data.showColumn("MeasureGameSession", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMESESSION,
                 Tables.GAMESESSION.NAME, "name", false);
-        data.showDependentColumn("PlayGroup", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.GROUP,
+        data.showDependentColumn("MeasureGroup", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.GROUP,
                 Tables.GROUP.NAME, "name", Tables.GROUP.GAMESESSION_ID, false);
         data.showDependentColumn("GroupRound", 2, data.getColumn(2).getSelectedRecordId(), false, Tables.GROUPROUND,
                 Tables.GROUPROUND.ROUND_NUMBER, "round_number", Tables.GROUPROUND.GROUP_ID, false);
