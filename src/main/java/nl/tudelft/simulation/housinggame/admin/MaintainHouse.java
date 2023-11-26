@@ -124,7 +124,7 @@ public class MaintainHouse
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("House", 2, 0, true, Tables.HOUSE, Tables.HOUSE.CODE, "address",
+            data.showDependentColumn("House", 2, 0, true, Tables.HOUSE, Tables.HOUSE.CODE, "code",
                     Tables.HOUSE.COMMUNITY_ID, true);
         }
     }
@@ -142,7 +142,7 @@ public class MaintainHouse
                 Tables.GAMEVERSION.NAME, "name", false);
         data.showDependentColumn("HouseCommunity", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.COMMUNITY,
                 Tables.COMMUNITY.NAME, "name", Tables.COMMUNITY.GAMEVERSION_ID, false);
-        data.showDependentColumn("House", 2, recordId, true, Tables.HOUSE, Tables.HOUSE.CODE, "address",
+        data.showDependentColumn("House", 2, recordId, true, Tables.HOUSE, Tables.HOUSE.CODE, "code",
                 Tables.HOUSE.COMMUNITY_ID, true);
         data.resetColumn(3);
         data.resetFormColumn();
@@ -227,7 +227,7 @@ public class MaintainHouse
         data.showDependentColumn("HouseCommunity", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.COMMUNITY,
                 Tables.COMMUNITY.NAME, "name", Tables.COMMUNITY.GAMEVERSION_ID, false);
         data.showDependentColumn("House", 2, data.getColumn(2).getSelectedRecordId(), true, Tables.HOUSE, Tables.HOUSE.CODE,
-                "address", Tables.HOUSE.COMMUNITY_ID, true);
+                "code", Tables.HOUSE.COMMUNITY_ID, true);
         data.showDependentColumn("InitialHouseMeasure", 3, recordId, true, Tables.INITIALHOUSEMEASURE,
                 Tables.INITIALHOUSEMEASURE.NAME, "name", Tables.INITIALHOUSEMEASURE.HOUSE_ID, true);
         data.resetFormColumn();
