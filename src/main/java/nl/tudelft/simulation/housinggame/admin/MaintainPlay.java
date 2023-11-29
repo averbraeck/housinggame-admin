@@ -22,7 +22,6 @@ import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GrouproundRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.HouseroundRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.MeasureRecord;
-import nl.tudelft.simulation.housinggame.data.tables.records.MeasuretypeRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.PlayerRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.PlayerroundRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.QuestionRecord;
@@ -196,7 +195,7 @@ public class MaintainPlay
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("GroupRound", 2, 0, false, Tables.GROUPROUND, Tables.GROUPROUND.ROUND_NUMBER,
+            data.showDependentColumn("PlayGroupRound", 2, 0, false, Tables.GROUPROUND, Tables.GROUPROUND.ROUND_NUMBER,
                     "round_number", Tables.GROUPROUND.GROUP_ID, false);
             data.getColumn(1).addContent(AdminTable.finalButton("DEL GAMEPLAY", "destroyGamePlay"));
         }
@@ -215,7 +214,7 @@ public class MaintainPlay
                 Tables.GAMESESSION.NAME, "name", false);
         data.showDependentColumn("PlayGroup", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.GROUP,
                 Tables.GROUP.NAME, "name", Tables.GROUP.GAMESESSION_ID, false);
-        data.showDependentColumn("GroupRound", 2, recordId, false, Tables.GROUPROUND, Tables.GROUPROUND.ROUND_NUMBER,
+        data.showDependentColumn("PlayGroupRound", 2, recordId, false, Tables.GROUPROUND, Tables.GROUPROUND.ROUND_NUMBER,
                 "round_number", Tables.GROUPROUND.GROUP_ID, false);
         data.resetColumn(3);
         data.resetColumn(4);
@@ -223,8 +222,7 @@ public class MaintainPlay
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("PlayPlayer", 3, 0, false, Tables.PLAYER, Tables.PLAYER.CODE, "code",
-                    Tables.PLAYER.GROUP_ID, false, 1);
+            showPlayerColumn(data, "PlayPlayer", 3, 0);
             editPlayGroupRound(session, data, recordId, editRecord);
         }
     }
@@ -291,15 +289,11 @@ public class MaintainPlay
                 Tables.GAMESESSION.NAME, "name", false);
         data.showDependentColumn("PlayGroup", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.GROUP,
                 Tables.GROUP.NAME, "name", Tables.GROUP.GAMESESSION_ID, false);
-        data.showDependentColumn("GroupRound", 2, data.getColumn(2).getSelectedRecordId(), false, Tables.GROUPROUND,
+        data.showDependentColumn("PlayGroupRound", 2, data.getColumn(2).getSelectedRecordId(), false, Tables.GROUPROUND,
                 Tables.GROUPROUND.ROUND_NUMBER, "round_number", Tables.GROUPROUND.GROUP_ID, false);
-        data.showDependentColumn("PlayPlayer", 3, recordId, false, Tables.PLAYER, Tables.PLAYER.CODE, "code",
-                Tables.PLAYER.GROUP_ID, false, 1);
-        data.getColumn(3).setHeader("Player");
+        showPlayerColumn(data, "PlayPlayer", 3, recordId);
         data.resetColumn(4);
-        data.getColumn(4).setHeader("PlayerRound");
         data.resetColumn(5);
-        data.getColumn(5).setHeader("Measure");
         data.resetFormColumn();
         if (recordId != 0)
         {
@@ -320,16 +314,15 @@ public class MaintainPlay
                 Tables.GAMESESSION.NAME, "name", false);
         data.showDependentColumn("PlayGroup", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.GROUP,
                 Tables.GROUP.NAME, "name", Tables.GROUP.GAMESESSION_ID, false);
-        data.showDependentColumn("GroupRound", 2, data.getColumn(2).getSelectedRecordId(), false, Tables.GROUPROUND,
+        data.showDependentColumn("PlayGroupRound", 2, data.getColumn(2).getSelectedRecordId(), false, Tables.GROUPROUND,
                 Tables.GROUPROUND.ROUND_NUMBER, "round_number", Tables.GROUPROUND.GROUP_ID, false);
-        data.showDependentColumn("PlayPlayer", 3, data.getColumn(3).getSelectedRecordId(), false, Tables.PLAYER,
-                Tables.PLAYER.CODE, "code", Tables.PLAYER.GROUP_ID, false, 1);
+        showPlayerColumn(data, "PlayPlayer", 3, data.getColumn(3).getSelectedRecordId());
         showPlayerRoundColumn(data, "PlayPlayerRound", 4, recordId);
         data.resetColumn(5);
         data.resetFormColumn();
         if (recordId != 0)
         {
-            showMeasureColumn(data, "PlayMeasure", 5, 0);
+            showQuestionScoreColumn(data, "PlayQuestion", 5, 0);
             editPlayPlayerRound(session, data, recordId, editRecord);
         }
     }
@@ -582,12 +575,10 @@ public class MaintainPlay
                 Tables.GAMESESSION.NAME, "name", false);
         data.showDependentColumn("PlayGroup", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.GROUP,
                 Tables.GROUP.NAME, "name", Tables.GROUP.GAMESESSION_ID, false);
-        data.showDependentColumn("GroupRound", 2, data.getColumn(2).getSelectedRecordId(), false, Tables.GROUPROUND,
+        data.showDependentColumn("PlayGroupRound", 2, data.getColumn(2).getSelectedRecordId(), false, Tables.GROUPROUND,
                 Tables.GROUPROUND.ROUND_NUMBER, "round_number", Tables.GROUPROUND.GROUP_ID, false);
-        data.showDependentColumn("PlayPlayer", 3, data.getColumn(3).getSelectedRecordId(), false, Tables.PLAYER,
-                Tables.PLAYER.CODE, "code", Tables.PLAYER.GROUP_ID, false, 1);
+        showPlayerColumn(data, "PlayPlayer", 3, data.getColumn(3).getSelectedRecordId());
         showPlayerRoundColumn(data, "PlayPlayerRound", 4, data.getColumn(4).getSelectedRecordId());
-        data.getColumn(5).setHeader("Question");
         showQuestionScoreColumn(data, "PlayQuestion", 5, recordId);
         data.resetFormColumn();
         if (recordId != 0)
@@ -645,6 +636,25 @@ public class MaintainPlay
      * *********************************************************************************************************
      */
 
+    public static void showPlayerColumn(final AdminData data, final String columnName, final int columnNr, final int recordId)
+    {
+        StringBuilder s = new StringBuilder();
+        DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
+        List<PlayerRecord> records = dslContext.selectFrom(Tables.PLAYER)
+                .where(Tables.PLAYER.GROUP_ID.eq(data.getColumn(1).getSelectedRecordId())).fetch();
+
+        s.append(AdminTable.startTable());
+        for (PlayerRecord player : records)
+        {
+            TableRow tableRow = new TableRow(IdProvider.getId(player), recordId, player.getCode(), "view" + columnName);
+            s.append(tableRow.process());
+        }
+        s.append(AdminTable.endTable());
+
+        data.getColumn(columnNr).setSelectedRecordId(recordId);
+        data.getColumn(columnNr).setContent(s.toString());
+    }
+
     public static void showPlayerRoundColumn(final AdminData data, final String columnName, final int columnNr,
             final int recordId)
     {
@@ -674,29 +684,6 @@ public class MaintainPlay
         s.append(AdminTable.endTable());
         if (records.size() == 0)
             s.append(AdminTable.finalButton("New PlayerRound", "new" + columnName));
-
-        data.getColumn(columnNr).setSelectedRecordId(recordId);
-        data.getColumn(columnNr).setContent(s.toString());
-    }
-
-    public static void showMeasureColumn(final AdminData data, final String columnName, final int columnNr, final int recordId)
-    {
-        StringBuilder s = new StringBuilder();
-        DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        List<MeasureRecord> records = dslContext.selectFrom(Tables.MEASURE)
-                .where(Tables.MEASURE.PLAYERROUND_ID.eq(data.getColumn(columnNr - 1).getSelectedRecordId())).fetch();
-
-        s.append(AdminTable.startTable());
-        for (MeasureRecord record : records)
-        {
-            MeasuretypeRecord measureType = dslContext
-                    .selectFrom(Tables.MEASURETYPE.where(Tables.MEASURETYPE.ID.eq(record.getMeasuretypeId()))).fetchOne();
-            TableRow tableRow = new TableRow(IdProvider.getId(record), recordId, measureType.getName(), "view" + columnName);
-            tableRow.addButton("Edit", "edit" + columnName);
-            s.append(tableRow.process());
-        }
-        s.append(AdminTable.endTable());
-        s.append(AdminTable.finalButton("New Measure", "new" + columnName));
 
         data.getColumn(columnNr).setSelectedRecordId(recordId);
         data.getColumn(columnNr).setContent(s.toString());

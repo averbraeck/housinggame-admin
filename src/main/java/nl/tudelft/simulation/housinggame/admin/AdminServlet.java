@@ -329,6 +329,7 @@ public class AdminServlet extends HttpServlet
                 break;
 
             default:
+                System.err.println("Unknown menu choice: " + click);
                 break;
         }
 
