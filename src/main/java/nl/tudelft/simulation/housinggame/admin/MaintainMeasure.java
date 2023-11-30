@@ -17,6 +17,7 @@ import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecord;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
+import nl.tudelft.simulation.housinggame.data.tables.records.GamesessionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GrouproundRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.HouseRecord;
@@ -155,7 +156,7 @@ public class MaintainMeasure
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("GroupRound", 2, 0, false, Tables.GROUPROUND, Tables.GROUPROUND.ROUND_NUMBER,
+            data.showDependentColumn("MeasureGroupRound", 2, 0, false, Tables.GROUPROUND, Tables.GROUPROUND.ROUND_NUMBER,
                     "round_number", Tables.GROUPROUND.GROUP_ID, false);
         }
     }
@@ -172,7 +173,7 @@ public class MaintainMeasure
                 Tables.GAMESESSION.NAME, "name", false);
         data.showDependentColumn("MeasureGroup", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.GROUP,
                 Tables.GROUP.NAME, "name", Tables.GROUP.GAMESESSION_ID, false);
-        data.showDependentColumn("GroupRound", 2, recordId, false, Tables.GROUPROUND, Tables.GROUPROUND.ROUND_NUMBER,
+        data.showDependentColumn("MeasureGroupRound", 2, recordId, false, Tables.GROUPROUND, Tables.GROUPROUND.ROUND_NUMBER,
                 "round_number", Tables.GROUPROUND.GROUP_ID, false);
         data.resetColumn(3);
         data.resetColumn(4);
@@ -196,14 +197,14 @@ public class MaintainMeasure
                 Tables.GAMESESSION.NAME, "name", false);
         data.showDependentColumn("MeasureGroup", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.GROUP,
                 Tables.GROUP.NAME, "name", Tables.GROUP.GAMESESSION_ID, false);
-        data.showDependentColumn("GroupRound", 2, data.getColumn(2).getSelectedRecordId(), false, Tables.GROUPROUND,
+        data.showDependentColumn("MeasureGroupRound", 2, data.getColumn(2).getSelectedRecordId(), false, Tables.GROUPROUND,
                 Tables.GROUPROUND.ROUND_NUMBER, "round_number", Tables.GROUPROUND.GROUP_ID, false);
         showHouseRoundColumn(data, "HouseRound", 3, recordId);
         data.resetColumn(4);
         data.resetFormColumn();
         if (recordId != 0)
         {
-            showMeasureColumn(data, "MeasureMeasure", 4, 0);
+            showMeasureColumn(data, "Measure", 4, 0);
             editHouseRound(session, data, recordId, editRecord);
         }
     }
@@ -216,6 +217,8 @@ public class MaintainMeasure
                 : dslContext.selectFrom(Tables.HOUSEROUND).where(Tables.HOUSEROUND.ID.eq(houseRoundId)).fetchOne();
         int groupRoundId = houseRoundId == 0 ? data.getColumn(2).getSelectedRecordId() : houseRound.getGrouproundId();
         GrouproundRecord groupRound = SqlUtils.readRecordFromId(data, Tables.GROUPROUND, groupRoundId);
+        GamesessionRecord gameSession =
+                SqlUtils.readRecordFromId(data, Tables.GAMESESSION, data.getColumn(0).getSelectedRecordId());
 
         //@formatter:off
         TableForm form = new TableForm()
@@ -227,11 +230,11 @@ public class MaintainMeasure
                         + "<br>has not been used for measures by a player")
                 .setRecordNr(houseRoundId)
                 .startForm()
-                .addEntry(new TableEntryPickRecord(Tables.HOUSEROUND.HOUSE_ID)
-                        .setPickTable(data, Tables.HOUSEROUND.join(Tables.HOUSE)
-                                .on(Tables.HOUSEROUND.HOUSE_ID.eq(Tables.HOUSE.ID))
-                                .and(Tables.HOUSEROUND.GROUPROUND_ID.eq(groupRound.getId())),
-                                Tables.HOUSEROUND.ID, Tables.HOUSE.CODE)
+                .addEntry(new TableEntryPickRecord(Tables.HOUSEROUND.HOUSE_ID).setPickTable(data,
+                        dslContext.fetch("SELECT * from HOUSE INNER JOIN community ON house.community_id = community.id "
+                                + "WHERE community.gameversion_id = " + gameSession.getGameversionId()
+                                + " AND house.available_round <= " + groupRound.getRoundNumber()),
+                                Tables.HOUSE.ID, Tables.HOUSE.CODE)
                         .setInitialValue(houseRound.getHouseId(), 0)
                         .setLabel("House"))
                 .addEntry(new TableEntryInt(Tables.HOUSEROUND.UNDAMAGED_PRICE)
@@ -263,7 +266,7 @@ public class MaintainMeasure
                         .setHidden(true))
                 .endForm();
         //@formatter:on
-        data.getFormColumn().setHeaderForm("Edit MeasureerRound", form);
+        data.getFormColumn().setHeaderForm("Edit HouseRound", form);
     }
 
     /*
@@ -279,7 +282,7 @@ public class MaintainMeasure
                 Tables.GAMESESSION.NAME, "name", false);
         data.showDependentColumn("MeasureGroup", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.GROUP,
                 Tables.GROUP.NAME, "name", Tables.GROUP.GAMESESSION_ID, false);
-        data.showDependentColumn("GroupRound", 2, data.getColumn(2).getSelectedRecordId(), false, Tables.GROUPROUND,
+        data.showDependentColumn("MeasureGroupRound", 2, data.getColumn(2).getSelectedRecordId(), false, Tables.GROUPROUND,
                 Tables.GROUPROUND.ROUND_NUMBER, "round_number", Tables.GROUPROUND.GROUP_ID, false);
         showHouseRoundColumn(data, "HouseRound", 3, data.getColumn(3).getSelectedRecordId());
         showMeasureColumn(data, "Measure", 4, recordId);
@@ -345,7 +348,7 @@ public class MaintainMeasure
                         .setHidden(true))
                 .endForm();
         //@formatter:on
-        data.getFormColumn().setHeaderForm("Edit Question", form);
+        data.getFormColumn().setHeaderForm("Edit Measure", form);
     }
 
     /*
