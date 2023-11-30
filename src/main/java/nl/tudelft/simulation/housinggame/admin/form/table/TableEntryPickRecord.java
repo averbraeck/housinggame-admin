@@ -11,6 +11,7 @@ import org.jooq.SQLDialect;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.impl.DSL;
+import org.jooq.types.UInteger;
 
 import nl.tudelft.simulation.housinggame.admin.AdminData;
 
@@ -50,7 +51,7 @@ public class TableEntryPickRecord extends AbstractTableEntry<TableEntryPickRecor
             this.records.put("", null);
         for (Record record : tableRecords)
         {
-            this.records.put(record.get(name).toString(), record.get(id));
+            this.records.put(record.get(name).toString(), record.get(id).intValue());
         }
         return this;
     }
@@ -64,7 +65,22 @@ public class TableEntryPickRecord extends AbstractTableEntry<TableEntryPickRecor
             this.records.put("", null);
         for (Record record : tableRecords)
         {
-            this.records.put(record.get(name), record.get(id));
+            this.records.put(record.get(name), record.get(id).intValue());
+        }
+        return this;
+    }
+
+    public TableEntryPickRecord setPickTable(final AdminData data, final List<? extends Record> tableRecords,
+            final TableField<?, ?> id, final TableField<?, String> name)
+    {
+        if (!isRequired())
+            this.records.put("", null);
+        for (Record record : tableRecords)
+        {
+            if (record.get(id) instanceof UInteger)
+                this.records.put(record.get(name), ((UInteger) record.get(id)).intValue());
+            else
+                this.records.put(record.get(name), ((Integer) record.get(id)).intValue());
         }
         return this;
     }
