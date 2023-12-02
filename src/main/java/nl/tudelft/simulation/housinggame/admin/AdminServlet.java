@@ -172,6 +172,20 @@ public class AdminServlet extends HttpServlet
                 MaintainMeasureType.handleMenu(request, click, recordNr);
                 break;
 
+            // (GameVersion) - MovingReason
+            case "movingreason":
+            case "viewMovingReasonGameVersion":
+
+            case "viewMovingReason":
+            case "editMovingReason":
+            case "saveMovingReason":
+            case "deleteMovingReason":
+            case "deleteMovingReasonOk":
+            case "newMovingReason":
+                data.setMenuChoice("movingreason");
+                MaintainMovingReason.handleMenu(request, click, recordNr);
+                break;
+
             // (GameVersion) - (Scenario) - Question
             case "question":
             case "viewQuestionGameVersion":
@@ -376,6 +390,7 @@ public class AdminServlet extends HttpServlet
         topmenu(data, s, "scenario", "Scenario"); // GameVersion - Scenario
         topmenu(data, s, "welfaretype", "Welfare"); // (GameVersion) - (Scenario) - WelfareType
         topmenu(data, s, "measuretype", "Measure"); // (GameVersion) - MeasureType
+        topmenu(data, s, "movingreason", "Moving"); // (GameVersion) - MovingReason
         topmenu(data, s, "community", "Community"); // (GameVersion) - Community - Tax
         topmenu(data, s, "house", "House"); // (GameVersion) - (Community) - House - InitialHouseMeasure
         topmenu(data, s, "news", "News"); // (GameVersion) - (Scenario) - NewsItem - NewsEffects
