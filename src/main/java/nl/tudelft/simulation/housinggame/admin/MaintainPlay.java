@@ -15,9 +15,9 @@ import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDateTime;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecord;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
+import nl.tudelft.simulation.housinggame.data.tables.records.GamesessionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GrouproundRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.HouseroundRecord;
@@ -335,6 +335,8 @@ public class MaintainPlay
                 : dslContext.selectFrom(Tables.PLAYERROUND).where(Tables.PLAYERROUND.ID.eq(playerRoundId)).fetchOne();
         int groupRoundId = playerRoundId == 0 ? data.getColumn(2).getSelectedRecordId() : playerRound.getGrouproundId();
         GrouproundRecord groupRound = SqlUtils.readRecordFromId(data, Tables.GROUPROUND, groupRoundId);
+        GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, groupRound.getGroupId());
+        GamesessionRecord gameSession = SqlUtils.readRecordFromId(data, Tables.GAMESESSION, group.getGamesessionId());
         PlayerRecord player = SqlUtils.readRecordFromId(data, Tables.PLAYER, data.getColumn(3).getSelectedRecordId());
         WelfaretypeRecord welfareType = SqlUtils.readRecordFromId(data, Tables.WELFARETYPE, player.getWelfaretypeId());
 
@@ -544,10 +546,17 @@ public class MaintainPlay
                         .setInitialValue(playerRound.getMortgageLeftEnd(), 0)
                         .setLabel("New mortgage")
                         .setMin(0))
-                .addEntry(new TableEntryText(Tables.PLAYERROUND.MOVING_REASON)
-                        .setInitialValue(playerRound.getMovingReason(), "")
-                        .setLabel("Moving reason")
-                        .setRows(3))
+                .addEntry(new TableEntryPickRecord(Tables.PLAYERROUND.MOVINGREASON_ID)
+                        .setPickTable(data, Tables.MOVINGREASON
+                                    .where(Tables.MOVINGREASON.GAMEVERSION_ID.eq(gameSession.getGameversionId())),
+                                Tables.MOVINGREASON.ID, Tables.MOVINGREASON.KEY)
+                        .setRequired(false)
+                        .setLabel("Moving reason"))
+                .addEntry(new TableEntryString(Tables.PLAYERROUND.MOVING_REASON_OTHER)
+                        .setRequired()
+                        .setInitialValue(playerRound.getMovingReasonOther(), "")
+                        .setLabel("Moving other")
+                        .setMaxChars(45))
                 .addEntry(new TableEntryInt(Tables.PLAYERROUND.FLUVIAL_DAMAGE)
                         .setRequired()
                         .setInitialValue(playerRound.getFluvialDamage(), 0)
