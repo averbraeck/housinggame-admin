@@ -11,6 +11,7 @@ import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryBoolean;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDateTime;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecord;
@@ -635,6 +636,10 @@ public class MaintainPlay
                         .setInitialValue(questionScore.getScore(), 0)
                         .setLabel("Score")
                         .setMin(0))
+                .addEntry(new TableEntryBoolean(Tables.QUESTIONSCORE.LATE_ANSWER)
+                        .setRequired()
+                        .setInitialValue(questionScore.getLateAnswer(), (byte) 0)
+                        .setLabel("Late answer"))
                 .addEntry(new TableEntryInt(Tables.QUESTIONSCORE.PLAYERROUND_ID)
                         .setInitialValue(playerRoundId, 0)
                         .setLabel("PlayerRound id")
