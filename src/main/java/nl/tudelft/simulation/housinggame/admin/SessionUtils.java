@@ -18,7 +18,8 @@ public final class SessionUtils
     public static AdminData getData(final HttpSession session)
     {
         AdminData data = (AdminData) session.getAttribute("adminData");
-        data.setError(false);
+        if (data != null)
+            data.setError(false);
         return data;
     }
 
@@ -46,7 +47,7 @@ public final class SessionUtils
         StringBuilder s = new StringBuilder();
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         List<GameRecord> gameRecords = dslContext.selectFrom(Tables.GAME).fetch();
-    
+
         s.append(AdminTable.startTable());
         for (GameRecord game : gameRecords) {
             TableRow tableRow = new TableRow(game.getId(), selectedGameRecordNr,
@@ -55,7 +56,7 @@ public final class SessionUtils
             s.append(tableRow.process());
         }
         s.append(AdminTable.endTable());
-    
+
         data.getColumn(0).setSelectedRecordNr(selectedGameRecordNr);
         data.getColumn(0).setContent(s.toString());
     }
