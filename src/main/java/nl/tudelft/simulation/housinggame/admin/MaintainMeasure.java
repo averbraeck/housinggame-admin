@@ -14,6 +14,7 @@ import org.jooq.impl.DSL;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDouble;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecord;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
@@ -260,6 +261,16 @@ public class MaintainMeasure
                         .setInitialValue(houseRound.getBidExplanation(), "")
                         .setLabel("Bid explanation")
                         .setRows(3))
+                .addEntry(new TableEntryString(Tables.HOUSEROUND.STATUS)
+                        .setInitialValue(houseRound.getStatus(), "")
+                        .setLabel("Status")
+                        .setMaxChars(24))
+                .addEntry(new TableEntryPickRecord(Tables.HOUSEROUND.PLAYERROUND_ID).setPickTable(data,
+                        dslContext.fetch("SELECT * from playerround INNER JOIN player ON playerround.player_id = player.id "
+                                + "WHERE playerround.groupround_id = " + groupRoundId),
+                                Tables.PLAYERROUND.ID, Tables.PLAYER.CODE)
+                        .setInitialValue(houseRound.getHouseId(), 0)
+                        .setLabel("House"))
                 .addEntry(new TableEntryInt(Tables.HOUSEROUND.GROUPROUND_ID)
                         .setInitialValue(groupRoundId, 0)
                         .setLabel("GroupRound id")
