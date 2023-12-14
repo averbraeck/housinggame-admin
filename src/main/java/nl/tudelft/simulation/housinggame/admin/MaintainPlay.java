@@ -21,7 +21,7 @@ import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.GamesessionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GrouproundRecord;
-import nl.tudelft.simulation.housinggame.data.tables.records.HouseroundRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.HousegroupRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.MeasureRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.PlayerRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.PlayerroundRecord;
@@ -486,12 +486,12 @@ public class MaintainPlay
                         .setInitialValue(playerRound.getMortgageLeftStart(), 0)
                         .setLabel("Mortgage left")
                         .setMin(0))
-                .addEntry(new TableEntryPickRecord(Tables.PLAYERROUND.START_HOUSEROUND_ID)
-                        .setPickTable(data, Tables.HOUSEROUND.join(Tables.HOUSE)
-                                .on(Tables.HOUSEROUND.HOUSE_ID.eq(Tables.HOUSE.ID))
-                                .and(Tables.HOUSEROUND.GROUPROUND_ID.eq(groupRound.getId())),
-                                Tables.HOUSEROUND.ID, Tables.HOUSE.CODE)
-                        .setInitialValue(playerRound.getStartHouseroundId(), 0)
+                .addEntry(new TableEntryPickRecord(Tables.PLAYERROUND.START_HOUSEGROUP_ID)
+                        .setPickTable(data, Tables.HOUSEGROUP.join(Tables.HOUSE)
+                                .on(Tables.HOUSEGROUP.HOUSE_ID.eq(Tables.HOUSE.ID))
+                                .and(Tables.HOUSEGROUP.GROUP_ID.eq(group.getId())),
+                                Tables.HOUSEGROUP.ID, Tables.HOUSE.CODE)
+                        .setInitialValue(playerRound.getStartHousegroupId(), 0)
                         .setLabel("Start house"))
                 .addEntry(new TableEntryInt(Tables.PLAYERROUND.HOUSE_PRICE_SOLD)
                         .setRequired()
@@ -503,12 +503,12 @@ public class MaintainPlay
                         .setInitialValue(playerRound.getHousePriceBought(), 0)
                         .setLabel("House Price bought")
                         .setMin(0))
-                .addEntry(new TableEntryPickRecord(Tables.PLAYERROUND.FINAL_HOUSEROUND_ID)
-                        .setPickTable(data, Tables.HOUSEROUND.join(Tables.HOUSE)
-                                .on(Tables.HOUSEROUND.HOUSE_ID.eq(Tables.HOUSE.ID))
-                                .and(Tables.HOUSEROUND.GROUPROUND_ID.eq(groupRound.getId())),
-                                Tables.HOUSEROUND.ID, Tables.HOUSE.CODE)
-                        .setInitialValue(playerRound.getFinalHouseroundId(), 0)
+                .addEntry(new TableEntryPickRecord(Tables.PLAYERROUND.FINAL_HOUSEGROUP_ID)
+                        .setPickTable(data, Tables.HOUSEGROUP.join(Tables.HOUSE)
+                                .on(Tables.HOUSEGROUP.HOUSE_ID.eq(Tables.HOUSE.ID))
+                                .and(Tables.HOUSEGROUP.GROUP_ID.eq(group.getId())),
+                                Tables.HOUSEGROUP.ID, Tables.HOUSE.CODE)
+                        .setInitialValue(playerRound.getFinalHousegroupId(), 0)
                         .setLabel("Final house"))
                 .addEntry(new TableEntryInt(Tables.PLAYERROUND.MORTGAGE_HOUSE_END)
                         .setRequired()
@@ -714,18 +714,24 @@ public class MaintainPlay
                 dslContext.selectFrom(Tables.GROUPROUND).where(Tables.GROUPROUND.GROUP_ID.eq(group.getId())).fetch();
         for (var groupRound : groupRoundList)
         {
-            List<HouseroundRecord> houseRoundList = dslContext.selectFrom(Tables.HOUSEROUND)
-                    .where(Tables.HOUSEROUND.GROUPROUND_ID.eq(groupRound.getId())).fetch();
+            List<PlayerroundRecord> playerRoundList = dslContext.selectFrom(Tables.PLAYERROUND)
+                    .where(Tables.PLAYERROUND.GROUPROUND_ID.eq(groupRound.getId())).fetch();
+            for (var playerRound : playerRoundList)
+            {
+                playerRound.setStartHousegroupId(null); // avoid circular reference
+                playerRound.setFinalHousegroupId(null); // avoid circular reference
+                playerRound.store();
+            }
+            List<HousegroupRecord> houseRoundList = dslContext.selectFrom(Tables.HOUSEGROUP)
+                    .where(Tables.HOUSEGROUP.GROUP_ID.eq(group.getId())).fetch();
             for (var houseRound : houseRoundList)
             {
                 List<MeasureRecord> measureList = dslContext.selectFrom(Tables.MEASURE)
-                        .where(Tables.MEASURE.HOUSEROUND_ID.eq(houseRound.getId())).fetch();
+                        .where(Tables.MEASURE.HOUSEGROUP_ID.eq(houseRound.getId())).fetch();
                 for (var measure : measureList)
                     measure.delete();
                 houseRound.delete();
             }
-            List<PlayerroundRecord> playerRoundList = dslContext.selectFrom(Tables.PLAYERROUND)
-                    .where(Tables.PLAYERROUND.GROUPROUND_ID.eq(groupRound.getId())).fetch();
             for (var playerRound : playerRoundList)
             {
                 List<QuestionscoreRecord> questionScoreList = dslContext.selectFrom(Tables.QUESTIONSCORE)

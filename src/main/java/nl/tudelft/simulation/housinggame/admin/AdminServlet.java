@@ -319,18 +319,17 @@ public class AdminServlet extends HttpServlet
                 MaintainPlay.handleMenu(request, click, recordNr);
                 break;
 
-            // (GameSession) - (Group) - (GroupRound) - HouseRound - Measure
+            // (GameSession) - (Group) - HouseGroup - Measure - HouseTransaction
             case "measure":
             case "viewMeasureGameSession":
             case "viewMeasureGroup":
-            case "viewMeasureGroupRound":
 
-            case "viewHouseRound":
-            case "editHouseRound":
-            case "saveHouseRound":
-            case "deleteHouseRound":
-            case "deleteHouseRoundOk":
-            case "newHouseRound":
+            case "viewHouseGroup":
+            case "editHouseGroup":
+            case "saveHouseGroup":
+            case "deleteHouseGroup":
+            case "deleteHouseGroupOk":
+            case "newHouseGroup":
 
             case "viewMeasure":
             case "editMeasure":
@@ -338,6 +337,13 @@ public class AdminServlet extends HttpServlet
             case "deleteMeasure":
             case "deleteMeasureOk":
             case "newMeasure":
+
+            case "viewHouseTransaction":
+            case "editHouseTransaction":
+            case "saveHouseTransaction":
+            case "deleteHouseTransaction":
+            case "deleteHouseTransactionOk":
+            case "newHouseTransaction":
                 data.setMenuChoice("measure");
                 MaintainMeasure.handleMenu(request, click, recordNr);
                 break;
@@ -398,7 +404,7 @@ public class AdminServlet extends HttpServlet
         topmenu(data, s, "user", "User"); // User
         topmenu(data, s, "gamesession", "Session"); // (GameVersion) - GameSession - Group - Player
         topmenu(data, s, "play", "Play"); // (GameSession) - (Group) - GroupRound - (Player) - PlayerRound - QuestionScore
-        topmenu(data, s, "measure", "HouseMeasure"); // (GameSession) - (Group) - (GroupRound) - HouseRound - Measure
+        topmenu(data, s, "measure", "HouseMeasure"); // (GameSession) - (Group) - HouseGroup - Measure - HouseTransaction
         return s.toString();
     }
 
