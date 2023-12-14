@@ -11,7 +11,6 @@ import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDouble;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecord;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
@@ -328,11 +327,6 @@ public class MaintainMeasure
                         .setRequired()
                         .setInitialValue(measure.getMeasuretypeId(), 0)
                         .setLabel("Measure type"))
-                .addEntry(new TableEntryDouble(Tables.MEASURE.VALUE)
-                        .setRequired()
-                        .setInitialValue(measure.getValue(), 0.0)
-                        .setLabel("Value")
-                        .setMin(0))
                 .addEntry(new TableEntryInt(Tables.MEASURE.ROUND_NUMBER)
                         .setRequired()
                         .setInitialValue(measure.getRoundNumber(), 0)
