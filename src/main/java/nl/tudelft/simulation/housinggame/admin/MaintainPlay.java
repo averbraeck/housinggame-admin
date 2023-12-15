@@ -22,6 +22,7 @@ import nl.tudelft.simulation.housinggame.data.tables.records.GamesessionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GrouproundRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.HousegroupRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.HousetransactionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.MeasureRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.PlayerRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.PlayerroundRecord;
@@ -720,18 +721,15 @@ public class MaintainPlay
             {
                 playerRound.setStartHousegroupId(null); // avoid circular reference
                 playerRound.setFinalHousegroupId(null); // avoid circular reference
+                playerRound.setActiveTransactionId(null); // avoid circular reference
                 playerRound.store();
             }
-            List<HousegroupRecord> houseRoundList = dslContext.selectFrom(Tables.HOUSEGROUP)
-                    .where(Tables.HOUSEGROUP.GROUP_ID.eq(group.getId())).fetch();
-            for (var houseRound : houseRoundList)
-            {
-                List<MeasureRecord> measureList = dslContext.selectFrom(Tables.MEASURE)
-                        .where(Tables.MEASURE.HOUSEGROUP_ID.eq(houseRound.getId())).fetch();
-                for (var measure : measureList)
-                    measure.delete();
-                houseRound.delete();
-            }
+
+            List<HousetransactionRecord> transactionList = dslContext.selectFrom(Tables.HOUSETRANSACTION)
+                    .where(Tables.HOUSETRANSACTION.GROUPROUND_ID.eq(groupRound.getId())).fetch();
+            for (var transaction : transactionList)
+                transaction.delete();
+
             for (var playerRound : playerRoundList)
             {
                 List<QuestionscoreRecord> questionScoreList = dslContext.selectFrom(Tables.QUESTIONSCORE)
@@ -740,6 +738,21 @@ public class MaintainPlay
                     questionScore.delete();
                 playerRound.delete();
             }
+        }
+
+        for (var groupRound : groupRoundList)
+        {
+            List<HousegroupRecord> houseGroupList =
+                    dslContext.selectFrom(Tables.HOUSEGROUP).where(Tables.HOUSEGROUP.GROUP_ID.eq(group.getId())).fetch();
+            for (var houseGroup : houseGroupList)
+            {
+                List<MeasureRecord> measureList = dslContext.selectFrom(Tables.MEASURE)
+                        .where(Tables.MEASURE.HOUSEGROUP_ID.eq(houseGroup.getId())).fetch();
+                for (var measure : measureList)
+                    measure.delete();
+                houseGroup.delete();
+            }
+
             groupRound.delete();
         }
     }
