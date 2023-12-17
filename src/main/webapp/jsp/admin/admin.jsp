@@ -11,15 +11,15 @@
 
     <style>
     table, th, td {
-    	border: 1px solid gray;
-    	border-spacing: 0px;
-    	border-collapse: collapse;
-    	padding: 5px;
-    	vertical-align: top;
+      border: 1px solid gray;
+      border-spacing: 0px;
+      border-collapse: collapse;
+      padding: 5px;
+      vertical-align: top;
     }
     
     body {
-    	line-height: 1.2;
+      line-height: 1.2;
     }
     </style>
 

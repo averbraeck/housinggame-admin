@@ -182,8 +182,7 @@ public class MaintainMeasure
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("MeasureGroupRound", 2, 0, false, Tables.GROUPROUND, Tables.GROUPROUND.ROUND_NUMBER,
-                    "round_number", Tables.GROUPROUND.GROUP_ID, false);
+            showHouseGroupColumn(data, "HouseGroup", 2, 0);
         }
     }
 
@@ -229,15 +228,24 @@ public class MaintainMeasure
                 .setDeleteMethod("deleteHouseGroup", "Delete", "<br>Note: HouseGroup can only be deleted when it "
                         + "<br>has not been used for measures by a player")
                 .setRecordNr(houseGroupId)
+                .setLabelLength("50%")
+                .setFieldLength("50%")
                 .startForm()
-                .addEntry(new TableEntryPickRecord(Tables.HOUSEGROUP.HOUSE_ID)
-                        .setPickTable(data, Tables.HOUSEGROUP.join(Tables.HOUSE)
-                                .on(Tables.HOUSEGROUP.HOUSE_ID.eq(Tables.HOUSE.ID))
-                                .and(Tables.HOUSETRANSACTION.HOUSEGROUP_ID.eq(houseGroupId)),
-                                Tables.HOUSEGROUP.ID, Tables.HOUSE.CODE)
+                .addEntry(new TableEntryString(Tables.HOUSEGROUP.CODE)
                         .setRequired()
-                        .setInitialValue(houseGroup.getHouseId(), 0)
-                        .setLabel("House"))
+                        .setInitialValue(houseGroup.getCode(), "")
+                        .setLabel("House code")
+                        .setReadOnly())
+                .addEntry(new TableEntryString(Tables.HOUSEGROUP.ADDRESS)
+                        .setRequired()
+                        .setInitialValue(houseGroup.getAddress(), "")
+                        .setLabel("House address")
+                        .setReadOnly())
+                .addEntry(new TableEntryInt(Tables.HOUSEGROUP.RATING)
+                        .setRequired()
+                        .setInitialValue(houseGroup.getRating(), 0)
+                        .setLabel("House rating")
+                        .setMin(0))
                 .addEntry(new TableEntryInt(Tables.HOUSEGROUP.ORIGINAL_PRICE)
                         .setRequired()
                         .setInitialValue(houseGroup.getOriginalPrice(), 0)
@@ -253,6 +261,13 @@ public class MaintainMeasure
                         .setInitialValue(houseGroup.getMarketValue(), 0)
                         .setLabel("Market value")
                         .setMin(0))
+                .addEntry(new TableEntryPickRecord(Tables.HOUSEGROUP.OWNER_ID)
+                        .setPickTable(data, Tables.PLAYER.join(Tables.GROUP)
+                                .on(Tables.PLAYER.GROUP_ID.eq(groupId)),
+                                Tables.PLAYER.ID, Tables.PLAYER.CODE)
+                        .setRequired()
+                        .setInitialValue(houseGroup.getOwnerId(), null) // no 'new' function, so can safely retrieve
+                        .setLabel("Owner (player)"))
                 .addEntry(new TableEntryInt(Tables.HOUSEGROUP.LAST_SOLD_PRICE)
                         .setRequired()
                         .setInitialValue(houseGroup.getLastSoldPrice(), 0)
@@ -264,12 +279,53 @@ public class MaintainMeasure
                         .setLabel("House satisfaction")
                         .setMin(0))
                 .addEntry(new TableEntryString(Tables.HOUSEGROUP.STATUS)
+                        .setRequired()
                         .setInitialValue(houseGroup.getStatus(), "")
                         .setLabel("Status")
                         .setMaxChars(24))
+                .addEntry(new TableEntryInt(Tables.HOUSEGROUP.FLUVIAL_BASE_PROTECTION)
+                        .setRequired()
+                        .setInitialValue(houseGroup.getFluvialBaseProtection(), 0)
+                        .setLabel("Fluvial base prot")
+                        .setMin(0))
+                .addEntry(new TableEntryInt(Tables.HOUSEGROUP.PLUVIAL_BASE_PROTECTION)
+                        .setRequired()
+                        .setInitialValue(houseGroup.getPluvialBaseProtection(), 0)
+                        .setLabel("Pluvial base prot")
+                        .setMin(0))
+                .addEntry(new TableEntryInt(Tables.HOUSEGROUP.FLUVIAL_HOUSE_PROTECTION)
+                        .setRequired()
+                        .setInitialValue(houseGroup.getFluvialHouseProtection(), 0)
+                        .setLabel("Fluvial house prot")
+                        .setMin(0))
+                .addEntry(new TableEntryInt(Tables.HOUSEGROUP.PLUVIAL_HOUSE_PROTECTION)
+                        .setRequired()
+                        .setInitialValue(houseGroup.getPluvialHouseProtection(), 0)
+                        .setLabel("Pluvial house prot")
+                        .setMin(0))
+                .addEntry(new TableEntryInt(Tables.HOUSEGROUP.LAST_ROUND_COMM_FLUVIAL)
+                        .setInitialValue(houseGroup.getLastRoundCommFluvial(), 0)
+                        .setLabel("Last round fluvial community flood")
+                        .setMin(0))
+                .addEntry(new TableEntryInt(Tables.HOUSEGROUP.LAST_ROUND_COMM_PLUVIAL)
+                        .setInitialValue(houseGroup.getLastRoundCommPluvial(), 0)
+                        .setLabel("Last round pluvial community flood")
+                        .setMin(0))
+                .addEntry(new TableEntryInt(Tables.HOUSEGROUP.LAST_ROUND_HOUSE_FLUVIAL)
+                        .setInitialValue(houseGroup.getLastRoundHouseFluvial(), 0)
+                        .setLabel("Last round fluvial house flood")
+                        .setMin(0))
+                .addEntry(new TableEntryInt(Tables.HOUSEGROUP.LAST_ROUND_HOUSE_PLUVIAL)
+                        .setInitialValue(houseGroup.getLastRoundHousePluvial(), 0)
+                        .setLabel("Last round pluvial house flood")
+                        .setMin(0))
                 .addEntry(new TableEntryInt(Tables.HOUSEGROUP.GROUP_ID)
                         .setInitialValue(groupId, 0)
                         .setLabel("Group id")
+                        .setHidden(true))
+                .addEntry(new TableEntryInt(Tables.HOUSEGROUP.HOUSE_ID)
+                        .setInitialValue(houseGroup.getHouseId(), null) // no 'new' function, so can safely retrieve
+                        .setLabel("House id")
                         .setHidden(true))
                 .endForm();
         //@formatter:on
@@ -389,14 +445,6 @@ public class MaintainMeasure
                         + "<br>when a measure for a player is deleted")
                 .setRecordNr(transactionId)
                 .startForm()
-                .addEntry(new TableEntryPickRecord(Tables.HOUSETRANSACTION.PLAYERROUND_ID)
-                        .setPickTable(data, Tables.PLAYERROUND.join(Tables.PLAYER)
-                                .on(Tables.PLAYERROUND.PLAYER_ID.eq(Tables.PLAYER.ID))
-                                .and(Tables.HOUSETRANSACTION.HOUSEGROUP_ID.eq(houseGroupId)),
-                                Tables.PLAYERROUND.ID, Tables.PLAYER.CODE)
-                        .setRequired()
-                        .setInitialValue(transaction.getPlayerroundId(), 0)
-                        .setLabel("Player(round)"))
                 .addEntry(new TableEntryInt(Tables.HOUSETRANSACTION.PRICE)
                         .setRequired()
                         .setInitialValue(transaction.getPrice(), 0)
@@ -410,6 +458,14 @@ public class MaintainMeasure
                         .setInitialValue(transaction.getTransactionStatus(), "")
                         .setLabel("Status")
                         .setMaxChars(24))
+                .addEntry(new TableEntryInt(Tables.HOUSETRANSACTION.PLAYERROUND_ID)
+                        .setInitialValue(transaction.getPlayerroundId(), 0)
+                        .setLabel("Playerround id")
+                        .setHidden(true))
+                .addEntry(new TableEntryInt(Tables.HOUSETRANSACTION.GROUPROUND_ID)
+                        .setInitialValue(transaction.getGrouproundId(), 0)
+                        .setLabel("Groupround id")
+                        .setHidden(true))
                 .addEntry(new TableEntryInt(Tables.HOUSETRANSACTION.HOUSEGROUP_ID)
                         .setInitialValue(houseGroupId, 0)
                         .setLabel("Housegroup id")
@@ -431,7 +487,7 @@ public class MaintainMeasure
         StringBuilder s = new StringBuilder();
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         List<HousegroupRecord> records = dslContext.selectFrom(Tables.HOUSEGROUP)
-                .where(Tables.HOUSEGROUP.GROUP_ID.eq(data.getColumn(2).getSelectedRecordId())).fetch();
+                .where(Tables.HOUSEGROUP.GROUP_ID.eq(data.getColumn(1).getSelectedRecordId())).fetch();
         SortedMap<String, HousegroupRecord> sorted = new TreeMap<>();
         for (HousegroupRecord record : records)
         {
@@ -460,7 +516,7 @@ public class MaintainMeasure
         StringBuilder s = new StringBuilder();
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         List<MeasureRecord> records = dslContext.selectFrom(Tables.MEASURE)
-                .where(Tables.MEASURE.HOUSEGROUP_ID.eq(data.getColumn(columnNr - 1).getSelectedRecordId())).fetch();
+                .where(Tables.MEASURE.HOUSEGROUP_ID.eq(data.getColumn(2).getSelectedRecordId())).fetch();
 
         s.append(AdminTable.startTable());
         for (MeasureRecord record : records)
@@ -484,7 +540,7 @@ public class MaintainMeasure
         StringBuilder s = new StringBuilder();
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         List<HousetransactionRecord> records = dslContext.selectFrom(Tables.HOUSETRANSACTION)
-                .where(Tables.HOUSETRANSACTION.HOUSEGROUP_ID.eq(data.getColumn(columnNr - 1).getSelectedRecordId())).fetch();
+                .where(Tables.HOUSETRANSACTION.HOUSEGROUP_ID.eq(data.getColumn(2).getSelectedRecordId())).fetch();
 
         s.append(AdminTable.startTable());
         for (HousetransactionRecord record : records)
@@ -497,7 +553,6 @@ public class MaintainMeasure
             s.append(tableRow.process());
         }
         s.append(AdminTable.endTable());
-        s.append(AdminTable.finalButton("New Transaction", "new" + columnName));
 
         data.getColumn(columnNr).setSelectedRecordId(recordId);
         data.getColumn(columnNr).setContent(s.toString());
