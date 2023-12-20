@@ -7,6 +7,7 @@ import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryBoolean;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDouble;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecord;
@@ -190,6 +191,18 @@ public class MaintainParameters
                         .setLabel("Mortgage Percentage")
                         .setMin(0.0)
                         .setMax(100.0))
+                .addEntry(new TableEntryBoolean(Tables.SCENARIOPARAMETERS.ALLOW_PERSONAL_SATISFACTION_NEG)
+                        .setRequired()
+                        .setInitialValue(scenarioParameters.getAllowPersonalSatisfactionNeg(), (byte) 0)
+                        .setLabel("Can personal satisfaction go negative?"))
+                .addEntry(new TableEntryBoolean(Tables.SCENARIOPARAMETERS.ALLOW_HOUSE_SATISFACTION_NEG)
+                        .setRequired()
+                        .setInitialValue(scenarioParameters.getAllowHouseSatisfactionNeg(), (byte) 0)
+                        .setLabel("Can house satisfaction go negative?"))
+                .addEntry(new TableEntryBoolean(Tables.SCENARIOPARAMETERS.ALLOW_TOTAL_SATISFACTION_NEG)
+                        .setRequired()
+                        .setInitialValue(scenarioParameters.getAllowTotalSatisfactionNeg(), (byte) 0)
+                        .setLabel("Can total satisfaction go negative?"))
                 .addEntry(new TableEntryPickRecord(Tables.SCENARIOPARAMETERS.DEFAULT_LANGUAGE_ID)
                         .setRequired()
                         .setPickTable(data, Tables.LANGUAGE, Tables.LANGUAGE.ID,
