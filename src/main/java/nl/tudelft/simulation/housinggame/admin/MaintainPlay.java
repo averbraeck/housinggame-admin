@@ -528,7 +528,6 @@ public class MaintainPlay
                         .setRequired(false)
                         .setLabel("Moving reason"))
                 .addEntry(new TableEntryString(Tables.PLAYERROUND.MOVING_REASON_OTHER)
-                        .setRequired()
                         .setInitialValue(playerRound.getMovingReasonOther(), "")
                         .setLabel("Moving other")
                         .setMaxChars(45))
@@ -546,6 +545,10 @@ public class MaintainPlay
                         .setInitialValue(groupRoundId, 0)
                         .setLabel("GroupRound id")
                         .setHidden(true))
+                .addEntry(new TableEntryInt(Tables.PLAYERROUND.ACTIVE_TRANSACTION_ID)
+                        .setInitialValue(playerRound.getActiveTransactionId(), 0)
+                        .setLabel("Transaction id")
+                        .setReadOnly(false))
                 .endForm();
         //@formatter:on
         data.getFormColumn().setHeaderForm("Edit PlayerRound", form);
