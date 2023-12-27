@@ -418,8 +418,8 @@ public class MaintainMeasure
         data.showDependentColumn("MeasureGroup", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.GROUP,
                 Tables.GROUP.NAME, "name", Tables.GROUP.GAMESESSION_ID, false);
         showHouseGroupColumn(data, "HouseGroup", 2, data.getColumn(2).getSelectedRecordId());
-        showMeasureColumn(data, "Measure", 3, recordId);
-        showHouseTransactionColumn(data, "HouseTransaction", 4, 0);
+        showMeasureColumn(data, "Measure", 3, 0);
+        showHouseTransactionColumn(data, "HouseTransaction", 4, recordId);
         data.resetFormColumn();
         if (recordId != 0)
         {
@@ -470,6 +470,11 @@ public class MaintainMeasure
                         .setInitialValue(houseGroupId, 0)
                         .setLabel("Housegroup id")
                         .setHidden(true))
+                .addEntry(new TableEntryInt(Tables.HOUSETRANSACTION.ID)
+                        .setInitialValue(transaction.getId(), 0)
+                        .setLabel("Transaction id")
+                        .setReadOnly()
+                        .setNoWrite())
                 .endForm();
         //@formatter:on
         data.getFormColumn().setHeaderForm("Edit HouseTransaction", form);
