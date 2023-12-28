@@ -6,6 +6,9 @@
 <meta charset="ISO-8859-1">
 <title>Housing Game Admin Login</title>
 
+<!--  favicon -->
+<link rel="shortcut icon" href="/housinggame-admin/favicon.ico" type="image/x-icon">
+
 <style>
 html, body {
   font-family: Arial, Helvetica, sans-serif;

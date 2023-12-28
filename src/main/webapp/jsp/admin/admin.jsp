@@ -6,6 +6,9 @@
     <meta charset="ISO-8859-1">
     <title>Housing Game Administration</title>
 
+    <!--  favicon -->
+    <link rel="shortcut icon" href="/housinggame-admin/favicon.ico" type="image/x-icon">
+
     <link rel="stylesheet" type="text/css" href="/housinggame-admin/css/admin.css" />
     <script src="/housinggame-admin/js/admin.js"></script>
 
