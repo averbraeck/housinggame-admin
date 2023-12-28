@@ -12,6 +12,8 @@ public abstract class AbstractTableEntry<F extends AbstractTableEntry<F, T>, T> 
 
     private String type;
 
+    private boolean noWrite = false;
+
     public AbstractTableEntry(final TableField<?, T> tableField)
     {
         super(tableField.getName(), tableField.getName());
@@ -39,6 +41,13 @@ public abstract class AbstractTableEntry<F extends AbstractTableEntry<F, T>, T> 
         return this.tableField;
     }
 
+    @SuppressWarnings("unchecked")
+    public F setNoWrite()
+    {
+        this.noWrite = true;
+        return (F) this;
+    }
+
     protected void validate(final String value)
     {
         setLastEnteredValue(value);
@@ -49,6 +58,8 @@ public abstract class AbstractTableEntry<F extends AbstractTableEntry<F, T>, T> 
 
     public String setRecordValue(final Record record, final String value)
     {
+        if (this.noWrite)
+            return "";
         validate(value);
         if (this.errors.length() == 0)
         {
