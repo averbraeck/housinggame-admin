@@ -162,7 +162,9 @@ public abstract class AbstractFormEntry<F extends AbstractFormEntry<F, T>, T>
     {
         this.lastEnteredValue = value;
         this.errors = "";
-        if ((value == null || value.length() == 0) && isRequired())
+        if (value == null && isRequired())
+            addError("should not be null");
+        else if (value.length() == 0 && isRequired())
             addError("should not be empty");
     }
 
