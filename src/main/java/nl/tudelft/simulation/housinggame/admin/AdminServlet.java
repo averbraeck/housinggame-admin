@@ -186,7 +186,7 @@ public class AdminServlet extends HttpServlet
                 MaintainMovingReason.handleMenu(request, click, recordNr);
                 break;
 
-            // (GameVersion) - (Scenario) - Question
+            // (GameVersion) - (Scenario) - Question - QuestionItem
             case "question":
             case "viewQuestionGameVersion":
             case "viewQuestionScenario":
@@ -197,6 +197,13 @@ public class AdminServlet extends HttpServlet
             case "deleteQuestion":
             case "deleteQuestionOk":
             case "newQuestion":
+
+            case "viewQuestionItem":
+            case "editQuestionItem":
+            case "saveQuestionItem":
+            case "deleteQuestionItem":
+            case "deleteQuestionItemOk":
+            case "newQuestionItem":
                 data.setMenuChoice("question");
                 MaintainQuestion.handleMenu(request, click, recordNr);
                 break;
@@ -400,7 +407,7 @@ public class AdminServlet extends HttpServlet
         topmenu(data, s, "community", "Community"); // (GameVersion) - Community - Tax
         topmenu(data, s, "house", "House"); // (GameVersion) - (Community) - House - InitialHouseMeasure
         topmenu(data, s, "news", "News"); // (GameVersion) - (Scenario) - NewsItem - NewsEffects
-        topmenu(data, s, "question", "Question"); // (GameVersion) - (Scenario) - Question
+        topmenu(data, s, "question", "Question"); // (GameVersion) - (Scenario) - Question - QuestionItem
         topmenu(data, s, "user", "User"); // User
         topmenu(data, s, "gamesession", "Session"); // (GameVersion) - GameSession - Group - Player
         topmenu(data, s, "play", "Play"); // (GameSession) - (Group) - GroupRound - (Player) - PlayerRound - QuestionScore
