@@ -16,6 +16,7 @@ import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDateTime;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecord;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.GamesessionRecord;
@@ -608,11 +609,11 @@ public class MaintainPlay
                                 Tables.QUESTION.ID, Tables.QUESTION.NAME)
                         .setInitialValue(questionScore.getQuestionId(), null)
                         .setLabel("Question"))
-                .addEntry(new TableEntryInt(Tables.QUESTIONSCORE.SCORE)
+                .addEntry(new TableEntryText(Tables.QUESTIONSCORE.ANSWER)
                         .setRequired()
-                        .setInitialValue(questionScore.getScore(), 0)
-                        .setLabel("Score")
-                        .setMin(0))
+                        .setInitialValue(questionScore.getAnswer(), "")
+                        .setLabel("Answer")
+                        .setRows(1))
                 .addEntry(new TableEntryBoolean(Tables.QUESTIONSCORE.LATE_ANSWER)
                         .setRequired()
                         .setInitialValue(questionScore.getLateAnswer(), (byte) 0)
