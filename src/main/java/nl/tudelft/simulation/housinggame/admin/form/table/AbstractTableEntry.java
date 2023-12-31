@@ -52,7 +52,9 @@ public abstract class AbstractTableEntry<F extends AbstractTableEntry<F, T>, T> 
     {
         setLastEnteredValue(value);
         this.errors = "";
-        if ((value == null || value.length() == 0) && (isRequired() || !this.tableField.getDataType().nullable()))
+        if (value == null && !this.tableField.getDataType().nullable())
+            addError("should not be null");
+        else if (value.length() == 0 && isRequired())
             addError("should not be empty");
     }
 
