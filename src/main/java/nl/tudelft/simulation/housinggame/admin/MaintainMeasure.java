@@ -360,7 +360,7 @@ public class MaintainMeasure
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         MeasureRecord measure = measureId == 0 ? dslContext.newRecord(Tables.MEASURE)
                 : dslContext.selectFrom(Tables.MEASURE).where(Tables.MEASURE.ID.eq(measureId)).fetchOne();
-        int houseGroupId = measureId == 0 ? data.getColumn(3).getSelectedRecordId() : measure.getHousegroupId();
+        int houseGroupId = measureId == 0 ? data.getColumn(2).getSelectedRecordId() : measure.getHousegroupId();
         HousegroupRecord houseGroup = SqlUtils.readRecordFromId(data, Tables.HOUSEGROUP, houseGroupId);
         GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, houseGroup.getGroupId());
         ScenarioRecord scenario = SqlUtils.readRecordFromId(data, Tables.SCENARIO, group.getScenarioId());
