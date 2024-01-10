@@ -524,9 +524,9 @@ public class MaintainPlay
                         .setLabel("Mortgage left end of round")
                         .setMin(0))
                 .addEntry(new TableEntryPickRecord(Tables.PLAYERROUND.MOVINGREASON_ID)
-                        .setPickTable(data, Tables.MOVINGREASON
-                                    .where(Tables.MOVINGREASON.GAMEVERSION_ID.eq(gameSession.getGameversionId())),
+                        .setPickTable(data, Tables.MOVINGREASON,
                                 Tables.MOVINGREASON.ID, Tables.MOVINGREASON.KEY)
+                        .setInitialValue(playerRound.getMovingreasonId(), null)
                         .setRequired(false)
                         .setLabel("Moving reason"))
                 .addEntry(new TableEntryString(Tables.PLAYERROUND.MOVING_REASON_OTHER)
