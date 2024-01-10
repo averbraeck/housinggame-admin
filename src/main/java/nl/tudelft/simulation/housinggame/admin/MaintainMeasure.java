@@ -376,10 +376,9 @@ public class MaintainMeasure
                 .setRecordNr(measureId)
                 .startForm()
                 .addEntry(new TableEntryPickRecord(Tables.MEASURE.MEASURETYPE_ID)
-                        .setPickTable(data, Tables.MEASURE.join(Tables.MEASURETYPE)
-                                .on(Tables.MEASURE.MEASURETYPE_ID.eq(Tables.MEASURETYPE.ID))
-                                .and(Tables.MEASURE.HOUSEGROUP_ID.eq(houseGroupId)),
-                                Tables.MEASURE.ID, Tables.MEASURETYPE.NAME)
+                            .setPickTable(data, Tables.MEASURETYPE
+                                .where(Tables.MEASURETYPE.GAMEVERSION_ID.eq(scenario.getGameversionId())),
+                                Tables.MEASURETYPE.ID, Tables.MEASURETYPE.NAME)
                         .setRequired()
                         .setInitialValue(measure.getMeasuretypeId(), 0)
                         .setLabel("Measure type"))
