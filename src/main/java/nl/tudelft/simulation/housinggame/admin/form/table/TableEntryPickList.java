@@ -50,7 +50,7 @@ public class TableEntryPickList extends AbstractTableEntry<TableEntryPickList, S
         return this;
     }
 
-    public TableEntryPickList setPickListEntries(final Class<Enum<?>> pickListClass)
+    public TableEntryPickList setPickListEntries(final Class<? extends Enum<?>> pickListClass)
     {
         var enumArray = pickListClass.getEnumConstants();
         this.pickListEntries = new String[enumArray.length];

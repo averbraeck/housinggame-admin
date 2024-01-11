@@ -14,10 +14,13 @@ import org.jooq.impl.DSL;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryBoolean;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDateTime;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickList;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecord;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
+import nl.tudelft.simulation.housinggame.common.GroupState;
+import nl.tudelft.simulation.housinggame.common.PlayerState;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GrouproundRecord;
@@ -254,10 +257,11 @@ public class MaintainPlay
                         .setLabel("Round number")
                         .setMin(0)
                         .setMax(scenario.getHighestRoundNumber()))
-                .addEntry(new TableEntryString(Tables.GROUPROUND.GROUP_STATE)
+                .addEntry(new TableEntryPickList(Tables.GROUPROUND.GROUP_STATE)
+                        .setRequired()
+                        .setPickListEntries(GroupState.class)
                         .setInitialValue(groupRound.getGroupState(), "")
-                        .setLabel("Round State")
-                        .setMaxChars(24))
+                        .setLabel("Round State"))
                 .addEntry(new TableEntryInt(Tables.GROUPROUND.PLUVIAL_FLOOD_INTENSITY)
                         .setRequired()
                         .setInitialValue(groupRound.getPluvialFloodIntensity(), 0)
@@ -363,10 +367,11 @@ public class MaintainPlay
                         .setInitialValue(playerRound.getPlayerId(), 0)
                         .setLabel("Player code")
                         .setReadOnly())
-                .addEntry(new TableEntryString(Tables.PLAYERROUND.PLAYER_STATE)
+                .addEntry(new TableEntryPickList(Tables.PLAYERROUND.PLAYER_STATE)
+                        .setRequired()
+                        .setPickListEntries(PlayerState.class)
                         .setInitialValue(playerRound.getPlayerState(), "")
-                        .setLabel("Player State")
-                        .setMaxChars(24))
+                        .setLabel("Player State"))
                 .addEntry(new TableEntryInt(Tables.PLAYERROUND.ROUND_INCOME)
                         .setRequired()
                         .setInitialValue(playerRound.getRoundIncome(), welfareType.getRoundIncome())

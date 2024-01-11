@@ -12,9 +12,12 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickList;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecord;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
+import nl.tudelft.simulation.housinggame.common.HouseGroupStatus;
+import nl.tudelft.simulation.housinggame.common.TransactionStatus;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.HouseRecord;
@@ -277,11 +280,11 @@ public class MaintainMeasure
                         .setRequired()
                         .setInitialValue(houseGroup.getHouseSatisfaction(), 0)
                         .setLabel("House satisfaction"))
-                .addEntry(new TableEntryString(Tables.HOUSEGROUP.STATUS)
+                .addEntry(new TableEntryPickList(Tables.HOUSEGROUP.STATUS)
+                        .setPickListEntries(HouseGroupStatus.values())
                         .setRequired()
                         .setInitialValue(houseGroup.getStatus(), "")
-                        .setLabel("Status")
-                        .setMaxChars(24))
+                        .setLabel("Status"))
                 .addEntry(new TableEntryInt(Tables.HOUSEGROUP.FLUVIAL_BASE_PROTECTION)
                         .setRequired()
                         .setInitialValue(houseGroup.getFluvialBaseProtection(), 0)
@@ -452,10 +455,10 @@ public class MaintainMeasure
                         .setInitialValue(transaction.getComment(), "")
                         .setLabel("Comment")
                         .setMaxChars(45))
-                .addEntry(new TableEntryString(Tables.HOUSETRANSACTION.TRANSACTION_STATUS)
+                .addEntry(new TableEntryPickList(Tables.HOUSETRANSACTION.TRANSACTION_STATUS)
+                        .setPickListEntries(TransactionStatus.values())
                         .setInitialValue(transaction.getTransactionStatus(), "")
-                        .setLabel("Status")
-                        .setMaxChars(24))
+                        .setLabel("Status"))
                 .addEntry(new TableEntryInt(Tables.HOUSETRANSACTION.PLAYERROUND_ID)
                         .setInitialValue(transaction.getPlayerroundId(), 0)
                         .setLabel("Playerround id")
