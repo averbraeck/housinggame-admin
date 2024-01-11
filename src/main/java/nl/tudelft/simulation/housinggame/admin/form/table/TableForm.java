@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 
 import org.jooq.Record;
+import org.jooq.TableField;
 
 import nl.tudelft.simulation.housinggame.admin.AdminData;
 
@@ -320,8 +321,22 @@ public class TableForm
             }
             else
             {
+                boolean set = false;
                 String value = request.getParameter(entry.getTableField().getName());
-                errors += entry.setRecordValue(record, value);
+                if (entry.getTableField().getDataType().nullable())
+                {
+                    var nullValue = request.getParameter(entry.getTableField().getName() + "-null");
+                    if (nullValue != null)
+                    {
+                        if (nullValue.equals("on") || nullValue.equals("null"))
+                        {
+                            record.set(entry.getTableField(), null);
+                            set = true;
+                        }
+                    }
+                }
+                if (!set)
+                    errors += entry.setRecordValue(record, value);
             }
         }
         return errors;

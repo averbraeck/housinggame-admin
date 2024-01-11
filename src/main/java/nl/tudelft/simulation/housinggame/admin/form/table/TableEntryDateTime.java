@@ -83,6 +83,15 @@ public class TableEntryDateTime extends AbstractTableEntry<TableEntryDateTime, L
             s.append("\" readonly />");
         else
             s.append("\" />");
+
+        if (getTableField().getDataType().nullable())
+        {
+            s.append("&nbsp;&nbsp;<input type=\"checkbox\" name=\"");
+            s.append(getTableField().getName() + "-null\" value=\"null\"");
+            s.append(getLastEnteredValue() == null ? " checked" : "");
+            s.append(" />");
+        }
+
         s.append("</td>\n");
         s.append("    </tr>\n");
 

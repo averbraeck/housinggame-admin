@@ -124,6 +124,15 @@ public class TableEntryPickRecord extends AbstractTableEntry<TableEntryPickRecor
             s.append("</option>\n");
         }
         s.append("        </select>\n");
+
+        if (getTableField().getDataType().nullable())
+        {
+            s.append("&nbsp;&nbsp;<input type=\"checkbox\" name=\"");
+            s.append(getTableField().getName() + "-null\" value=\"null\"");
+            s.append(getLastEnteredValue() == null ? " checked" : "");
+            s.append(" />");
+        }
+
         s.append("      </td>\n");
         s.append("    </tr>\n");
         return s.toString();

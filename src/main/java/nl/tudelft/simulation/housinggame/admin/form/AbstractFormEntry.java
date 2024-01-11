@@ -21,9 +21,9 @@ public abstract class AbstractFormEntry<F extends AbstractFormEntry<F, T>, T>
 
     protected String errors; // cumulative error register
 
-    private T initialValue; // to be able to reset the form
+    protected T initialValue; // to be able to reset the form
 
-    private String lastEnteredValue; // to restore the form after error
+    protected String lastEnteredValue; // to restore the form after error
 
     public AbstractFormEntry(final String label, final String name)
     {

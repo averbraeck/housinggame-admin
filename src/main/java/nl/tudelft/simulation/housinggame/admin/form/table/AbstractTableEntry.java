@@ -48,6 +48,22 @@ public abstract class AbstractTableEntry<F extends AbstractTableEntry<F, T>, T> 
         return (F) this;
     }
 
+    @SuppressWarnings("unchecked")
+    public F setInitialValue(final T initialValue, final T valueWhenNull)
+    {
+        if (this.tableField.getDataType().nullable() && initialValue == null)
+        {
+            this.initialValue = null;
+            setLastEnteredValue(null);
+        }
+        else
+        {
+            this.initialValue = initialValue != null ? initialValue : valueWhenNull;
+            setLastEnteredValue(codeForEdit(this.initialValue));
+        }
+        return (F) this;
+    }
+
     protected void validate(final String value)
     {
         setLastEnteredValue(value);
