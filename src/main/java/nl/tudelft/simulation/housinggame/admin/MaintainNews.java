@@ -241,7 +241,7 @@ public class MaintainNews
                 .setEditMethod("editNewsEffects")
                 .setSaveMethod("saveNewsEffects")
                 .setDeleteMethod("deleteNewsEffects", "Delete", "<br>Note: NewsEffects can only be deleted when it "
-                        + "<br>has not been used in a newsitemm/round")
+                        + "<br>has not been used in a newsitem/round")
                 .setRecordNr(newsEffectsId)
                 .startForm()
                 .addEntry(new TableEntryString(Tables.NEWSEFFECTS.NAME)
