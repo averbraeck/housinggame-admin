@@ -32,6 +32,7 @@ import nl.tudelft.simulation.housinggame.data.tables.records.PlayerroundRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.QuestionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.QuestionscoreRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.ScenarioRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.ScenarioparametersRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.WelfaretypeRecord;
 
 public class MaintainPlay
@@ -241,6 +242,8 @@ public class MaintainPlay
         int groupId = groupRoundId == 0 ? data.getColumn(1).getSelectedRecordId() : groupRound.getGroupId();
         GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, groupId);
         ScenarioRecord scenario = SqlUtils.readRecordFromId(data, Tables.SCENARIO, group.getScenarioId());
+        ScenarioparametersRecord parameters =
+                SqlUtils.readRecordFromId(data, Tables.SCENARIOPARAMETERS, scenario.getScenarioparametersId());
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -267,13 +270,13 @@ public class MaintainPlay
                         .setInitialValue(groupRound.getPluvialFloodIntensity(), 0)
                         .setLabel("Pluvial flood intensity")
                         .setMin(0)
-                        .setMax(10))
+                        .setMax(parameters.getHighestPluvialScore().intValue()))
                 .addEntry(new TableEntryInt(Tables.GROUPROUND.FLUVIAL_FLOOD_INTENSITY)
                         .setRequired()
                         .setInitialValue(groupRound.getFluvialFloodIntensity(), 0)
                         .setLabel("Fluvial flood intensity")
                         .setMin(0)
-                        .setMax(10))
+                        .setMax(parameters.getHighestFluvialScore().intValue()))
                 .addEntry(new TableEntryInt(Tables.GROUPROUND.GROUP_ID)
                         .setInitialValue(groupId, 0)
                         .setLabel("Group id")
