@@ -74,7 +74,7 @@ public class FormEntryDouble extends AbstractFormEntry<FormEntryDouble, Double>
             if (v < getMin())
                 addError("Value lower than minimum " + getMin());
             if (v > getMax())
-                addError("Value larger than maximum " + getMin());
+                addError("Value larger than maximum " + getMax());
             // TODO: step
         }
         catch (Exception exception)
