@@ -213,6 +213,10 @@ public class MaintainParameters
                         .setInitialValue(scenarioParameters.getHighestFluvialScore(), 0)
                         .setLabel("Highest fluvial dice roll")
                         .setMin(0))
+                .addEntry(new TableEntryBoolean(Tables.SCENARIOPARAMETERS.NEWS_DISCOUNT_IN_EUROS)
+                        .setRequired()
+                        .setInitialValue(scenarioParameters.getNewsDiscountInEuros(), (byte) 0)
+                        .setLabel("News discount in Euros?"))
                 .addEntry(new TableEntryPickRecord(Tables.SCENARIOPARAMETERS.DEFAULT_LANGUAGE_ID)
                         .setRequired()
                         .setPickTable(data, Tables.LANGUAGE, Tables.LANGUAGE.ID,

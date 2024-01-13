@@ -7,7 +7,6 @@ import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryBoolean;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDouble;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecord;
@@ -255,14 +254,6 @@ public class MaintainNews
                                 Tables.COMMUNITY.ID, Tables.COMMUNITY.NAME)
                         .setInitialValue(newsEffects.getCommunityId(), 0)
                         .setLabel("Affected community (blank = all)"))
-                .addEntry(new TableEntryBoolean(Tables.NEWSEFFECTS.HOUSE_DISCOUNT_EUROS)
-                        .setRequired()
-                        .setInitialValue(newsEffects.getHouseDiscountEuros(), (byte) 0)
-                        .setLabel("Discount Euros?"))
-                .addEntry(new TableEntryBoolean(Tables.NEWSEFFECTS.HOUSE_DISCOUNT_PERCENT)
-                        .setRequired()
-                        .setInitialValue(newsEffects.getHouseDiscountPercent(), (byte) 0)
-                        .setLabel("Discount Percent?"))
                 .addEntry(new TableEntryInt(Tables.NEWSEFFECTS.HOUSE_DISCOUNT_ROUND1)
                         .setRequired()
                         .setInitialValue(newsEffects.getHouseDiscountRound1(), 0)
