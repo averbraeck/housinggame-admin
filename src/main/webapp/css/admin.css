@@ -192,17 +192,18 @@ html, body {
 }
 
 .hg-admin-menu {
-  height: 40px;
+  height: 30px;
   flex-grow: 0;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  margin-bottom: 20px;
+  justify-content: left;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 .hg-admin-menu-button, .hg-admin-menu-button-red, .hg-admin-menu-button-inactive {
   flex-grow: 0;
-  width: 6%;
+  width: 8rem;
   height: 25px;
   font-size: 0.9em;
   color: white;

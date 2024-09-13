@@ -144,9 +144,14 @@ public class AdminData
         this.menuChoice = menuChoice;
     }
 
-    public String getTopMenu()
+    public String getTopMenu1()
     {
-        return AdminServlet.getTopMenu(this);
+        return AdminServlet.getTopMenu1(this);
+    }
+
+    public String getTopMenu2()
+    {
+        return AdminServlet.getTopMenu2(this);
     }
 
     public String getContentHtml()

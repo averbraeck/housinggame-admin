@@ -47,7 +47,10 @@
       <div class="hg-body">
       
         <div class="hg-admin-menu">
-          ${adminData.getTopMenu()}
+          ${adminData.getTopMenu1()}
+        </div>
+        <div class="hg-admin-menu" style="margin-bottom: 20px;">
+          ${adminData.getTopMenu2()}
         </div>
         <div class="hg-admin" id="hg-admin">
           ${adminData.getContentHtml()}

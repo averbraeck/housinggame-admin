@@ -294,7 +294,7 @@ public class AdminServlet extends HttpServlet
                 break;
 
             // (GameSession) - (Group) - GroupRound - (Player) - PlayerRound - QuestionScore
-            case "play":
+            case "play-player":
             case "viewPlayGameSession":
             case "viewPlayGroup":
             case "destroyGamePlay":
@@ -395,32 +395,62 @@ public class AdminServlet extends HttpServlet
         data.setContentHtml(s.toString());
     }
 
-    public static String getTopMenu(final AdminData data)
+    public static String getTopMenu1(final AdminData data)
     {
         StringBuilder s = new StringBuilder();
-        topmenu(data, s, "language", "Language"); // Language - LanguageGroup (non-heriarchic) - Label
-        topmenu(data, s, "parameters", "Parameters"); // ScenarioParameters
-        topmenu(data, s, "scenario", "Scenario"); // GameVersion - Scenario
-        topmenu(data, s, "welfaretype", "Welfare"); // (GameVersion) - (Scenario) - WelfareType
-        topmenu(data, s, "measuretype", "Measure"); // (GameVersion) - MeasureType
-        topmenu(data, s, "movingreason", "Moving"); // (GameVersion) - MovingReason
-        topmenu(data, s, "community", "Community"); // (GameVersion) - Community - Tax
-        topmenu(data, s, "house", "House"); // (GameVersion) - (Community) - House - InitialHouseMeasure
-        topmenu(data, s, "news", "News"); // (GameVersion) - (Scenario) - NewsItem - NewsEffects
-        topmenu(data, s, "question", "Question"); // (GameVersion) - (Scenario) - Question - QuestionItem
-        topmenu(data, s, "user", "User"); // User
-        topmenu(data, s, "gamesession", "Session"); // (GameVersion) - GameSession - Group - Player
-        topmenu(data, s, "play", "Play"); // (GameSession) - (Group) - GroupRound - (Player) - PlayerRound - QuestionScore
-        topmenu(data, s, "measure", "HouseMeasure"); // (GameSession) - (Group) - HouseGroup - Measure - HouseTransaction
+        // Language - LanguageGroup (non-heriarchic) - Label
+        topmenu(data, s, "language", "Language", "#ff8000");
+        // ScenarioParameters
+        topmenu(data, s, "parameters", "Parameters", "#ff8000");
+        // GameVersion - Scenario
+        topmenu(data, s, "scenario", "Scenario", "#008000");
+        // (GameVersion) - (Scenario) - WelfareType
+        topmenu(data, s, "welfaretype", "WelfareType", "#008000");
+        // (GameVersion) - MeasureType
+        topmenu(data, s, "measuretype", "MeasureType", "#008000");
+        // (GameVersion) - MovingReason
+        topmenu(data, s, "movingreason", "MovingReason", "#008000");
+        // (GameVersion) - Community - Tax
+        topmenu(data, s, "community", "Community-Tax", "#008000");
+        // (GameVersion) - (Community) - House - InitialHouseMeasure
+        topmenu(data, s, "house", "House-Measure", "#008000");
+        // (GameVersion) - (Scenario) - NewsItem - NewsEffects
+        topmenu(data, s, "news", "News-Effects", "#008000");
+        // (GameVersion) - (Scenario) - Question - QuestionItem
+        topmenu(data, s, "question", "Question-Item", "#008000");
         return s.toString();
     }
 
-    private static final String bn = "          <div class=\"hg-admin-menu-button\"";
+    public static String getTopMenu2(final AdminData data)
+    {
+        StringBuilder s = new StringBuilder();
+        // User
+        topmenu(data, s, "user", "User", "#0040ff");
+        // (GameVersion) - GameSession - Group - Player
+        topmenu(data, s, "gamesession", "Session", "#0040ff");
+        // (GameSession) - (Group) - GroupRound - GroupState
+        topmenu(data, s, "play-group", "Play-Group", "#0040ff");
+        // (GameSession) - (Group) - GroupRound - (Player) - PlayerRound - PlayerState
+        topmenu(data, s, "play-player", "Play-Player", "#0040ff");
+        // (GameSession) - (Group) - GroupRound - (Player) - PlayerRound - QuestionScore
+        topmenu(data, s, "play-question", "Play-Question", "#0040ff");
+        // (GameSession) - (Group) - HouseGroup - Measure - HouseTransaction
+        topmenu(data, s, "measure", "House-Transaction", "#0040ff");
+        //
+        topmenu(data, s, "results", "Results", "#ff00ff");
+        //
+        topmenu(data, s, "grouptimeline", "GroupTimeline", "#ff00ff");
+        //
+        topmenu(data, s, "playertimeline", "PlayerTimeline", "#ff00ff");
+        return s.toString();
+    }
 
     private static final String br = "          <div class=\"hg-admin-menu-button-red\"";
 
-    private static void topmenu(final AdminData data, final StringBuilder s, final String key, final String text)
+    private static void topmenu(final AdminData data, final StringBuilder s, final String key, final String text,
+            final String color)
     {
+        String bn = "          <div class=\"hg-admin-menu-button\" style=\"background-color: " + color + "\"";
         s.append(key.equals(data.getMenuChoice()) ? br : bn);
         s.append(" onclick=\"clickMenu('");
         s.append(key);
