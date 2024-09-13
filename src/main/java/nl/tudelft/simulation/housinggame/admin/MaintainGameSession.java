@@ -22,6 +22,7 @@ import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDateTime;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecord;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.GamesessionRecord;
@@ -197,6 +198,11 @@ public class MaintainGameSession
                         .setInitialValue(gameSession.getName(), "")
                         .setLabel("GameSession name")
                         .setMaxChars(32))
+                .addEntry(new TableEntryText(Tables.GAMESESSION.DESCRIPTION)
+                        .setRequired(false)
+                        .setInitialValue(gameSession.getDescription(), "")
+                        .setLabel("Description")
+                        .setRows(10))
                 .addEntry(new TableEntryString(Tables.GAMESESSION.PASSWORD)
                         .setRequired()
                         .setInitialValue(gameSession.getPassword(), "")

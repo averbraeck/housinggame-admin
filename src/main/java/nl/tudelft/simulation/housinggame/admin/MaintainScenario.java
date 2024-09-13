@@ -10,6 +10,7 @@ import org.jooq.impl.DSL;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecord;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.GameversionRecord;
@@ -185,6 +186,11 @@ public class MaintainScenario
                         .setInitialValue(gameVersion.getName(), "")
                         .setLabel("Game Version name")
                         .setMaxChars(255))
+                .addEntry(new TableEntryText(Tables.GAMEVERSION.DESCRIPTION)
+                        .setRequired(false)
+                        .setInitialValue(gameVersion.getDescription(), "")
+                        .setLabel("Game Description")
+                        .setRows(10))
                 .addEntry(new TableEntryPickRecord(Tables.GAMEVERSION.LANGUAGEGROUP_ID)
                         .setRequired()
                         .setPickTable(data, Tables.LANGUAGEGROUP, Tables.LANGUAGEGROUP.ID,
@@ -239,6 +245,11 @@ public class MaintainScenario
                         .setInitialValue(scenario.getName(), "")
                         .setLabel("Scenario name")
                         .setMaxChars(45))
+                .addEntry(new TableEntryText(Tables.SCENARIO.DESCRIPTION)
+                        .setRequired(false)
+                        .setInitialValue(scenario.getDescription(), "")
+                        .setLabel("Scenario description")
+                        .setRows(10))
                 .addEntry(new TableEntryInt(Tables.SCENARIO.INFORMATION_AMOUNT)
                         .setRequired()
                         .setInitialValue(scenario.getInformationAmount(), 0)
