@@ -535,7 +535,7 @@ public class MaintainPlayPlayer
                         .setLabel("Timestamp"))
                 .addEntry(new TableEntryPickList(Tables.PLAYERSTATE.PLAYER_STATE)
                         .setRequired()
-                        .setPickListEntries(GroupState.class)
+                        .setPickListEntries(PlayerState.class)
                         .setInitialValue(playerState.getPlayerState(), "")
                         .setLabel("Player State"))
                 .addEntry(new TableEntryText(Tables.PLAYERSTATE.CONTENT)
