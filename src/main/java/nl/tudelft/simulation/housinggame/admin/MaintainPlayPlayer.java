@@ -35,7 +35,7 @@ import nl.tudelft.simulation.housinggame.data.tables.records.ScenarioRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.ScenarioparametersRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.WelfaretypeRecord;
 
-public class MaintainPlayQuestion
+public class MaintainPlayPlayer
 {
 
     public static void handleMenu(final HttpServletRequest request, final String click, int recordId)
