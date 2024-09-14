@@ -1,5 +1,6 @@
 package nl.tudelft.simulation.housinggame.admin;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -11,7 +12,6 @@ import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryBoolean;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDateTime;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickList;
@@ -24,15 +24,9 @@ import nl.tudelft.simulation.housinggame.common.PlayerState;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GrouproundRecord;
-import nl.tudelft.simulation.housinggame.data.tables.records.HousegroupRecord;
-import nl.tudelft.simulation.housinggame.data.tables.records.HousetransactionRecord;
-import nl.tudelft.simulation.housinggame.data.tables.records.MeasureRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.PlayerRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.PlayerroundRecord;
-import nl.tudelft.simulation.housinggame.data.tables.records.QuestionRecord;
-import nl.tudelft.simulation.housinggame.data.tables.records.QuestionscoreRecord;
-import nl.tudelft.simulation.housinggame.data.tables.records.ScenarioRecord;
-import nl.tudelft.simulation.housinggame.data.tables.records.ScenarioparametersRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.PlayerstateRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.WelfaretypeRecord;
 
 public class MaintainPlayPlayer
@@ -43,10 +37,10 @@ public class MaintainPlayPlayer
         HttpSession session = request.getSession();
         AdminData data = SessionUtils.getData(session);
 
-        if (click.equals("play"))
+        if (click.equals("play-player"))
         {
             data.clearColumns("10%", "GameSession", "10%", "Group", "10%", "GroupRound", "10%", "Player", "10%", "PlayerRound",
-                    "10%", "Question");
+                    "10%", "PlayerState");
             data.clearFormColumn("40%", "Edit Properties");
             showGameSession(session, data, 0);
         }
@@ -63,26 +57,7 @@ public class MaintainPlayPlayer
 
         else if (click.contains("PlayGroupRound"))
         {
-            if (click.startsWith("save"))
-                recordId = data.saveRecord(request, recordId, Tables.GROUPROUND, "play");
-            else if (click.startsWith("delete"))
-            {
-                GrouproundRecord groupRound = SqlUtils.readRecordFromId(data, Tables.GROUPROUND, recordId);
-                if (click.endsWith("Ok"))
-                    data.deleteRecordOk(groupRound, "play");
-                else
-                {
-                    data.askDeleteRecord(groupRound, "PlayGroupRound", String.valueOf(groupRound.getRoundNumber()),
-                            "deletePlayGroupRoundOk", "play");
-                }
-                recordId = 0;
-            }
-            if (!data.isError())
-            {
-                showPlayGroupRound(session, data, recordId, true, !click.startsWith("view"));
-                if (click.startsWith("new"))
-                    editPlayGroupRound(session, data, 0, true);
-            }
+            showPlayGroupRound(session, data, recordId);
         }
 
         else if (click.endsWith("PlayPlayer"))
@@ -93,12 +68,12 @@ public class MaintainPlayPlayer
         else if (click.contains("PlayPlayerRound"))
         {
             if (click.startsWith("save"))
-                recordId = data.saveRecord(request, recordId, Tables.PLAYERROUND, "play");
+                recordId = data.saveRecord(request, recordId, Tables.PLAYERROUND, "play-player");
             else if (click.startsWith("delete"))
             {
                 PlayerroundRecord playerRound = SqlUtils.readRecordFromId(data, Tables.PLAYERROUND, recordId);
                 if (click.endsWith("Ok"))
-                    data.deleteRecordOk(playerRound, "play");
+                    data.deleteRecordOk(playerRound, "play-player");
                 else
                 {
                     GrouproundRecord groupRound =
@@ -106,7 +81,7 @@ public class MaintainPlayPlayer
                     PlayerRecord player = SqlUtils.readRecordFromId(data, Tables.PLAYER, playerRound.getPlayerId());
                     data.askDeleteRecord(playerRound, "PlayPlayerRound",
                             "Player " + player.getCode() + ", round " + groupRound.getRoundNumber(), "deletePlayPlayerRoundOk",
-                            "play");
+                            "play-player");
                 }
                 recordId = 0;
             }
@@ -118,43 +93,34 @@ public class MaintainPlayPlayer
             }
         }
 
-        else if (click.contains("PlayQuestion"))
+        else if (click.contains("PlayerState"))
         {
             if (click.startsWith("save"))
-                recordId = data.saveRecord(request, recordId, Tables.QUESTIONSCORE, "play");
+                recordId = data.saveRecord(request, recordId, Tables.PLAYERSTATE, "play-player");
             else if (click.startsWith("delete"))
             {
-                QuestionscoreRecord questionScore = SqlUtils.readRecordFromId(data, Tables.QUESTIONSCORE, recordId);
+                PlayerstateRecord playerState = SqlUtils.readRecordFromId(data, Tables.PLAYERSTATE, recordId);
                 if (click.endsWith("Ok"))
-                    data.deleteRecordOk(questionScore, "play");
+                    data.deleteRecordOk(playerState, "play-player");
                 else
                 {
-                    QuestionRecord question = SqlUtils.readRecordFromId(data, Tables.QUESTION, questionScore.getQuestionId());
-                    data.askDeleteRecord(questionScore, "PlayQuestion", question.getName(), "deletePlayQuestionOk", "play");
+                    PlayerroundRecord playerRound =
+                            SqlUtils.readRecordFromId(data, Tables.PLAYERROUND, playerState.getPlayerroundId());
+                    PlayerRecord player = SqlUtils.readRecordFromId(data, Tables.PLAYER, playerRound.getPlayerId());
+                    GrouproundRecord groupRound =
+                            SqlUtils.readRecordFromId(data, Tables.GROUPROUND, playerRound.getGrouproundId());
+                    data.askDeleteRecord(playerState, "PlayerState", "Player " + player.getCode() + ", round "
+                            + groupRound.getRoundNumber() + ", state " + playerState.getPlayerState(), "deletePlayerStateOk",
+                            "play-player");
                 }
                 recordId = 0;
             }
             if (!data.isError())
             {
-                showPlayQuestion(session, data, recordId, true, !click.startsWith("view"));
+                showPlayerState(session, data, recordId, true, !click.startsWith("view"));
                 if (click.startsWith("new"))
-                    editPlayQuestion(session, data, 0, true);
+                    editPlayerState(session, data, 0, true);
             }
-        }
-
-        else if (click.contains("destroyGamePlay"))
-        {
-            GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, data.getColumn(1).getSelectedRecordId());
-            if (click.endsWith("Ok"))
-            {
-                destroyGamePlay(data, data.getColumn(1).getSelectedRecordId());
-                showGroup(session, data, 0);
-            }
-            else
-            {
-                data.askDestroyRecord(group, "GamePlay for Group", group.getName(), "destroyGamePlayOk", "play");
-            }
-            recordId = 0;
         }
 
         AdminServlet.makeColumnContent(data);
@@ -203,7 +169,6 @@ public class MaintainPlayPlayer
         {
             data.showDependentColumn("PlayGroupRound", 2, 0, false, Tables.GROUPROUND, Tables.GROUPROUND.ROUND_NUMBER,
                     "round_number", Tables.GROUPROUND.GROUP_ID, false);
-            data.getColumn(1).addContent(AdminTable.finalButton("DEL GAMEPLAY", "destroyGamePlay"));
         }
     }
 
@@ -213,8 +178,7 @@ public class MaintainPlayPlayer
      * *********************************************************************************************************
      */
 
-    public static void showPlayGroupRound(final HttpSession session, final AdminData data, final int recordId,
-            final boolean editButton, final boolean editRecord)
+    public static void showPlayGroupRound(final HttpSession session, final AdminData data, final int recordId)
     {
         data.showColumn("PlayGameSession", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMESESSION,
                 Tables.GAMESESSION.NAME, "name", false);
@@ -229,61 +193,7 @@ public class MaintainPlayPlayer
         if (recordId != 0)
         {
             showPlayerColumn(data, "PlayPlayer", 3, 0);
-            editPlayGroupRound(session, data, recordId, editRecord);
         }
-    }
-
-    public static void editPlayGroupRound(final HttpSession session, final AdminData data, final int groupRoundId,
-            final boolean edit)
-    {
-        DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        GrouproundRecord groupRound = groupRoundId == 0 ? dslContext.newRecord(Tables.GROUPROUND)
-                : dslContext.selectFrom(Tables.GROUPROUND).where(Tables.GROUPROUND.ID.eq(groupRoundId)).fetchOne();
-        int groupId = groupRoundId == 0 ? data.getColumn(1).getSelectedRecordId() : groupRound.getGroupId();
-        GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, groupId);
-        ScenarioRecord scenario = SqlUtils.readRecordFromId(data, Tables.SCENARIO, group.getScenarioId());
-        ScenarioparametersRecord parameters =
-                SqlUtils.readRecordFromId(data, Tables.SCENARIOPARAMETERS, scenario.getScenarioparametersId());
-        //@formatter:off
-        TableForm form = new TableForm()
-                .setEdit(edit)
-                .setCancelMethod("play", data.getColumn(0).getSelectedRecordId())
-                .setEditMethod("editPlayGroupRound")
-                .setSaveMethod("savePlayGroupRound")
-                .setDeleteMethod("deletePlayGroupRound", "Delete", "<br>Note: GroupRound can only be deleted when it "
-                        + "<br>has not been used for play by a player")
-                .setRecordNr(groupRoundId)
-                .startForm()
-                .addEntry(new TableEntryInt(Tables.GROUPROUND.ROUND_NUMBER)
-                        .setRequired()
-                        .setInitialValue(groupRound.getRoundNumber(), 0)
-                        .setLabel("Round number")
-                        .setMin(0)
-                        .setMax(scenario.getHighestRoundNumber()))
-                .addEntry(new TableEntryPickList(Tables.GROUPROUND.GROUP_STATE)
-                        .setRequired()
-                        .setPickListEntries(GroupState.class)
-                        .setInitialValue(groupRound.getGroupState(), "")
-                        .setLabel("Round State"))
-                .addEntry(new TableEntryInt(Tables.GROUPROUND.FLUVIAL_FLOOD_INTENSITY)
-                        .setRequired()
-                        .setInitialValue(groupRound.getFluvialFloodIntensity(), 0)
-                        .setLabel("Fluvial flood intensity")
-                        .setMin(0)
-                        .setMax(parameters.getHighestFluvialScore().intValue()))
-                .addEntry(new TableEntryInt(Tables.GROUPROUND.PLUVIAL_FLOOD_INTENSITY)
-                        .setRequired()
-                        .setInitialValue(groupRound.getPluvialFloodIntensity(), 0)
-                        .setLabel("Pluvial flood intensity")
-                        .setMin(0)
-                        .setMax(parameters.getHighestPluvialScore().intValue()))
-                .addEntry(new TableEntryInt(Tables.GROUPROUND.GROUP_ID)
-                        .setInitialValue(groupId, 0)
-                        .setLabel("Group id")
-                        .setHidden(true))
-                .endForm();
-        //@formatter:on
-        data.getFormColumn().setHeaderForm("Edit GroupRound", form);
     }
 
     /*
@@ -331,7 +241,8 @@ public class MaintainPlayPlayer
         data.resetFormColumn();
         if (recordId != 0)
         {
-            showQuestionScoreColumn(data, "PlayQuestion", 5, 0);
+            data.showDependentColumn("PlayPlayerState", 5, 0, true, Tables.PLAYERSTATE, Tables.PLAYERSTATE.TIMESTAMP, "player_state",
+                    Tables.PLAYERSTATE.PLAYERROUND_ID, true, "PlayerState");
             editPlayPlayerRound(session, data, recordId, editRecord);
         }
     }
@@ -351,7 +262,7 @@ public class MaintainPlayPlayer
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
-                .setCancelMethod("play", data.getColumn(0).getSelectedRecordId())
+                .setCancelMethod("play-player", data.getColumn(0).getSelectedRecordId())
                 .setEditMethod("editPlayPlayerRound")
                 .setSaveMethod("savePlayPlayerRound")
                 .setDeleteMethod("deletePlayPlayerRound", "Delete", "<br>Note: PlayerRound can only be deleted when it "
@@ -576,11 +487,11 @@ public class MaintainPlayPlayer
 
     /*
      * *********************************************************************************************************
-     * ********************************************* QUESTION **************************************************
+     * ******************************************** PLAYERSTATE ************************************************
      * *********************************************************************************************************
      */
 
-    public static void showPlayQuestion(final HttpSession session, final AdminData data, final int recordId,
+    public static void showPlayerState(final HttpSession session, final AdminData data, final int recordId,
             final boolean editButton, final boolean editRecord)
     {
         data.showColumn("PlayGameSession", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMESESSION,
@@ -591,59 +502,54 @@ public class MaintainPlayPlayer
                 Tables.GROUPROUND.ROUND_NUMBER, "round_number", Tables.GROUPROUND.GROUP_ID, false);
         showPlayerColumn(data, "PlayPlayer", 3, data.getColumn(3).getSelectedRecordId());
         showPlayerRoundColumn(data, "PlayPlayerRound", 4, data.getColumn(4).getSelectedRecordId());
-        showQuestionScoreColumn(data, "PlayQuestion", 5, recordId);
+        data.showDependentColumn("PlayPlayerState", 5, recordId, true, Tables.PLAYERSTATE, Tables.PLAYERSTATE.TIMESTAMP, "player_state",
+                Tables.PLAYERSTATE.PLAYERROUND_ID, true, "PlayerState");
         data.resetFormColumn();
         if (recordId != 0)
         {
-            editPlayQuestion(session, data, recordId, editRecord);
+            editPlayerState(session, data, recordId, editRecord);
         }
     }
 
-    public static void editPlayQuestion(final HttpSession session, final AdminData data, final int questionScoreId,
+    public static void editPlayerState(final HttpSession session, final AdminData data, final int playerStateId,
             final boolean edit)
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        QuestionscoreRecord questionScore = questionScoreId == 0 ? dslContext.newRecord(Tables.QUESTIONSCORE)
-                : dslContext.selectFrom(Tables.QUESTIONSCORE).where(Tables.QUESTIONSCORE.ID.eq(questionScoreId)).fetchOne();
-        int playerRoundId = questionScoreId == 0 ? data.getColumn(4).getSelectedRecordId() : questionScore.getPlayerroundId();
-        PlayerroundRecord playerRound = SqlUtils.readRecordFromId(data, Tables.PLAYERROUND, playerRoundId);
-        GrouproundRecord groupRound = SqlUtils.readRecordFromId(data, Tables.GROUPROUND, playerRound.getGrouproundId());
-        GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, groupRound.getGroupId());
-        ScenarioRecord scenario = SqlUtils.readRecordFromId(data, Tables.SCENARIO, group.getScenarioId());
+        PlayerstateRecord playerState = playerStateId == 0 ? dslContext.newRecord(Tables.PLAYERSTATE)
+                : dslContext.selectFrom(Tables.PLAYERSTATE).where(Tables.PLAYERSTATE.ID.eq(playerStateId)).fetchOne();
+        int playerRoundId = playerStateId == 0 ? data.getColumn(4).getSelectedRecordId() : playerState.getPlayerroundId();
 
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
-                .setCancelMethod("play", data.getColumn(0).getSelectedRecordId())
-                .setEditMethod("editPlayQuestion")
-                .setSaveMethod("savePlayQuestion")
-                .setDeleteMethod("deletePlayQuestion", "Delete", "<br>Note: Adjust the finances of the round "
-                        + "<br>when a measure for a player is deleted")
-                .setRecordNr(questionScoreId)
+                .setCancelMethod("play-player", data.getColumn(0).getSelectedRecordId())
+                .setEditMethod("editPlayPlayerState")
+                .setSaveMethod("savePlayPlayerState")
+                .setDeleteMethod("deletePlayPlayerState", "Delete", "<br>Be careful with deleting a player state "
+                        + "<br>when the player round contains this state")
+                .setRecordNr(playerStateId)
                 .startForm()
-                .addEntry(new TableEntryPickRecord(Tables.QUESTIONSCORE.QUESTION_ID)
+                .addEntry(new TableEntryDateTime(Tables.PLAYERSTATE.TIMESTAMP)
                         .setRequired()
-                        .setPickTable(data, Tables.QUESTION.where
-                                (Tables.QUESTION.SCENARIO_ID.eq(scenario.getId())),
-                                Tables.QUESTION.ID, Tables.QUESTION.NAME)
-                        .setInitialValue(questionScore.getQuestionId(), null)
-                        .setLabel("Question"))
-                .addEntry(new TableEntryText(Tables.QUESTIONSCORE.ANSWER)
+                        .setInitialValue(playerState.getTimestamp(), LocalDateTime.now())
+                        .setLabel("Timestamp"))
+                .addEntry(new TableEntryPickList(Tables.PLAYERSTATE.PLAYER_STATE)
                         .setRequired()
-                        .setInitialValue(questionScore.getAnswer(), "")
-                        .setLabel("Answer")
-                        .setRows(1))
-                .addEntry(new TableEntryBoolean(Tables.QUESTIONSCORE.LATE_ANSWER)
-                        .setRequired()
-                        .setInitialValue(questionScore.getLateAnswer(), (byte) 0)
-                        .setLabel("Late answer"))
-                .addEntry(new TableEntryInt(Tables.QUESTIONSCORE.PLAYERROUND_ID)
+                        .setPickListEntries(GroupState.class)
+                        .setInitialValue(playerState.getPlayerState(), "")
+                        .setLabel("Player State"))
+                .addEntry(new TableEntryText(Tables.PLAYERSTATE.CONTENT)
+                        .setRequired(false)
+                        .setInitialValue(playerState.getContent(), "")
+                        .setLabel("Content")
+                        .setRows(10))
+                .addEntry(new TableEntryInt(Tables.PLAYERSTATE.PLAYERROUND_ID)
                         .setInitialValue(playerRoundId, 0)
                         .setLabel("PlayerRound id")
                         .setHidden(true))
                 .endForm();
         //@formatter:on
-        data.getFormColumn().setHeaderForm("Edit Question", form);
+        data.getFormColumn().setHeaderForm("Edit PlayerState", form);
     }
 
     /*
@@ -698,85 +604,11 @@ public class MaintainPlayPlayer
             s.append(tableRow.process());
         }
         s.append(AdminTable.endTable());
-        if (records.size() == 0)
-            s.append(AdminTable.finalButton("New PlayerRound", "new" + columnName));
+
+        s.append(AdminTable.finalButton("New PlayerRound", "new" + columnName));
 
         data.getColumn(columnNr).setSelectedRecordId(recordId);
         data.getColumn(columnNr).setContent(s.toString());
     }
 
-    public static void showQuestionScoreColumn(final AdminData data, final String columnName, final int columnNr,
-            final int recordId)
-    {
-        StringBuilder s = new StringBuilder();
-        DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        List<QuestionscoreRecord> records = dslContext.selectFrom(Tables.QUESTIONSCORE)
-                .where(Tables.QUESTIONSCORE.PLAYERROUND_ID.eq(data.getColumn(columnNr - 1).getSelectedRecordId())).fetch();
-
-        s.append(AdminTable.startTable());
-        for (QuestionscoreRecord record : records)
-        {
-            QuestionRecord question =
-                    dslContext.selectFrom(Tables.QUESTION.where(Tables.QUESTION.ID.eq(record.getQuestionId()))).fetchOne();
-            TableRow tableRow = new TableRow(IdProvider.getId(record), recordId, question.getName(), "view" + columnName);
-            tableRow.addButton("Edit", "edit" + columnName);
-            s.append(tableRow.process());
-        }
-        s.append(AdminTable.endTable());
-        s.append(AdminTable.finalButton("New Q-Score", "new" + columnName));
-
-        data.getColumn(columnNr).setSelectedRecordId(recordId);
-        data.getColumn(columnNr).setContent(s.toString());
-    }
-
-    public static void destroyGamePlay(final AdminData data, final int groupRecordId)
-    {
-        var dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        var group = SqlUtils.readRecordFromId(data, Tables.GROUP, groupRecordId);
-        // The gamesession, group and players stay. We delete groupround, playerround, measure, bid and questionscore.
-        List<GrouproundRecord> groupRoundList =
-                dslContext.selectFrom(Tables.GROUPROUND).where(Tables.GROUPROUND.GROUP_ID.eq(group.getId())).fetch();
-        for (var groupRound : groupRoundList)
-        {
-            List<PlayerroundRecord> playerRoundList = dslContext.selectFrom(Tables.PLAYERROUND)
-                    .where(Tables.PLAYERROUND.GROUPROUND_ID.eq(groupRound.getId())).fetch();
-            for (var playerRound : playerRoundList)
-            {
-                playerRound.setStartHousegroupId(null); // avoid circular reference
-                playerRound.setFinalHousegroupId(null); // avoid circular reference
-                playerRound.setActiveTransactionId(null); // avoid circular reference
-                playerRound.store();
-            }
-
-            List<HousetransactionRecord> transactionList = dslContext.selectFrom(Tables.HOUSETRANSACTION)
-                    .where(Tables.HOUSETRANSACTION.GROUPROUND_ID.eq(groupRound.getId())).fetch();
-            for (var transaction : transactionList)
-                transaction.delete();
-
-            for (var playerRound : playerRoundList)
-            {
-                List<QuestionscoreRecord> questionScoreList = dslContext.selectFrom(Tables.QUESTIONSCORE)
-                        .where(Tables.QUESTIONSCORE.PLAYERROUND_ID.eq(playerRound.getId())).fetch();
-                for (var questionScore : questionScoreList)
-                    questionScore.delete();
-                playerRound.delete();
-            }
-        }
-
-        for (var groupRound : groupRoundList)
-        {
-            List<HousegroupRecord> houseGroupList =
-                    dslContext.selectFrom(Tables.HOUSEGROUP).where(Tables.HOUSEGROUP.GROUP_ID.eq(group.getId())).fetch();
-            for (var houseGroup : houseGroupList)
-            {
-                List<MeasureRecord> measureList = dslContext.selectFrom(Tables.MEASURE)
-                        .where(Tables.MEASURE.HOUSEGROUP_ID.eq(houseGroup.getId())).fetch();
-                for (var measure : measureList)
-                    measure.delete();
-                houseGroup.delete();
-            }
-
-            groupRound.delete();
-        }
-    }
 }

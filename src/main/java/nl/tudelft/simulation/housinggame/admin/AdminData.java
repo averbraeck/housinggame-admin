@@ -263,12 +263,30 @@ public class AdminData
             final String nameField, final TableField<R, Integer> selectField, final boolean newButton)
     {
         showDependentColumn(columnName, columnNr, recordId, editButton, table, sortField, nameField, selectField, newButton,
-                columnNr - 1);
+                columnNr - 1, columnName);
+    }
+
+    public <R extends org.jooq.Record, T extends Comparable<? super T>> void showDependentColumn(final String columnName,
+            final int columnNr, final int recordId, final boolean editButton, final Table<R> table, final Field<T> sortField,
+            final String nameField, final TableField<R, Integer> selectField, final boolean newButton,
+            final String userColumnName)
+    {
+        showDependentColumn(columnName, columnNr, recordId, editButton, table, sortField, nameField, selectField, newButton,
+                columnNr - 1, userColumnName);
     }
 
     public <R extends org.jooq.Record, T extends Comparable<? super T>> void showDependentColumn(final String columnName,
             final int columnNr, final int recordId, final boolean editButton, final Table<R> table, final Field<T> sortField,
             final String nameField, final TableField<R, Integer> selectField, final boolean newButton, final int whereColumn)
+    {
+        showDependentColumn(columnName, columnNr, recordId, editButton, table, sortField, nameField, selectField, newButton,
+                whereColumn, columnName);
+    }
+
+    public <R extends org.jooq.Record, T extends Comparable<? super T>> void showDependentColumn(final String columnName,
+            final int columnNr, final int recordId, final boolean editButton, final Table<R> table, final Field<T> sortField,
+            final String nameField, final TableField<R, Integer> selectField, final boolean newButton, final int whereColumn,
+            final String userColumnName)
     {
         StringBuilder s = new StringBuilder();
         DSLContext dslContext = DSL.using(getDataSource(), SQLDialect.MYSQL);
@@ -287,7 +305,7 @@ public class AdminData
         s.append(AdminTable.endTable());
 
         if (newButton)
-            s.append(AdminTable.finalButton("New " + columnName, "new" + columnName));
+            s.append(AdminTable.finalButton("New " + userColumnName, "new" + columnName));
 
         getColumn(columnNr).setSelectedRecordId(recordId);
         getColumn(columnNr).setContent(s.toString());

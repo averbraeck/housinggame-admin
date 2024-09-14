@@ -317,7 +317,7 @@ public class AdminServlet extends HttpServlet
                 MaintainPlayGroup.handleMenu(request, click, recordNr);
                 break;
 
-            // (GameSession) - (Group) - (GroupRound) - (Player) - PlayerRound - PlayerStatus
+            // (GameSession) - (Group) - (GroupRound) - (Player) - PlayerRound - PlayerState
             case "play-player":
             case "viewPlayGameSession":
             case "viewPlayGroup":
@@ -331,14 +331,14 @@ public class AdminServlet extends HttpServlet
             case "deletePlayPlayerRoundOk":
             case "newPlayPlayerRound":
 
-            case "viewPlayPlayerStatus":
-            case "editPlayPlayerStatus":
-            case "savePlayPlayerStatus":
-            case "deletePlayPlayerStatus":
-            case "deletePlayPlayerStatusOk":
-            case "newPlayPlayerStatus":
-                data.setMenuChoice("play");
-                MaintainPlayQuestion.handleMenu(request, click, recordNr);
+            case "viewPlayPlayerState":
+            case "editPlayPlayerState":
+            case "savePlayPlayerState":
+            case "deletePlayPlayerState":
+            case "deletePlayPlayerStateOk":
+            case "newPlayPlayerState":
+                data.setMenuChoice("play-player");
+                MaintainPlayPlayer.handleMenu(request, click, recordNr);
                 break;
 
             // (GameSession) - (Group) - (GroupRound) - (Player) - (PlayerRound) - QuestionScore
@@ -355,7 +355,7 @@ public class AdminServlet extends HttpServlet
             case "deletePlayQuestion":
             case "deletePlayQuestionOk":
             case "newPlayQuestion":
-                data.setMenuChoice("play");
+                data.setMenuChoice("play-question");
                 MaintainPlayQuestion.handleMenu(request, click, recordNr);
                 break;
 
@@ -465,7 +465,7 @@ public class AdminServlet extends HttpServlet
         topmenu(data, s, "play-group", "Play-Group", "#0040ff");
         // (GameSession) - (Group) - GroupRound - (Player) - PlayerRound - PlayerState
         topmenu(data, s, "play-player", "Play-Player", "#0040ff");
-        // (GameSession) - (Group) - GroupRound - (Player) - PlayerRound - QuestionScore
+        // (GameSession) - (Group) - (GroupRound) - (Player) - (PlayerRound) - QuestionScore
         topmenu(data, s, "play-question", "Play-Question", "#0040ff");
         // (GameSession) - (Group) - HouseGroup - Measure - HouseTransaction
         topmenu(data, s, "measure", "House-Transaction", "#0040ff");

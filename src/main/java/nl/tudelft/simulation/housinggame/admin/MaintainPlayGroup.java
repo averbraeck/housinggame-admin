@@ -159,8 +159,8 @@ public class MaintainPlayGroup
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("PlayGroupGroupRound", 2, 0, false, Tables.GROUPROUND, Tables.GROUPROUND.ROUND_NUMBER,
-                    "round_number", Tables.GROUPROUND.GROUP_ID, false);
+            data.showDependentColumn("PlayGroupGroupRound", 2, 0, true, Tables.GROUPROUND, Tables.GROUPROUND.ROUND_NUMBER,
+                    "round_number", Tables.GROUPROUND.GROUP_ID, true, "GroupRound");
             data.getColumn(1).addContent(AdminTable.finalButton("DEL GAMEPLAY", "destroyGamePlayGroup"));
         }
     }
@@ -178,8 +178,8 @@ public class MaintainPlayGroup
                 Tables.GAMESESSION.NAME, "name", false);
         data.showDependentColumn("PlayGroupGroup", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.GROUP,
                 Tables.GROUP.NAME, "name", Tables.GROUP.GAMESESSION_ID, false);
-        data.showDependentColumn("PlayGroupGroupRound", 2, recordId, false, Tables.GROUPROUND, Tables.GROUPROUND.ROUND_NUMBER,
-                "round_number", Tables.GROUPROUND.GROUP_ID, false);
+        data.showDependentColumn("PlayGroupGroupRound", 2, recordId, true, Tables.GROUPROUND, Tables.GROUPROUND.ROUND_NUMBER,
+                "round_number", Tables.GROUPROUND.GROUP_ID, true, "GroupRound");
         data.resetColumn(3);
         data.resetFormColumn();
         if (recordId != 0)
@@ -255,8 +255,8 @@ public class MaintainPlayGroup
                 Tables.GAMESESSION.NAME, "name", false);
         data.showDependentColumn("PlayGroupGroup", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.GROUP,
                 Tables.GROUP.NAME, "name", Tables.GROUP.GAMESESSION_ID, false);
-        data.showDependentColumn("PlayGroupGroupRound", 2, data.getColumn(2).getSelectedRecordId(), false, Tables.GROUPROUND,
-                Tables.GROUPROUND.ROUND_NUMBER, "round_number", Tables.GROUPROUND.GROUP_ID, false);
+        data.showDependentColumn("PlayGroupGroupRound", 2, data.getColumn(2).getSelectedRecordId(), true, Tables.GROUPROUND,
+                Tables.GROUPROUND.ROUND_NUMBER, "round_number", Tables.GROUPROUND.GROUP_ID, true, "GroupRound");
         showGroupStateColumn(data, "PlayGroupState", 3, recordId);
         data.resetFormColumn();
         if (recordId != 0)
@@ -279,8 +279,8 @@ public class MaintainPlayGroup
                 .setCancelMethod("play-group", data.getColumn(0).getSelectedRecordId())
                 .setEditMethod("editPlayGroupState")
                 .setSaveMethod("savePlayGroupState")
-                .setDeleteMethod("deletePlayGroupState", "Delete", "<br>Note: Adjust the finances of the round "
-                        + "<br>when a measure for a player is deleted")
+                .setDeleteMethod("deletePlayGroupState", "Delete", "<br>Be careful with deleting a group state "
+                        + "<br>when the group round contains this state")
                 .setRecordNr(groupStateId)
                 .startForm()
                 .addEntry(new TableEntryDateTime(Tables.GROUPSTATE.TIMESTAMP)
