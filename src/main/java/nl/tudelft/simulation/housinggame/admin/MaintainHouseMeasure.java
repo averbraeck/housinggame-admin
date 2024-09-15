@@ -29,7 +29,7 @@ import nl.tudelft.simulation.housinggame.data.tables.records.PlayerRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.PlayerroundRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.ScenarioRecord;
 
-public class MaintainMeasure
+public class MaintainHouseMeasure
 {
 
     public static void handleMenu(final HttpServletRequest request, final String click, int recordId)
@@ -39,7 +39,7 @@ public class MaintainMeasure
 
         if (click.equals("measure"))
         {
-            data.clearColumns("12%", "GameSession", "12%", "Group", "12%", "HouseGroup", "12%", "Measure", "12%",
+            data.clearColumns("12%", "GameSession", "12%", "Group", "12%", "HouseGroup", "12%", "HouseMeasure", "12%",
                     "HouseTransaction");
             data.clearFormColumn("40%", "Edit Properties");
             showGameSession(session, data, 0);

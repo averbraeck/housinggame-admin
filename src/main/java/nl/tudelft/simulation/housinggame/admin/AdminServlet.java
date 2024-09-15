@@ -389,7 +389,7 @@ public class AdminServlet extends HttpServlet
             case "deleteHouseTransactionOk":
             case "newHouseTransaction":
                 data.setMenuChoice("measure");
-                MaintainMeasure.handleMenu(request, click, recordNr);
+                MaintainHouseMeasure.handleMenu(request, click, recordNr);
                 break;
 
             default:
