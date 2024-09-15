@@ -22,8 +22,8 @@ import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.HouseRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.HousegroupRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.HousemeasureRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.HousetransactionRecord;
-import nl.tudelft.simulation.housinggame.data.tables.records.MeasureRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.MeasuretypeRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.PlayerRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.PlayerroundRecord;
@@ -37,7 +37,7 @@ public class MaintainHouseMeasure
         HttpSession session = request.getSession();
         AdminData data = SessionUtils.getData(session);
 
-        if (click.equals("measure"))
+        if (click.equals("housemeasure"))
         {
             data.clearColumns("12%", "GameSession", "12%", "Group", "12%", "HouseGroup", "12%", "HouseMeasure", "12%",
                     "HouseTransaction");
@@ -58,18 +58,18 @@ public class MaintainHouseMeasure
         else if (click.contains("HouseGroup"))
         {
             if (click.startsWith("save"))
-                recordId = data.saveRecord(request, recordId, Tables.HOUSEGROUP, "measure");
+                recordId = data.saveRecord(request, recordId, Tables.HOUSEGROUP, "housemeasure");
             else if (click.startsWith("delete"))
             {
                 HousegroupRecord houseGroup = SqlUtils.readRecordFromId(data, Tables.HOUSEGROUP, recordId);
                 if (click.endsWith("Ok"))
-                    data.deleteRecordOk(houseGroup, "measure");
+                    data.deleteRecordOk(houseGroup, "housemeasure");
                 else
                 {
                     GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, houseGroup.getGroupId());
                     HouseRecord house = SqlUtils.readRecordFromId(data, Tables.HOUSE, houseGroup.getHouseId());
                     data.askDeleteRecord(houseGroup, "HouseGroup", "House " + house.getCode() + ", group " + group.getName(),
-                            "deleteHouseGroupOk", "measure");
+                            "deleteHouseGroupOk", "housemeasure");
                 }
                 recordId = 0;
             }
@@ -84,12 +84,12 @@ public class MaintainHouseMeasure
         else if (click.contains("Measure"))
         {
             if (click.startsWith("save"))
-                recordId = data.saveRecord(request, recordId, Tables.MEASURE, "measure");
+                recordId = data.saveRecord(request, recordId, Tables.HOUSEMEASURE, "housemeasure");
             else if (click.startsWith("delete"))
             {
-                MeasureRecord measure = SqlUtils.readRecordFromId(data, Tables.MEASURE, recordId);
+                HousemeasureRecord measure = SqlUtils.readRecordFromId(data, Tables.HOUSEMEASURE, recordId);
                 if (click.endsWith("Ok"))
-                    data.deleteRecordOk(measure, "measure");
+                    data.deleteRecordOk(measure, "housemeasure");
                 else
                 {
                     HousegroupRecord houseGroup = SqlUtils.readRecordFromId(data, Tables.HOUSEGROUP, measure.getHousegroupId());
@@ -99,27 +99,27 @@ public class MaintainHouseMeasure
                     GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, houseGroup.getGroupId());
                     data.askDeleteRecord(measure, "Measure",
                             "Measure " + measureType.getName() + ", house " + house.getCode() + ", group " + group.getName(),
-                            "deleteMeasureOk", "measure");
+                            "deleteMeasureOk", "housemeasure");
                 }
                 recordId = 0;
             }
             if (!data.isError())
             {
-                showMeasure(session, data, recordId, true, !click.startsWith("view"));
+                showHouseMeasure(session, data, recordId, true, !click.startsWith("view"));
                 if (click.startsWith("new"))
-                    editMeasure(session, data, 0, true);
+                    editHouseMeasure(session, data, 0, true);
             }
         }
 
         else if (click.contains("HouseTransaction"))
         {
             if (click.startsWith("save"))
-                recordId = data.saveRecord(request, recordId, Tables.HOUSETRANSACTION, "measure");
+                recordId = data.saveRecord(request, recordId, Tables.HOUSETRANSACTION, "housemeasure");
             else if (click.startsWith("delete"))
             {
                 HousetransactionRecord transaction = SqlUtils.readRecordFromId(data, Tables.HOUSETRANSACTION, recordId);
                 if (click.endsWith("Ok"))
-                    data.deleteRecordOk(transaction, "measure");
+                    data.deleteRecordOk(transaction, "housemeasure");
                 else
                 {
                     HousegroupRecord houseGroup =
@@ -129,9 +129,10 @@ public class MaintainHouseMeasure
                     PlayerroundRecord playerRound =
                             SqlUtils.readRecordFromId(data, Tables.PLAYERROUND, transaction.getHousegroupId());
                     PlayerRecord player = SqlUtils.readRecordFromId(data, Tables.PLAYER, playerRound.getPlayerId());
-                    data.askDeleteRecord(transaction, "HouseHouseTransaction", "HouseTransaction house " + house.getCode()
-                            + ", group " + group.getName() + ", player " + player.getCode(), "deleteHouseTransactionOk",
-                            "measure");
+                    data.askDeleteRecord(
+                            transaction, "HouseHouseTransaction", "HouseTransaction house " + house.getCode() + ", group "
+                                    + group.getName() + ", player " + player.getCode(),
+                            "deleteHouseTransactionOk", "housemeasure");
                 }
                 recordId = 0;
             }
@@ -208,7 +209,7 @@ public class MaintainHouseMeasure
         data.resetFormColumn();
         if (recordId != 0)
         {
-            showMeasureColumn(data, "Measure", 3, 0);
+            showHouseMeasureColumn(data, "HouseMeasure", 3, 0);
             showHouseTransactionColumn(data, "HouseTransaction", 4, 0);
             editHouseGroup(session, data, recordId, editRecord);
         }
@@ -225,7 +226,7 @@ public class MaintainHouseMeasure
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
-                .setCancelMethod("measure", data.getColumn(0).getSelectedRecordId())
+                .setCancelMethod("housemeasure", data.getColumn(0).getSelectedRecordId())
                 .setEditMethod("editHouseGroup")
                 .setSaveMethod("saveHouseGroup")
                 .setDeleteMethod("deleteHouseGroup", "Delete", "<br>Note: HouseGroup can only be deleted when it "
@@ -336,11 +337,11 @@ public class MaintainHouseMeasure
 
     /*
      * *********************************************************************************************************
-     * ********************************************** MEASURE **************************************************
+     * ******************************************* HOUSEMEASURE ************************************************
      * *********************************************************************************************************
      */
 
-    public static void showMeasure(final HttpSession session, final AdminData data, final int recordId,
+    public static void showHouseMeasure(final HttpSession session, final AdminData data, final int recordId,
             final boolean editButton, final boolean editRecord)
     {
         data.showColumn("MeasureGameSession", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMESESSION,
@@ -348,20 +349,21 @@ public class MaintainHouseMeasure
         data.showDependentColumn("MeasureGroup", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.GROUP,
                 Tables.GROUP.NAME, "name", Tables.GROUP.GAMESESSION_ID, false);
         showHouseGroupColumn(data, "HouseGroup", 2, data.getColumn(2).getSelectedRecordId());
-        showMeasureColumn(data, "Measure", 3, recordId);
+        showHouseMeasureColumn(data, "HouseMeasure", 3, recordId);
         showHouseTransactionColumn(data, "HouseTransaction", 4, 0);
         data.resetFormColumn();
         if (recordId != 0)
         {
-            editMeasure(session, data, recordId, editRecord);
+            editHouseMeasure(session, data, recordId, editRecord);
         }
     }
 
-    public static void editMeasure(final HttpSession session, final AdminData data, final int measureId, final boolean edit)
+    public static void editHouseMeasure(final HttpSession session, final AdminData data, final int measureId,
+            final boolean edit)
     {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        MeasureRecord measure = measureId == 0 ? dslContext.newRecord(Tables.MEASURE)
-                : dslContext.selectFrom(Tables.MEASURE).where(Tables.MEASURE.ID.eq(measureId)).fetchOne();
+        HousemeasureRecord measure = measureId == 0 ? dslContext.newRecord(Tables.HOUSEMEASURE)
+                : dslContext.selectFrom(Tables.HOUSEMEASURE).where(Tables.HOUSEMEASURE.ID.eq(measureId)).fetchOne();
         int houseGroupId = measureId == 0 ? data.getColumn(2).getSelectedRecordId() : measure.getHousegroupId();
         HousegroupRecord houseGroup = SqlUtils.readRecordFromId(data, Tables.HOUSEGROUP, houseGroupId);
         GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, houseGroup.getGroupId());
@@ -370,39 +372,33 @@ public class MaintainHouseMeasure
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
-                .setCancelMethod("measure", data.getColumn(0).getSelectedRecordId())
-                .setEditMethod("editMeasure")
-                .setSaveMethod("saveMeasure")
-                .setDeleteMethod("deleteMeasure", "Delete", "<br>Note: Adjust the finances of the round "
-                        + "<br>when a measure for a player is deleted")
+                .setCancelMethod("housemeasure", data.getColumn(0).getSelectedRecordId())
+                .setEditMethod("editHouseMeasure")
+                .setSaveMethod("saveHouseMeasure")
+                .setDeleteMethod("deleteHouseMeasure", "Delete", "<br>Note: Adjust the finances of the round "
+                        + "<br>when a house measure for a player is deleted")
                 .setRecordNr(measureId)
                 .startForm()
-                .addEntry(new TableEntryPickRecord(Tables.MEASURE.MEASURETYPE_ID)
+                .addEntry(new TableEntryPickRecord(Tables.HOUSEMEASURE.MEASURETYPE_ID)
                             .setPickTable(data, Tables.MEASURETYPE
                                 .where(Tables.MEASURETYPE.GAMEVERSION_ID.eq(scenario.getGameversionId())),
                                 Tables.MEASURETYPE.ID, Tables.MEASURETYPE.NAME)
                         .setRequired()
                         .setInitialValue(measure.getMeasuretypeId(), 0)
                         .setLabel("Measure type"))
-                .addEntry(new TableEntryInt(Tables.MEASURE.ROUND_NUMBER)
+                .addEntry(new TableEntryInt(Tables.HOUSEMEASURE.ROUND_NUMBER)
                         .setRequired()
                         .setInitialValue(measure.getRoundNumber(), 0)
                         .setLabel("Round number")
                         .setMin(0)
                         .setMax(scenario.getHighestRoundNumber()))
-                .addEntry(new TableEntryInt(Tables.MEASURE.CONSUMED_IN_ROUND)
-                        .setRequired()
-                        .setInitialValue(measure.getConsumedInRound(), 0)
-                        .setLabel("Used in round")
-                        .setMin(0)
-                        .setMax(scenario.getHighestRoundNumber()))
-                .addEntry(new TableEntryInt(Tables.MEASURE.HOUSEGROUP_ID)
+                .addEntry(new TableEntryInt(Tables.HOUSEMEASURE.HOUSEGROUP_ID)
                         .setInitialValue(houseGroupId, 0)
                         .setLabel("Housegroup id")
                         .setHidden(true))
                 .endForm();
         //@formatter:on
-        data.getFormColumn().setHeaderForm("Edit Measure", form);
+        data.getFormColumn().setHeaderForm("Edit HouseMeasure", form);
     }
 
     /*
@@ -419,7 +415,7 @@ public class MaintainHouseMeasure
         data.showDependentColumn("MeasureGroup", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.GROUP,
                 Tables.GROUP.NAME, "name", Tables.GROUP.GAMESESSION_ID, false);
         showHouseGroupColumn(data, "HouseGroup", 2, data.getColumn(2).getSelectedRecordId());
-        showMeasureColumn(data, "Measure", 3, 0);
+        showHouseMeasureColumn(data, "HouseMeasure", 3, 0);
         showHouseTransactionColumn(data, "HouseTransaction", 4, recordId);
         data.resetFormColumn();
         if (recordId != 0)
@@ -439,7 +435,7 @@ public class MaintainHouseMeasure
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
-                .setCancelMethod("measure", data.getColumn(0).getSelectedRecordId())
+                .setCancelMethod("housemeasure", data.getColumn(0).getSelectedRecordId())
                 .setEditMethod("editHouseTransaction")
                 .setSaveMethod("saveHouseTransaction")
                 .setDeleteMethod("deleteHouseTransaction", "Delete", "<br>Note: Adjust the finances of the round "
@@ -517,15 +513,16 @@ public class MaintainHouseMeasure
         data.getColumn(columnNr).setContent(s.toString());
     }
 
-    public static void showMeasureColumn(final AdminData data, final String columnName, final int columnNr, final int recordId)
+    public static void showHouseMeasureColumn(final AdminData data, final String columnName, final int columnNr,
+            final int recordId)
     {
         StringBuilder s = new StringBuilder();
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        List<MeasureRecord> records = dslContext.selectFrom(Tables.MEASURE)
-                .where(Tables.MEASURE.HOUSEGROUP_ID.eq(data.getColumn(2).getSelectedRecordId())).fetch();
+        List<HousemeasureRecord> records = dslContext.selectFrom(Tables.HOUSEMEASURE)
+                .where(Tables.HOUSEMEASURE.HOUSEGROUP_ID.eq(data.getColumn(2).getSelectedRecordId())).fetch();
 
         s.append(AdminTable.startTable());
-        for (MeasureRecord record : records)
+        for (HousemeasureRecord record : records)
         {
             MeasuretypeRecord measureType = dslContext
                     .selectFrom(Tables.MEASURETYPE.where(Tables.MEASURETYPE.ID.eq(record.getMeasuretypeId()))).fetchOne();
@@ -534,7 +531,7 @@ public class MaintainHouseMeasure
             s.append(tableRow.process());
         }
         s.append(AdminTable.endTable());
-        s.append(AdminTable.finalButton("New Measure", "new" + columnName));
+        s.append(AdminTable.finalButton("New HouseMeasure", "new" + columnName));
 
         data.getColumn(columnNr).setSelectedRecordId(recordId);
         data.getColumn(columnNr).setContent(s.toString());

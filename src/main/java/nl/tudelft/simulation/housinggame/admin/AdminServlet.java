@@ -363,8 +363,8 @@ public class AdminServlet extends HttpServlet
                 MaintainPlayQuestion.handleMenu(request, click, recordNr);
                 break;
 
-            // (GameSession) - (Group) - HouseGroup - Measure - HouseTransaction
-            case "measure":
+            // (GameSession) - (Group) - HouseGroup - HouseMeasure - HouseTransaction
+            case "housemeasure":
             case "viewMeasureGameSession":
             case "viewMeasureGroup":
 
@@ -375,12 +375,12 @@ public class AdminServlet extends HttpServlet
             case "deleteHouseGroupOk":
             case "newHouseGroup":
 
-            case "viewMeasure":
-            case "editMeasure":
-            case "saveMeasure":
-            case "deleteMeasure":
-            case "deleteMeasureOk":
-            case "newMeasure":
+            case "viewHouseMeasure":
+            case "editHouseMeasure":
+            case "saveHouseMeasure":
+            case "deleteHouseMeasure":
+            case "deleteHouseMeasureOk":
+            case "newHouseMeasure":
 
             case "viewHouseTransaction":
             case "editHouseTransaction":
@@ -388,7 +388,7 @@ public class AdminServlet extends HttpServlet
             case "deleteHouseTransaction":
             case "deleteHouseTransactionOk":
             case "newHouseTransaction":
-                data.setMenuChoice("measure");
+                data.setMenuChoice("housemeasure");
                 MaintainHouseMeasure.handleMenu(request, click, recordNr);
                 break;
 
@@ -474,7 +474,7 @@ public class AdminServlet extends HttpServlet
         // (GameSession) - (Group) - (GroupRound) - (Player) - (PlayerRound) - QuestionScore
         topmenu(data, s, "play-question", "Play-Question", "#0040ff");
         // (GameSession) - (Group) - HouseGroup - Measure - HouseTransaction
-        topmenu(data, s, "measure", "House-Transaction", "#0040ff");
+        topmenu(data, s, "housemeasure", "House-Measure", "#0040ff");
         //
         topmenu(data, s, "results", "Results", "#ff00ff");
         //
