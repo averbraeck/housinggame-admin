@@ -87,16 +87,20 @@ public class AdminServlet extends HttpServlet
                 MaintainParameters.handleMenu(request, click, recordNr);
                 break;
 
-            // GameVersion - Label
-            case "label":
-            case "viewLabelGameVersion":
-            case "editLabelGameVersion":
-            case "saveLabelGameVersion":
-            case "deleteLabelGameVersion":
-            case "deleteLabelGameVersionOk":
-            case "newLabelGameVersion":
+            // MeasureCategory
+            case "measurecategory":
+            case "viewMeasureCategory":
+            case "editMeasureCategory":
+            case "saveMeasureCategory":
+            case "deleteMeasureCategory":
+            case "deleteMeasureCategoryOk":
+            case "newMeasureCategory":
+            case "cloneMeasureCategory":
+                data.setMenuChoice("measurecategory");
+                MaintainMeasureCategory.handleMenu(request, click, recordNr);
+                break;
 
-                // GameVersion - Scenario
+            // GameVersion - Scenario
             case "scenario":
             case "viewGameVersion":
             case "editGameVersion":
@@ -435,6 +439,8 @@ public class AdminServlet extends HttpServlet
         topmenu(data, s, "language", "Language", "#ff8000");
         // ScenarioParameters
         topmenu(data, s, "parameters", "Parameters", "#ff8000");
+        // MeasureCategory
+        topmenu(data, s, "measurecategory", "MeasureCategory", "#ff8000");
         // GameVersion - Scenario
         topmenu(data, s, "scenario", "Scenario", "#008000");
         // (GameVersion) - (Scenario) - WelfareType
