@@ -470,7 +470,7 @@ public class AdminServlet extends HttpServlet
         // (GameVersion) - Community - Tax
         topmenu(data, s, "community", "Community-Tax", "#008000");
         // (GameVersion) - (Community) - House - InitialHouseMeasure
-        topmenu(data, s, "house", "House-Measure", "#008000");
+        topmenu(data, s, "house", "House", "#008000");
         // (GameVersion) - (Scenario) - NewsItem - NewsEffects
         topmenu(data, s, "news", "News-Effects", "#008000");
         // (GameVersion) - (Scenario) - Question - QuestionItem
