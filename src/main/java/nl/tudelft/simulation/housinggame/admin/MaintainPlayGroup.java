@@ -21,8 +21,9 @@ import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GrouproundRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GroupstateRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.HousegroupRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.HousemeasureRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.HousetransactionRecord;
-import nl.tudelft.simulation.housinggame.data.tables.records.MeasureRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.PersonalmeasureRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.PlayerroundRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.PlayerstateRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.QuestionscoreRecord;
@@ -375,6 +376,10 @@ public class MaintainPlayGroup
                         .where(Tables.PLAYERSTATE.PLAYERROUND_ID.eq(playerRound.getId())).fetch();
                 for (var playerState : playerStateList)
                     playerState.delete();
+                List<PersonalmeasureRecord> personalMeasureList = dslContext.selectFrom(Tables.PERSONALMEASURE)
+                        .where(Tables.PERSONALMEASURE.PLAYERROUND_ID.eq(playerRound.getId())).fetch();
+                for (var personalMeasure : personalMeasureList)
+                    personalMeasure.delete();
                 playerRound.delete();
             }
         }
@@ -385,8 +390,8 @@ public class MaintainPlayGroup
                     dslContext.selectFrom(Tables.HOUSEGROUP).where(Tables.HOUSEGROUP.GROUP_ID.eq(group.getId())).fetch();
             for (var houseGroup : houseGroupList)
             {
-                List<MeasureRecord> measureList = dslContext.selectFrom(Tables.MEASURE)
-                        .where(Tables.MEASURE.HOUSEGROUP_ID.eq(houseGroup.getId())).fetch();
+                List<HousemeasureRecord> measureList = dslContext.selectFrom(Tables.HOUSEMEASURE)
+                        .where(Tables.HOUSEMEASURE.HOUSEGROUP_ID.eq(houseGroup.getId())).fetch();
                 for (var measure : measureList)
                     measure.delete();
                 houseGroup.delete();
