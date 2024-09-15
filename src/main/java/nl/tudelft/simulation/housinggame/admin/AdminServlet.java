@@ -363,6 +363,24 @@ public class AdminServlet extends HttpServlet
                 MaintainPlayQuestion.handleMenu(request, click, recordNr);
                 break;
 
+            // (GameSession) - (Group) - (GroupRound) - (Player) - (PlayerRound) - PersonalMeasure
+            case "play-measure":
+            case "viewPlayMeasureGameSession":
+            case "viewPlayMeasureGroup":
+            case "viewPlayMeasureGroupRound":
+            case "viewPlayMeasurePlayer":
+            case "viewPlayMeasurePlayerRound":
+
+            case "viewPersonalMeasure":
+            case "editPersonalMeasure":
+            case "savePersonalMeasure":
+            case "deletePersonalMeasure":
+            case "deletePersonalMeasureOk":
+            case "newPersonalMeasure":
+                data.setMenuChoice("play-measure");
+                MaintainPlayMeasure.handleMenu(request, click, recordNr);
+                break;
+
             // (GameSession) - (Group) - HouseGroup - HouseMeasure - HouseTransaction
             case "housemeasure":
             case "viewMeasureGameSession":
@@ -473,6 +491,8 @@ public class AdminServlet extends HttpServlet
         topmenu(data, s, "play-player", "Play-Player", "#0040ff");
         // (GameSession) - (Group) - (GroupRound) - (Player) - (PlayerRound) - QuestionScore
         topmenu(data, s, "play-question", "Play-Question", "#0040ff");
+        // (GameSession) - (Group) - (GroupRound) - (Player) - (PlayerRound) - PersonalMeasure
+        topmenu(data, s, "play-measure", "Play-Measure", "#0040ff");
         // (GameSession) - (Group) - HouseGroup - Measure - HouseTransaction
         topmenu(data, s, "housemeasure", "House-Measure", "#0040ff");
         //
