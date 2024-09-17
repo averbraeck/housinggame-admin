@@ -267,16 +267,13 @@ public class MaintainPlayMeasure
                 .startForm()
                 .addEntry(new TableEntryPickRecord(Tables.PERSONALMEASURE.MEASURETYPE_ID)
                         .setRequired()
-                        .setPickTable(data, Tables.MEASURETYPE.where
-                                (Tables.MEASURETYPE.GAMEVERSION_ID.eq(gameVersion.getId())),
+                        .setPickTable(data, Tables.MEASURETYPE.join(Tables.MEASURECATEGORY)
+                                .on(Tables.MEASURETYPE.MEASURECATEGORY_ID.eq(Tables.MEASURECATEGORY.ID))
+                                .and(Tables.MEASURECATEGORY.GAMEVERSION_ID.eq(gameVersion.getId()))
+                                .and(Tables.MEASURETYPE.HOUSE_MEASURE.eq((byte) 0)),
                                 Tables.MEASURETYPE.ID, Tables.MEASURETYPE.NAME)
                         .setInitialValue(personalMeasure.getMeasuretypeId(), null)
                         .setLabel("Measure type"))
-                .addEntry(new TableEntryInt(Tables.PERSONALMEASURE.ROUND_NUMBER)
-                        .setRequired()
-                        .setInitialValue(personalMeasure.getRoundNumber(), groupRound.getRoundNumber())
-                        .setLabel("Round number")
-                        .setMin(0))
                 .addEntry(new TableEntryInt(Tables.PERSONALMEASURE.PLAYERROUND_ID)
                         .setInitialValue(playerRoundId, 0)
                         .setLabel("PlayerRound id")
