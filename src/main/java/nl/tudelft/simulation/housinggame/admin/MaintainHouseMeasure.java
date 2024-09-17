@@ -19,6 +19,7 @@ import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.common.HouseGroupStatus;
 import nl.tudelft.simulation.housinggame.common.TransactionStatus;
 import nl.tudelft.simulation.housinggame.data.Tables;
+import nl.tudelft.simulation.housinggame.data.tables.records.GameversionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.HouseRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.HousegroupRecord;
@@ -368,6 +369,7 @@ public class MaintainHouseMeasure
         HousegroupRecord houseGroup = SqlUtils.readRecordFromId(data, Tables.HOUSEGROUP, houseGroupId);
         GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, houseGroup.getGroupId());
         ScenarioRecord scenario = SqlUtils.readRecordFromId(data, Tables.SCENARIO, group.getScenarioId());
+        GameversionRecord gameVersion = SqlUtils.readRecordFromId(data, Tables.GAMEVERSION, scenario.getGameversionId());
 
         //@formatter:off
         TableForm form = new TableForm()
@@ -380,16 +382,24 @@ public class MaintainHouseMeasure
                 .setRecordNr(measureId)
                 .startForm()
                 .addEntry(new TableEntryPickRecord(Tables.HOUSEMEASURE.MEASURETYPE_ID)
-                            .setPickTable(data, Tables.MEASURETYPE
-                                .where(Tables.MEASURETYPE.GAMEVERSION_ID.eq(scenario.getGameversionId())),
-                                Tables.MEASURETYPE.ID, Tables.MEASURETYPE.NAME)
+                            .setPickTable(data, Tables.MEASURETYPE.join(Tables.MEASURECATEGORY)
+                                    .on(Tables.MEASURETYPE.MEASURECATEGORY_ID.eq(Tables.MEASURECATEGORY.ID))
+                                    .and(Tables.MEASURECATEGORY.GAMEVERSION_ID.eq(gameVersion.getId()))
+                                    .and(Tables.MEASURETYPE.HOUSE_MEASURE.ne((byte) 0)),
+                                    Tables.MEASURETYPE.ID, Tables.MEASURETYPE.NAME)
                         .setRequired()
                         .setInitialValue(measure.getMeasuretypeId(), 0)
                         .setLabel("Measure type"))
-                .addEntry(new TableEntryInt(Tables.HOUSEMEASURE.ROUND_NUMBER)
+                .addEntry(new TableEntryInt(Tables.HOUSEMEASURE.BOUGHT_IN_ROUND)
                         .setRequired()
-                        .setInitialValue(measure.getRoundNumber(), 0)
-                        .setLabel("Round number")
+                        .setInitialValue(measure.getBoughtInRound(), 0)
+                        .setLabel("Bought in round")
+                        .setMin(0)
+                        .setMax(scenario.getHighestRoundNumber()))
+                .addEntry(new TableEntryInt(Tables.HOUSEMEASURE.USED_IN_ROUND)
+                        .setRequired()
+                        .setInitialValue(measure.getUsedInRound(), -1)
+                        .setLabel("Used in round")
                         .setMin(0)
                         .setMax(scenario.getHighestRoundNumber()))
                 .addEntry(new TableEntryInt(Tables.HOUSEMEASURE.HOUSEGROUP_ID)
