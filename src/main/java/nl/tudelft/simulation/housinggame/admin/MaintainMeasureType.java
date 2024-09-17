@@ -121,7 +121,7 @@ public class MaintainMeasureType
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("MeasureType", 1, 0, true, Tables.MEASURETYPE, Tables.MEASURETYPE.NAME, "name",
+            data.showDependentColumn("MeasureType", 2, 0, true, Tables.MEASURETYPE, Tables.MEASURETYPE.NAME, "name",
                     Tables.MEASURETYPE.MEASURECATEGORY_ID, true);
             editMeasureCategory(session, data, recordId, editRecord);
         }
@@ -146,6 +146,8 @@ public class MaintainMeasureType
                         + "<br> measure types for this measurecategory exist")
                 .setRecordNr(measureCategoryId)
                 .startForm()
+                .setLabelLength("40%")
+                .setFieldLength("60%")
                 .addEntry(new TableEntryDouble(Tables.MEASURECATEGORY.SEQUENCE_NR)
                         .setRequired()
                         .setInitialValue(measureCategory.getSequenceNr(), 1.0)
@@ -205,7 +207,7 @@ public class MaintainMeasureType
         MeasuretypeRecord measureType = measureTypeId == 0 ? dslContext.newRecord(Tables.MEASURETYPE)
                 : dslContext.selectFrom(Tables.MEASURETYPE).where(Tables.MEASURETYPE.ID.eq(measureTypeId)).fetchOne();
         int measureCategoryId =
-                measureTypeId == 0 ? data.getColumn(0).getSelectedRecordId() : measureType.getMeasurecategoryId();
+                measureTypeId == 0 ? data.getColumn(1).getSelectedRecordId() : measureType.getMeasurecategoryId();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
