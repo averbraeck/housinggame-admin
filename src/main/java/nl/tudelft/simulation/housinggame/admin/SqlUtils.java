@@ -25,6 +25,7 @@ import nl.tudelft.simulation.housinggame.data.tables.records.GameversionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.HouseRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.InitialhousemeasureRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.MeasurecategoryRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.MeasuretypeRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.NewseffectsRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.NewsitemRecord;
@@ -216,16 +217,28 @@ public final class SqlUtils
         newGameVersion.store();
         int newGameVersionId = newGameVersion.getId();
 
-        // 2. For the gameversion, clone the measuretypes; make a map of old measuretypeId to new measuretypeId.
-        List<MeasuretypeRecord> measureTypeList = dslContext.selectFrom(Tables.MEASURETYPE)
-                .where(Tables.MEASURETYPE.GAMEVERSION_ID.eq(oldGameVersion.getId())).fetch();
+        // 2a. For the gameversion, clone the measurecategories; make a map of old measurecategoryId to new measurecategoryId.
+        List<MeasurecategoryRecord> measureCategoryList = dslContext.selectFrom(Tables.MEASURECATEGORY)
+                .where(Tables.MEASURECATEGORY.GAMEVERSION_ID.eq(oldGameVersion.getId())).fetch();
+        Map<Integer, Integer> measureCategoryMap = new HashMap<>();
         Map<Integer, Integer> measureTypeMap = new HashMap<>();
-        for (MeasuretypeRecord oldMeasureType : measureTypeList)
+        for (MeasurecategoryRecord oldMeasureCategory : measureCategoryList)
         {
-            MeasuretypeRecord newMeasureType = oldMeasureType.copy();
-            newMeasureType.setGameversionId(newGameVersionId);
-            newMeasureType.store();
-            measureTypeMap.put(oldMeasureType.getId(), newMeasureType.getId());
+            MeasurecategoryRecord newMeasureCategory = oldMeasureCategory.copy();
+            newMeasureCategory.setGameversionId(newGameVersionId);
+            newMeasureCategory.store();
+            measureCategoryMap.put(oldMeasureCategory.getId(), newMeasureCategory.getId());
+
+            // 2b. For each measurecategory, clone the measuretypes; make a map of old measuretypeId to new measuretypeId.
+            List<MeasuretypeRecord> measureTypeList = dslContext.selectFrom(Tables.MEASURETYPE)
+                    .where(Tables.MEASURETYPE.MEASURECATEGORY_ID.eq(oldMeasureCategory.getId())).fetch();
+            for (MeasuretypeRecord oldMeasureType : measureTypeList)
+            {
+                MeasuretypeRecord newMeasureType = oldMeasureType.copy();
+                newMeasureType.setMeasurecategoryId(newMeasureCategory.getId());
+                newMeasureType.store();
+                measureTypeMap.put(oldMeasureType.getId(), newMeasureType.getId());
+            }
         }
 
         // 3. For the gameversion, clone the communities, using the new gameversionId;
@@ -471,12 +484,19 @@ public final class SqlUtils
             community.delete();
         }
 
-        // 6. For the gameversion, for each measuretype: delete the measuretype
-        List<MeasuretypeRecord> measureTypeList = dslContext.selectFrom(Tables.MEASURETYPE)
-                .where(Tables.MEASURETYPE.GAMEVERSION_ID.eq(gameVersion.getId())).fetch();
-        for (MeasuretypeRecord measureType : measureTypeList)
+        // 6. For the gameversion, for each measurecategory:
+        List<MeasurecategoryRecord> measureCategoryList = dslContext.selectFrom(Tables.MEASURECATEGORY)
+                .where(Tables.MEASURECATEGORY.GAMEVERSION_ID.eq(gameVersion.getId())).fetch();
+        for (var measureCategory : measureCategoryList)
         {
-            measureType.delete();
+            // 7. For each measurecategory: delete the measuretypes
+            List<MeasuretypeRecord> measureTypeList = dslContext.selectFrom(Tables.MEASURETYPE)
+                    .where(Tables.MEASURETYPE.MEASURECATEGORY_ID.eq(measureCategory.getId())).fetch();
+            for (MeasuretypeRecord measureType : measureTypeList)
+            {
+                measureType.delete();
+            }
+            measureCategory.delete();
         }
 
         gameVersion.delete();
