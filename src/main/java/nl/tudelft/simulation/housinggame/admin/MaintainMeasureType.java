@@ -10,11 +10,11 @@ import org.jooq.impl.DSL;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryBoolean;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDouble;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
-import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecord;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryString;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryText;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
+import nl.tudelft.simulation.housinggame.data.tables.records.MeasurecategoryRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.MeasuretypeRecord;
 
 public class MaintainMeasureType
@@ -27,14 +27,36 @@ public class MaintainMeasureType
 
         if (click.equals("measuretype"))
         {
-            data.clearColumns("20%", "GameVersion", "20%", "MeasureType");
-            data.clearFormColumn("60%", "Edit Properties");
+            data.clearColumns("20%", "GameVersion", "20%", "MeasureCategory", "20%", "MeasureType");
+            data.clearFormColumn("40%", "Edit Properties");
             showGameVersion(session, data, 0);
         }
 
         else if (click.contains("MeasureTypeGameVersion"))
         {
             showGameVersion(session, data, recordId);
+        }
+
+        else if (click.contains("MeasureCategory"))
+        {
+            if (click.startsWith("save"))
+                recordId = data.saveRecord(request, recordId, Tables.MEASURECATEGORY, "measurecategory");
+            else if (click.startsWith("delete"))
+            {
+                MeasurecategoryRecord measureCategory = SqlUtils.readRecordFromId(data, Tables.MEASURECATEGORY, recordId);
+                if (click.endsWith("Ok"))
+                    data.deleteRecordOk(measureCategory, "measurecategory");
+                else
+                    data.askDeleteRecord(measureCategory, "MeasureCategory", measureCategory.getName(),
+                            "deleteMeasureCategoryOk", "measurecategory");
+                recordId = 0;
+            }
+            if (!data.isError())
+            {
+                showMeasureCategory(session, data, recordId, true, !click.startsWith("view"));
+                if (click.startsWith("new"))
+                    editMeasureCategory(session, data, 0, true);
+            }
         }
 
         else if (click.contains("MeasureType"))
@@ -73,12 +95,80 @@ public class MaintainMeasureType
         data.showColumn("MeasureTypeGameVersion", 0, recordId, false, Tables.GAMEVERSION, Tables.GAMEVERSION.NAME, "name",
                 false);
         data.resetColumn(1);
+        data.resetColumn(2);
+        data.resetFormColumn();
+        if (recordId != 0)
+        {
+            data.showDependentColumn("MeasureCategory", 1, 0, true, Tables.MEASURECATEGORY, Tables.MEASURECATEGORY.NAME, "name",
+                    Tables.MEASURECATEGORY.GAMEVERSION_ID, true);
+        }
+    }
+
+    /*
+     * *********************************************************************************************************
+     * ***************************************** MEASURECATEGORY ***********************************************
+     * *********************************************************************************************************
+     */
+
+    public static void showMeasureCategory(final HttpSession session, final AdminData data, final int recordId,
+            final boolean editButton, final boolean editRecord)
+    {
+        data.showColumn("MeasureTypeGameVersion", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMEVERSION,
+                Tables.GAMEVERSION.NAME, "name", false);
+        data.showDependentColumn("MeasureCategory", 1, recordId, true, Tables.MEASURECATEGORY, Tables.MEASURECATEGORY.NAME,
+                "name", Tables.MEASURECATEGORY.GAMEVERSION_ID, true);
+        data.resetColumn(2);
         data.resetFormColumn();
         if (recordId != 0)
         {
             data.showDependentColumn("MeasureType", 1, 0, true, Tables.MEASURETYPE, Tables.MEASURETYPE.NAME, "name",
-                    Tables.MEASURETYPE.GAMEVERSION_ID, true);
+                    Tables.MEASURETYPE.MEASURECATEGORY_ID, true);
+            editMeasureCategory(session, data, recordId, editRecord);
         }
+    }
+
+    public static void editMeasureCategory(final HttpSession session, final AdminData data, final int measureCategoryId,
+            final boolean edit)
+    {
+        DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
+        MeasurecategoryRecord measureCategory =
+                measureCategoryId == 0 ? dslContext.newRecord(Tables.MEASURECATEGORY) : dslContext
+                        .selectFrom(Tables.MEASURECATEGORY).where(Tables.MEASURECATEGORY.ID.eq(measureCategoryId)).fetchOne();
+        int gameVersionId =
+                measureCategoryId == 0 ? data.getColumn(0).getSelectedRecordId() : measureCategory.getGameversionId();
+        //@formatter:off
+        TableForm form = new TableForm()
+                .setEdit(edit)
+                .setCancelMethod("measurecategory", data.getColumn(0).getSelectedRecordId())
+                .setEditMethod("editMeasureCategory")
+                .setSaveMethod("saveMeasureCategory")
+                .setDeleteMethod("deleteMeasureCategory", "Delete", "<br>Note: Do not delete measurecategory when"
+                        + "<br> measure types for this measurecategory exist")
+                .setRecordNr(measureCategoryId)
+                .startForm()
+                .addEntry(new TableEntryString(Tables.MEASURECATEGORY.NAME)
+                        .setRequired()
+                        .setInitialValue(measureCategory.getName(), "")
+                        .setLabel("Short name (24 chars)")
+                        .setMaxChars(24))
+                .addEntry(new TableEntryString(Tables.MEASURECATEGORY.DESCRIPTION)
+                        .setRequired()
+                        .setInitialValue(measureCategory.getDescription(), "")
+                        .setLabel("Long name (255 chars)")
+                        .setMaxChars(255))
+                .addEntry(new TableEntryText(Tables.MEASURECATEGORY.EXPLANATION)
+                        .setRequired(false)
+                        .setInitialValue(measureCategory.getExplanation(), "")
+                        .setLabel("Explanation")
+                        .setRows(10))
+                .addEntry(new TableEntryInt(Tables.MEASURECATEGORY.GAMEVERSION_ID)
+                        .setInitialValue(gameVersionId, 0)
+                        .setLabel("Game version id")
+                        .setHidden(true))
+                .endForm();
+        //@formatter:on
+
+        data.getFormColumn().setHeaderForm("Edit MeasureCategory", form);
     }
 
     /*
@@ -92,8 +182,10 @@ public class MaintainMeasureType
     {
         data.showColumn("MeasureTypeGameVersion", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMEVERSION,
                 Tables.GAMEVERSION.NAME, "name", false);
-        data.showDependentColumn("MeasureType", 1, recordId, true, Tables.MEASURETYPE, Tables.MEASURETYPE.NAME, "name",
-                Tables.MEASURETYPE.GAMEVERSION_ID, true);
+        data.showDependentColumn("MeasureCategory", 1, data.getColumn(1).getSelectedRecordId(), true, Tables.MEASURECATEGORY,
+                Tables.MEASURECATEGORY.NAME, "name", Tables.MEASURECATEGORY.GAMEVERSION_ID, true);
+        data.showDependentColumn("MeasureType", 2, recordId, true, Tables.MEASURETYPE, Tables.MEASURETYPE.NAME, "name",
+                Tables.MEASURETYPE.MEASURECATEGORY_ID, true);
         data.resetFormColumn();
         if (recordId != 0)
         {
@@ -107,7 +199,8 @@ public class MaintainMeasureType
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         MeasuretypeRecord measureType = measureTypeId == 0 ? dslContext.newRecord(Tables.MEASURETYPE)
                 : dslContext.selectFrom(Tables.MEASURETYPE).where(Tables.MEASURETYPE.ID.eq(measureTypeId)).fetchOne();
-        int gameVersionId = measureTypeId == 0 ? data.getColumn(0).getSelectedRecordId() : measureType.getGameversionId();
+        int measureCategoryId =
+                measureTypeId == 0 ? data.getColumn(0).getSelectedRecordId() : measureType.getMeasurecategoryId();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -134,12 +227,6 @@ public class MaintainMeasureType
                         .setRequired()
                         .setInitialValue(measureType.getDescription(), "")
                         .setLabel("Description"))
-                .addEntry(new TableEntryPickRecord(Tables.MEASURETYPE.MEASURECATEGORY_ID)
-                        .setRequired()
-                        .setPickTable(data, Tables.MEASURECATEGORY,
-                                Tables.MEASURECATEGORY.ID, Tables.MEASURECATEGORY.NAME)
-                        .setInitialValue(measureType.getMeasurecategoryId(), 0)
-                        .setLabel("Measure type category"))
                 .addEntry(new TableEntryDouble(Tables.MEASURETYPE.CATEGORY_SEQUENCE_NR)
                         .setRequired()
                         .setInitialValue(measureType.getCategorySequenceNr(), 1.0)
@@ -184,13 +271,17 @@ public class MaintainMeasureType
                         .setRequired()
                         .setInitialValue(measureType.getValidOneRound(), (byte) 0)
                         .setLabel("Valid for one round only?"))
+                .addEntry(new TableEntryBoolean(Tables.MEASURETYPE.VALID_UNTIL_USED)
+                        .setRequired()
+                        .setInitialValue(measureType.getValidUntilUsed(), (byte) 0)
+                        .setLabel("Valid until used?"))
                 .addEntry(new TableEntryBoolean(Tables.MEASURETYPE.HOUSE_MEASURE)
                         .setRequired()
                         .setInitialValue(measureType.getHouseMeasure(), (byte) 1)
                         .setLabel("House measure [T] / personal [F]"))
-                .addEntry(new TableEntryInt(Tables.MEASURETYPE.GAMEVERSION_ID)
-                        .setInitialValue(gameVersionId, 0)
-                        .setLabel("Scenario id")
+                .addEntry(new TableEntryInt(Tables.MEASURETYPE.MEASURECATEGORY_ID)
+                        .setInitialValue(measureCategoryId, 0)
+                        .setLabel("Measure category id")
                         .setHidden(true))
                 .endForm();
         //@formatter:on

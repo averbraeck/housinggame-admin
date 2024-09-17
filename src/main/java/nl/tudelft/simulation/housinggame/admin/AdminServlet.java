@@ -87,19 +87,6 @@ public class AdminServlet extends HttpServlet
                 MaintainParameters.handleMenu(request, click, recordNr);
                 break;
 
-            // MeasureCategory
-            case "measurecategory":
-            case "viewMeasureCategory":
-            case "editMeasureCategory":
-            case "saveMeasureCategory":
-            case "deleteMeasureCategory":
-            case "deleteMeasureCategoryOk":
-            case "newMeasureCategory":
-            case "cloneMeasureCategory":
-                data.setMenuChoice("measurecategory");
-                MaintainMeasureCategory.handleMenu(request, click, recordNr);
-                break;
-
             // GameVersion - Scenario
             case "scenario":
             case "viewGameVersion":
@@ -162,9 +149,17 @@ public class AdminServlet extends HttpServlet
                 MaintainWelfareType.handleMenu(request, click, recordNr);
                 break;
 
-            // (GameVersion) - MeasureType
+            // (GameVersion) - MeasureCategory - MeasureType
             case "measuretype":
             case "viewMeasureTypeGameVersion":
+
+            case "measurecategory":
+            case "viewMeasureCategory":
+            case "editMeasureCategory":
+            case "saveMeasureCategory":
+            case "deleteMeasureCategory":
+            case "deleteMeasureCategoryOk":
+            case "newMeasureCategory":
 
             case "viewMeasureType":
             case "editMeasureType":
@@ -457,13 +452,11 @@ public class AdminServlet extends HttpServlet
         topmenu(data, s, "language", "Language", "#ff8000");
         // ScenarioParameters
         topmenu(data, s, "parameters", "Parameters", "#ff8000");
-        // MeasureCategory
-        topmenu(data, s, "measurecategory", "MeasureCategory", "#ff8000");
         // GameVersion - Scenario
         topmenu(data, s, "scenario", "Scenario", "#008000");
         // (GameVersion) - (Scenario) - WelfareType
         topmenu(data, s, "welfaretype", "WelfareType", "#008000");
-        // (GameVersion) - MeasureType
+        // (GameVersion) - MeasureCategory - MeasureType
         topmenu(data, s, "measuretype", "MeasureType", "#008000");
         // (GameVersion) - MovingReason
         topmenu(data, s, "movingreason", "MovingReason", "#008000");
