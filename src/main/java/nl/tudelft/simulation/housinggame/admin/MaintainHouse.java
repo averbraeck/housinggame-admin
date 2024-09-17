@@ -124,8 +124,8 @@ public class MaintainHouse
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("House", 2, 0, true, Tables.HOUSE, Tables.HOUSE.CODE, "code",
-                    Tables.HOUSE.COMMUNITY_ID, true);
+            data.showDependentColumn("House", 2, 0, true, Tables.HOUSE, Tables.HOUSE.CODE, "code", Tables.HOUSE.COMMUNITY_ID,
+                    true);
         }
     }
 
@@ -142,8 +142,8 @@ public class MaintainHouse
                 Tables.GAMEVERSION.NAME, "name", false);
         data.showDependentColumn("HouseCommunity", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.COMMUNITY,
                 Tables.COMMUNITY.NAME, "name", Tables.COMMUNITY.GAMEVERSION_ID, false);
-        data.showDependentColumn("House", 2, recordId, true, Tables.HOUSE, Tables.HOUSE.CODE, "code",
-                Tables.HOUSE.COMMUNITY_ID, true);
+        data.showDependentColumn("House", 2, recordId, true, Tables.HOUSE, Tables.HOUSE.CODE, "code", Tables.HOUSE.COMMUNITY_ID,
+                true);
         data.resetColumn(3);
         data.resetFormColumn();
         if (recordId != 0)
@@ -268,7 +268,10 @@ public class MaintainHouse
                         .setMin(1))
                 .addEntry(new TableEntryPickRecord(Tables.INITIALHOUSEMEASURE.MEASURETYPE_ID)
                         .setRequired()
-                        .setPickTable(data, Tables.MEASURETYPE.where(Tables.MEASURETYPE.GAMEVERSION_ID.eq(gameVersionId)),
+                        .setPickTable(data, Tables.MEASURETYPE.join(Tables.MEASURECATEGORY)
+                                .on(Tables.MEASURETYPE.MEASURECATEGORY_ID.eq(Tables.MEASURECATEGORY.ID))
+                                .and(Tables.MEASURECATEGORY.GAMEVERSION_ID.eq(gameVersionId))
+                                .and(Tables.MEASURETYPE.HOUSE_MEASURE.ne((byte) 0)),
                                 Tables.MEASURETYPE.ID, Tables.MEASURETYPE.NAME)
                         .setInitialValue(initialHouseMeasure.getMeasuretypeId(), 0)
                         .setLabel("Measure type"))
