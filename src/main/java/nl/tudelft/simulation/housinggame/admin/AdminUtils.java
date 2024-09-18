@@ -1,8 +1,5 @@
 package nl.tudelft.simulation.housinggame.admin;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,10 +11,9 @@ import javax.servlet.http.HttpSession;
 
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
-import org.jooq.Table;
-import org.jooq.TableField;
 import org.jooq.impl.DSL;
 
+import nl.tudelft.simulation.housinggame.common.SqlUtils;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.CommunityRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GamesessionRecord;
@@ -33,51 +29,15 @@ import nl.tudelft.simulation.housinggame.data.tables.records.QuestionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.ScenarioRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.ScenarioparametersRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.TaxRecord;
-import nl.tudelft.simulation.housinggame.data.tables.records.UserRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.WelfaretypeRecord;
 
-public final class AdminUtils
+public final class AdminUtils extends SqlUtils
 {
-
-    private AdminUtils()
-    {
-        // utility class
-    }
-
-    public static Connection dbConnection() throws SQLException, ClassNotFoundException
-    {
-        String jdbcURL = "jdbc:mysql://localhost:3306/housinggame";
-        String dbUser = "housinggame";
-        String dbPassword = "tudHouse#4";
-
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        return DriverManager.getConnection(jdbcURL, dbUser, dbPassword);
-    }
-
-    public static UserRecord readUserFromUserId(final AdminData data, final int userId)
-    {
-        DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        return dslContext.selectFrom(Tables.USER).where(Tables.USER.ID.eq(userId)).fetchAny();
-    }
-
-    public static UserRecord readUserFromUsername(final AdminData data, final String username)
-    {
-        DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        return dslContext.selectFrom(Tables.USER).where(Tables.USER.USERNAME.eq(username)).fetchAny();
-    }
 
     public static void loadAttributes(final HttpSession session)
     {
         AdminData data = SessionUtils.getData(session);
         data.setMenuChoice("");
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <R extends org.jooq.UpdatableRecord<R>> R readRecordFromId(final AdminData data, final Table<R> table,
-            final int recordId)
-    {
-        DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        return dslContext.selectFrom(table).where(((TableField<R, Integer>) table.field("id")).eq(recordId)).fetchOne();
     }
 
     /**
