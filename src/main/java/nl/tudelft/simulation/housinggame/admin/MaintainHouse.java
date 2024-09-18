@@ -46,7 +46,7 @@ public class MaintainHouse
                 recordId = data.saveRecord(request, recordId, Tables.HOUSE, "house");
             else if (click.startsWith("delete"))
             {
-                HouseRecord house = SqlUtils.readRecordFromId(data, Tables.HOUSE, recordId);
+                HouseRecord house = AdminUtils.readRecordFromId(data, Tables.HOUSE, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(house, "house");
                 else
@@ -68,7 +68,7 @@ public class MaintainHouse
             else if (click.startsWith("delete"))
             {
                 InitialhousemeasureRecord initialHouseMeasure =
-                        SqlUtils.readRecordFromId(data, Tables.INITIALHOUSEMEASURE, recordId);
+                        AdminUtils.readRecordFromId(data, Tables.INITIALHOUSEMEASURE, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(initialHouseMeasure, "house");
                 else

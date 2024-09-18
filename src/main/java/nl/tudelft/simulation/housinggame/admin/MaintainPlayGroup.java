@@ -61,7 +61,7 @@ public class MaintainPlayGroup
                 recordId = data.saveRecord(request, recordId, Tables.GROUPROUND, "play-group");
             else if (click.startsWith("delete"))
             {
-                GrouproundRecord groupRound = SqlUtils.readRecordFromId(data, Tables.GROUPROUND, recordId);
+                GrouproundRecord groupRound = AdminUtils.readRecordFromId(data, Tables.GROUPROUND, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(groupRound, "play-group");
                 else
@@ -85,13 +85,13 @@ public class MaintainPlayGroup
                 recordId = data.saveRecord(request, recordId, Tables.GROUPSTATE, "play-group");
             else if (click.startsWith("delete"))
             {
-                GroupstateRecord groupState = SqlUtils.readRecordFromId(data, Tables.GROUPSTATE, recordId);
+                GroupstateRecord groupState = AdminUtils.readRecordFromId(data, Tables.GROUPSTATE, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(groupState, "play-group");
                 else
                 {
                     GrouproundRecord groupRound =
-                            SqlUtils.readRecordFromId(data, Tables.GROUPROUND, groupState.getGrouproundId());
+                            AdminUtils.readRecordFromId(data, Tables.GROUPROUND, groupState.getGrouproundId());
                     data.askDeleteRecord(groupState, "PlayGroupState", "Round " + groupRound.getRoundNumber(),
                             "deletePlayGroupStateOk", "play-group");
                 }
@@ -107,7 +107,7 @@ public class MaintainPlayGroup
 
         else if (click.contains("destroyGamePlayGroup"))
         {
-            GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, data.getColumn(1).getSelectedRecordId());
+            GroupRecord group = AdminUtils.readRecordFromId(data, Tables.GROUP, data.getColumn(1).getSelectedRecordId());
             if (click.endsWith("Ok"))
             {
                 destroyGamePlay(data, data.getColumn(1).getSelectedRecordId());
@@ -197,10 +197,10 @@ public class MaintainPlayGroup
         GrouproundRecord groupRound = groupRoundId == 0 ? dslContext.newRecord(Tables.GROUPROUND)
                 : dslContext.selectFrom(Tables.GROUPROUND).where(Tables.GROUPROUND.ID.eq(groupRoundId)).fetchOne();
         int groupId = groupRoundId == 0 ? data.getColumn(1).getSelectedRecordId() : groupRound.getGroupId();
-        GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, groupId);
-        ScenarioRecord scenario = SqlUtils.readRecordFromId(data, Tables.SCENARIO, group.getScenarioId());
+        GroupRecord group = AdminUtils.readRecordFromId(data, Tables.GROUP, groupId);
+        ScenarioRecord scenario = AdminUtils.readRecordFromId(data, Tables.SCENARIO, group.getScenarioId());
         ScenarioparametersRecord parameters =
-                SqlUtils.readRecordFromId(data, Tables.SCENARIOPARAMETERS, scenario.getScenarioparametersId());
+                AdminUtils.readRecordFromId(data, Tables.SCENARIOPARAMETERS, scenario.getScenarioparametersId());
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -339,7 +339,7 @@ public class MaintainPlayGroup
     public static void destroyGamePlay(final AdminData data, final int groupRecordId)
     {
         var dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        var group = SqlUtils.readRecordFromId(data, Tables.GROUP, groupRecordId);
+        var group = AdminUtils.readRecordFromId(data, Tables.GROUP, groupRecordId);
         // The gamesession, group and players stay. We delete groupround, playerround, measure, bid, questionscore,
         // as well as groupstate and playerstate
         List<GrouproundRecord> groupRoundList =

@@ -56,7 +56,7 @@ public class MaintainGameSession
                 recordId = data.saveRecord(request, recordId, Tables.GAMESESSION, "gamesession");
             else if (click.startsWith("delete"))
             {
-                GamesessionRecord gameSession = SqlUtils.readRecordFromId(data, Tables.GAMESESSION, recordId);
+                GamesessionRecord gameSession = AdminUtils.readRecordFromId(data, Tables.GAMESESSION, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(gameSession, "gamesession");
                 else
@@ -88,7 +88,7 @@ public class MaintainGameSession
                 recordId = data.saveRecord(request, recordId, Tables.GROUP, "gamesession");
             else if (click.startsWith("delete"))
             {
-                GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, recordId);
+                GroupRecord group = AdminUtils.readRecordFromId(data, Tables.GROUP, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(group, "gamesession");
                 else
@@ -109,7 +109,7 @@ public class MaintainGameSession
                 recordId = data.saveRecord(request, recordId, Tables.PLAYER, "gamesession");
             else if (click.startsWith("delete"))
             {
-                PlayerRecord player = SqlUtils.readRecordFromId(data, Tables.PLAYER, recordId);
+                PlayerRecord player = AdminUtils.readRecordFromId(data, Tables.PLAYER, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(player, "gamesession");
                 else
@@ -336,7 +336,7 @@ public class MaintainGameSession
         PlayerRecord player = playerId == 0 ? dslContext.newRecord(Tables.PLAYER)
                 : dslContext.selectFrom(Tables.PLAYER).where(Tables.PLAYER.ID.eq(playerId)).fetchOne();
         int groupId = playerId == 0 ? data.getColumn(2).getSelectedRecordId() : player.getGroupId();
-        GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, groupId);
+        GroupRecord group = AdminUtils.readRecordFromId(data, Tables.GROUP, groupId);
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)

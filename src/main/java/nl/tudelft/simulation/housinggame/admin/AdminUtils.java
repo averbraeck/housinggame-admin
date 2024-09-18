@@ -36,10 +36,10 @@ import nl.tudelft.simulation.housinggame.data.tables.records.TaxRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.UserRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.WelfaretypeRecord;
 
-public final class SqlUtils
+public final class AdminUtils
 {
 
-    private SqlUtils()
+    private AdminUtils()
     {
         // utility class
     }

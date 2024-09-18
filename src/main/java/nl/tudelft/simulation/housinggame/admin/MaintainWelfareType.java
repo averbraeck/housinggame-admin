@@ -44,7 +44,7 @@ public class MaintainWelfareType
                 recordId = data.saveRecord(request, recordId, Tables.WELFARETYPE, "welfaretype");
             else if (click.startsWith("delete"))
             {
-                WelfaretypeRecord welfareType = SqlUtils.readRecordFromId(data, Tables.WELFARETYPE, recordId);
+                WelfaretypeRecord welfareType = AdminUtils.readRecordFromId(data, Tables.WELFARETYPE, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(welfareType, "welfaretype");
                 else

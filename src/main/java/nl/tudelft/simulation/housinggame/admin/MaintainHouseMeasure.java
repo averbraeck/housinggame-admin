@@ -62,13 +62,13 @@ public class MaintainHouseMeasure
                 recordId = data.saveRecord(request, recordId, Tables.HOUSEGROUP, "housemeasure");
             else if (click.startsWith("delete"))
             {
-                HousegroupRecord houseGroup = SqlUtils.readRecordFromId(data, Tables.HOUSEGROUP, recordId);
+                HousegroupRecord houseGroup = AdminUtils.readRecordFromId(data, Tables.HOUSEGROUP, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(houseGroup, "housemeasure");
                 else
                 {
-                    GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, houseGroup.getGroupId());
-                    HouseRecord house = SqlUtils.readRecordFromId(data, Tables.HOUSE, houseGroup.getHouseId());
+                    GroupRecord group = AdminUtils.readRecordFromId(data, Tables.GROUP, houseGroup.getGroupId());
+                    HouseRecord house = AdminUtils.readRecordFromId(data, Tables.HOUSE, houseGroup.getHouseId());
                     data.askDeleteRecord(houseGroup, "HouseGroup", "House " + house.getCode() + ", group " + group.getName(),
                             "deleteHouseGroupOk", "housemeasure");
                 }
@@ -88,16 +88,16 @@ public class MaintainHouseMeasure
                 recordId = data.saveRecord(request, recordId, Tables.HOUSEMEASURE, "housemeasure");
             else if (click.startsWith("delete"))
             {
-                HousemeasureRecord measure = SqlUtils.readRecordFromId(data, Tables.HOUSEMEASURE, recordId);
+                HousemeasureRecord measure = AdminUtils.readRecordFromId(data, Tables.HOUSEMEASURE, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(measure, "housemeasure");
                 else
                 {
-                    HousegroupRecord houseGroup = SqlUtils.readRecordFromId(data, Tables.HOUSEGROUP, measure.getHousegroupId());
-                    HouseRecord house = SqlUtils.readRecordFromId(data, Tables.HOUSE, houseGroup.getHouseId());
+                    HousegroupRecord houseGroup = AdminUtils.readRecordFromId(data, Tables.HOUSEGROUP, measure.getHousegroupId());
+                    HouseRecord house = AdminUtils.readRecordFromId(data, Tables.HOUSE, houseGroup.getHouseId());
                     MeasuretypeRecord measureType =
-                            SqlUtils.readRecordFromId(data, Tables.MEASURETYPE, measure.getMeasuretypeId());
-                    GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, houseGroup.getGroupId());
+                            AdminUtils.readRecordFromId(data, Tables.MEASURETYPE, measure.getMeasuretypeId());
+                    GroupRecord group = AdminUtils.readRecordFromId(data, Tables.GROUP, houseGroup.getGroupId());
                     data.askDeleteRecord(measure, "Measure",
                             "Measure " + measureType.getName() + ", house " + house.getCode() + ", group " + group.getName(),
                             "deleteMeasureOk", "housemeasure");
@@ -118,18 +118,18 @@ public class MaintainHouseMeasure
                 recordId = data.saveRecord(request, recordId, Tables.HOUSETRANSACTION, "housemeasure");
             else if (click.startsWith("delete"))
             {
-                HousetransactionRecord transaction = SqlUtils.readRecordFromId(data, Tables.HOUSETRANSACTION, recordId);
+                HousetransactionRecord transaction = AdminUtils.readRecordFromId(data, Tables.HOUSETRANSACTION, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(transaction, "housemeasure");
                 else
                 {
                     HousegroupRecord houseGroup =
-                            SqlUtils.readRecordFromId(data, Tables.HOUSEGROUP, transaction.getHousegroupId());
-                    HouseRecord house = SqlUtils.readRecordFromId(data, Tables.HOUSE, houseGroup.getHouseId());
-                    GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, houseGroup.getGroupId());
+                            AdminUtils.readRecordFromId(data, Tables.HOUSEGROUP, transaction.getHousegroupId());
+                    HouseRecord house = AdminUtils.readRecordFromId(data, Tables.HOUSE, houseGroup.getHouseId());
+                    GroupRecord group = AdminUtils.readRecordFromId(data, Tables.GROUP, houseGroup.getGroupId());
                     PlayerroundRecord playerRound =
-                            SqlUtils.readRecordFromId(data, Tables.PLAYERROUND, transaction.getHousegroupId());
-                    PlayerRecord player = SqlUtils.readRecordFromId(data, Tables.PLAYER, playerRound.getPlayerId());
+                            AdminUtils.readRecordFromId(data, Tables.PLAYERROUND, transaction.getHousegroupId());
+                    PlayerRecord player = AdminUtils.readRecordFromId(data, Tables.PLAYER, playerRound.getPlayerId());
                     data.askDeleteRecord(
                             transaction, "HouseHouseTransaction", "HouseTransaction house " + house.getCode() + ", group "
                                     + group.getName() + ", player " + player.getCode(),
@@ -366,10 +366,10 @@ public class MaintainHouseMeasure
         HousemeasureRecord measure = measureId == 0 ? dslContext.newRecord(Tables.HOUSEMEASURE)
                 : dslContext.selectFrom(Tables.HOUSEMEASURE).where(Tables.HOUSEMEASURE.ID.eq(measureId)).fetchOne();
         int houseGroupId = measureId == 0 ? data.getColumn(2).getSelectedRecordId() : measure.getHousegroupId();
-        HousegroupRecord houseGroup = SqlUtils.readRecordFromId(data, Tables.HOUSEGROUP, houseGroupId);
-        GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, houseGroup.getGroupId());
-        ScenarioRecord scenario = SqlUtils.readRecordFromId(data, Tables.SCENARIO, group.getScenarioId());
-        GameversionRecord gameVersion = SqlUtils.readRecordFromId(data, Tables.GAMEVERSION, scenario.getGameversionId());
+        HousegroupRecord houseGroup = AdminUtils.readRecordFromId(data, Tables.HOUSEGROUP, houseGroupId);
+        GroupRecord group = AdminUtils.readRecordFromId(data, Tables.GROUP, houseGroup.getGroupId());
+        ScenarioRecord scenario = AdminUtils.readRecordFromId(data, Tables.SCENARIO, group.getScenarioId());
+        GameversionRecord gameVersion = AdminUtils.readRecordFromId(data, Tables.GAMEVERSION, scenario.getGameversionId());
 
         //@formatter:off
         TableForm form = new TableForm()
@@ -560,7 +560,7 @@ public class MaintainHouseMeasure
         {
             PlayerroundRecord playerRound = dslContext
                     .selectFrom(Tables.PLAYERROUND.where(Tables.PLAYERROUND.ID.eq(record.getPlayerroundId()))).fetchOne();
-            PlayerRecord player = SqlUtils.readRecordFromId(data, Tables.PLAYER, playerRound.getPlayerId());
+            PlayerRecord player = AdminUtils.readRecordFromId(data, Tables.PLAYER, playerRound.getPlayerId());
             TableRow tableRow = new TableRow(IdProvider.getId(record), recordId, player.getCode(), "view" + columnName);
             tableRow.addButton("Edit", "edit" + columnName);
             s.append(tableRow.process());

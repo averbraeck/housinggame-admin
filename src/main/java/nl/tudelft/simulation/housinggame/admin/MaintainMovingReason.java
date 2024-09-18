@@ -40,7 +40,7 @@ public class MaintainMovingReason
                 recordId = data.saveRecord(request, recordId, Tables.MOVINGREASON, "movingreason");
             else if (click.startsWith("delete"))
             {
-                MovingreasonRecord movingReason = SqlUtils.readRecordFromId(data, Tables.MOVINGREASON, recordId);
+                MovingreasonRecord movingReason = AdminUtils.readRecordFromId(data, Tables.MOVINGREASON, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(movingReason, "movingreason");
                 else

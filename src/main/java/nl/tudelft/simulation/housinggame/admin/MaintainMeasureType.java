@@ -43,7 +43,7 @@ public class MaintainMeasureType
                 recordId = data.saveRecord(request, recordId, Tables.MEASURECATEGORY, "measurecategory");
             else if (click.startsWith("delete"))
             {
-                MeasurecategoryRecord measureCategory = SqlUtils.readRecordFromId(data, Tables.MEASURECATEGORY, recordId);
+                MeasurecategoryRecord measureCategory = AdminUtils.readRecordFromId(data, Tables.MEASURECATEGORY, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(measureCategory, "measurecategory");
                 else
@@ -65,7 +65,7 @@ public class MaintainMeasureType
                 recordId = data.saveRecord(request, recordId, Tables.MEASURETYPE, "measuretype");
             else if (click.startsWith("delete"))
             {
-                MeasuretypeRecord measureType = SqlUtils.readRecordFromId(data, Tables.MEASURETYPE, recordId);
+                MeasuretypeRecord measureType = AdminUtils.readRecordFromId(data, Tables.MEASURETYPE, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(measureType, "measuretype");
                 else

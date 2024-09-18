@@ -41,7 +41,7 @@ public class MaintainCommunity
                 recordId = data.saveRecord(request, recordId, Tables.COMMUNITY, "community");
             else if (click.startsWith("delete"))
             {
-                CommunityRecord community = SqlUtils.readRecordFromId(data, Tables.COMMUNITY, recordId);
+                CommunityRecord community = AdminUtils.readRecordFromId(data, Tables.COMMUNITY, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(community, "community");
                 else
@@ -63,7 +63,7 @@ public class MaintainCommunity
                 recordId = data.saveRecord(request, recordId, Tables.TAX, "community");
             else if (click.startsWith("delete"))
             {
-                TaxRecord tax = SqlUtils.readRecordFromId(data, Tables.TAX, recordId);
+                TaxRecord tax = AdminUtils.readRecordFromId(data, Tables.TAX, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(tax, "community");
                 else

@@ -46,7 +46,7 @@ public class MaintainQuestion
                 recordId = data.saveRecord(request, recordId, Tables.QUESTION, "question");
             else if (click.startsWith("delete"))
             {
-                QuestionRecord question = SqlUtils.readRecordFromId(data, Tables.QUESTION, recordId);
+                QuestionRecord question = AdminUtils.readRecordFromId(data, Tables.QUESTION, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(question, "question");
                 else
@@ -68,7 +68,7 @@ public class MaintainQuestion
                 recordId = data.saveRecord(request, recordId, Tables.QUESTIONITEM, "question");
             else if (click.startsWith("delete"))
             {
-                QuestionitemRecord questionItem = SqlUtils.readRecordFromId(data, Tables.QUESTIONITEM, recordId);
+                QuestionitemRecord questionItem = AdminUtils.readRecordFromId(data, Tables.QUESTIONITEM, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(questionItem, "question");
                 else

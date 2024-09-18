@@ -70,14 +70,14 @@ public class MaintainPlayPlayer
                 recordId = data.saveRecord(request, recordId, Tables.PLAYERROUND, "play-player");
             else if (click.startsWith("delete"))
             {
-                PlayerroundRecord playerRound = SqlUtils.readRecordFromId(data, Tables.PLAYERROUND, recordId);
+                PlayerroundRecord playerRound = AdminUtils.readRecordFromId(data, Tables.PLAYERROUND, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(playerRound, "play-player");
                 else
                 {
                     GrouproundRecord groupRound =
-                            SqlUtils.readRecordFromId(data, Tables.GROUPROUND, playerRound.getGrouproundId());
-                    PlayerRecord player = SqlUtils.readRecordFromId(data, Tables.PLAYER, playerRound.getPlayerId());
+                            AdminUtils.readRecordFromId(data, Tables.GROUPROUND, playerRound.getGrouproundId());
+                    PlayerRecord player = AdminUtils.readRecordFromId(data, Tables.PLAYER, playerRound.getPlayerId());
                     data.askDeleteRecord(playerRound, "PlayPlayerRound",
                             "Player " + player.getCode() + ", round " + groupRound.getRoundNumber(), "deletePlayPlayerRoundOk",
                             "play-player");
@@ -98,16 +98,16 @@ public class MaintainPlayPlayer
                 recordId = data.saveRecord(request, recordId, Tables.PLAYERSTATE, "play-player");
             else if (click.startsWith("delete"))
             {
-                PlayerstateRecord playerState = SqlUtils.readRecordFromId(data, Tables.PLAYERSTATE, recordId);
+                PlayerstateRecord playerState = AdminUtils.readRecordFromId(data, Tables.PLAYERSTATE, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(playerState, "play-player");
                 else
                 {
                     PlayerroundRecord playerRound =
-                            SqlUtils.readRecordFromId(data, Tables.PLAYERROUND, playerState.getPlayerroundId());
-                    PlayerRecord player = SqlUtils.readRecordFromId(data, Tables.PLAYER, playerRound.getPlayerId());
+                            AdminUtils.readRecordFromId(data, Tables.PLAYERROUND, playerState.getPlayerroundId());
+                    PlayerRecord player = AdminUtils.readRecordFromId(data, Tables.PLAYER, playerRound.getPlayerId());
                     GrouproundRecord groupRound =
-                            SqlUtils.readRecordFromId(data, Tables.GROUPROUND, playerRound.getGrouproundId());
+                            AdminUtils.readRecordFromId(data, Tables.GROUPROUND, playerRound.getGrouproundId());
                     data.askDeleteRecord(playerState, "PlayerState", "Player " + player.getCode() + ", round "
                             + groupRound.getRoundNumber() + ", state " + playerState.getPlayerState(), "deletePlayerStateOk",
                             "play-player");
@@ -253,10 +253,10 @@ public class MaintainPlayPlayer
         PlayerroundRecord playerRound = playerRoundId == 0 ? dslContext.newRecord(Tables.PLAYERROUND)
                 : dslContext.selectFrom(Tables.PLAYERROUND).where(Tables.PLAYERROUND.ID.eq(playerRoundId)).fetchOne();
         int groupRoundId = playerRoundId == 0 ? data.getColumn(2).getSelectedRecordId() : playerRound.getGrouproundId();
-        GrouproundRecord groupRound = SqlUtils.readRecordFromId(data, Tables.GROUPROUND, groupRoundId);
-        GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, groupRound.getGroupId());
-        PlayerRecord player = SqlUtils.readRecordFromId(data, Tables.PLAYER, data.getColumn(3).getSelectedRecordId());
-        WelfaretypeRecord welfareType = SqlUtils.readRecordFromId(data, Tables.WELFARETYPE, player.getWelfaretypeId());
+        GrouproundRecord groupRound = AdminUtils.readRecordFromId(data, Tables.GROUPROUND, groupRoundId);
+        GroupRecord group = AdminUtils.readRecordFromId(data, Tables.GROUP, groupRound.getGroupId());
+        PlayerRecord player = AdminUtils.readRecordFromId(data, Tables.PLAYER, data.getColumn(3).getSelectedRecordId());
+        WelfaretypeRecord welfareType = AdminUtils.readRecordFromId(data, Tables.WELFARETYPE, player.getWelfaretypeId());
 
         //@formatter:off
         TableForm form = new TableForm()

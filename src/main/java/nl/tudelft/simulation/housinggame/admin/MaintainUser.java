@@ -34,7 +34,7 @@ public class MaintainUser
                 recordId = data.saveRecord(request, recordId, Tables.USER, "user");
             else if (click.startsWith("delete"))
             {
-                UserRecord user = SqlUtils.readRecordFromId(data, Tables.USER, recordId);
+                UserRecord user = AdminUtils.readRecordFromId(data, Tables.USER, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(user, "user");
                 else

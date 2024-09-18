@@ -38,7 +38,7 @@ public class MaintainParameters
             else if (click.startsWith("delete"))
             {
                 ScenarioparametersRecord scenarioParameters =
-                        SqlUtils.readRecordFromId(data, Tables.SCENARIOPARAMETERS, recordId);
+                        AdminUtils.readRecordFromId(data, Tables.SCENARIOPARAMETERS, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(scenarioParameters, "parameters");
                 else
@@ -49,10 +49,10 @@ public class MaintainParameters
             else if (click.startsWith("clone"))
             {
                 ScenarioparametersRecord scenarioParameters =
-                        SqlUtils.readRecordFromId(data, Tables.SCENARIOPARAMETERS, recordId);
+                        AdminUtils.readRecordFromId(data, Tables.SCENARIOPARAMETERS, recordId);
                 try
                 {
-                    SqlUtils.cloneScenarioParameters(data, scenarioParameters);
+                    AdminUtils.cloneScenarioParameters(data, scenarioParameters);
                 }
                 catch (Exception e)
                 {

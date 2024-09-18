@@ -102,7 +102,7 @@ public class UserLoginServlet extends HttpServlet
             throw new ServletException(e);
         }
 
-        UserRecord user = SqlUtils.readUserFromUsername(data, username);
+        UserRecord user = AdminUtils.readUserFromUsername(data, username);
         String userPassword = user == null ? "" : user.getPassword() == null ? "" : user.getPassword();
         // TODO: hashedPassword
         if (user != null && userPassword.equals(password) && user.getAdministrator() == 1)

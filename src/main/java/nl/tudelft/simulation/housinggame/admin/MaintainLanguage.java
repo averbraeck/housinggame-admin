@@ -38,7 +38,7 @@ public class MaintainLanguage
                 recordId = data.saveRecord(request, recordId, Tables.LANGUAGE, "language");
             else if (click.startsWith("delete"))
             {
-                LanguageRecord language = SqlUtils.readRecordFromId(data, Tables.LANGUAGE, recordId);
+                LanguageRecord language = AdminUtils.readRecordFromId(data, Tables.LANGUAGE, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(language, "language");
                 else
@@ -59,7 +59,7 @@ public class MaintainLanguage
                 recordId = data.saveRecord(request, recordId, Tables.LANGUAGEGROUP, "language");
             else if (click.startsWith("delete"))
             {
-                LanguagegroupRecord languages = SqlUtils.readRecordFromId(data, Tables.LANGUAGEGROUP, recordId);
+                LanguagegroupRecord languages = AdminUtils.readRecordFromId(data, Tables.LANGUAGEGROUP, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(languages, "language");
                 else
@@ -80,7 +80,7 @@ public class MaintainLanguage
                 recordId = data.saveRecord(request, recordId, Tables.LABEL, "label");
             else if (click.startsWith("delete"))
             {
-                LabelRecord label = SqlUtils.readRecordFromId(data, Tables.LABEL, recordId);
+                LabelRecord label = AdminUtils.readRecordFromId(data, Tables.LABEL, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(label, "label");
                 else
@@ -246,16 +246,16 @@ public class MaintainLanguage
         LabelRecord label = labelId == 0 ? dslContext.newRecord(Tables.LABEL)
                 : dslContext.selectFrom(Tables.LABEL).where(Tables.LABEL.ID.eq(labelId)).fetchOne();
         int languagesId = labelId == 0 ? data.getColumn(1).getSelectedRecordId() : label.getLanguagegroupId();
-        LanguagegroupRecord languages = SqlUtils.readRecordFromId(data, Tables.LANGUAGEGROUP, languagesId);
+        LanguagegroupRecord languages = AdminUtils.readRecordFromId(data, Tables.LANGUAGEGROUP, languagesId);
         String[] language = new String[4];
         language[0] = languages.getLanguageId1() != null && languages.getLanguageId1() != 0
-                ? SqlUtils.readRecordFromId(data, Tables.LANGUAGE, languages.getLanguageId1()).getCode() : "EN";
+                ? AdminUtils.readRecordFromId(data, Tables.LANGUAGE, languages.getLanguageId1()).getCode() : "EN";
         language[1] = languages.getLanguageId2() != null && languages.getLanguageId2() != 0
-                ? SqlUtils.readRecordFromId(data, Tables.LANGUAGE, languages.getLanguageId2()).getCode() : "language 2";
+                ? AdminUtils.readRecordFromId(data, Tables.LANGUAGE, languages.getLanguageId2()).getCode() : "language 2";
         language[2] = languages.getLanguageId3() != null && languages.getLanguageId3() != 0
-                ? SqlUtils.readRecordFromId(data, Tables.LANGUAGE, languages.getLanguageId3()).getCode() : "language 3";
+                ? AdminUtils.readRecordFromId(data, Tables.LANGUAGE, languages.getLanguageId3()).getCode() : "language 3";
         language[3] = languages.getLanguageId4() != null && languages.getLanguageId4() != 0
-                ? SqlUtils.readRecordFromId(data, Tables.LANGUAGE, languages.getLanguageId4()).getCode() : "language 4";
+                ? AdminUtils.readRecordFromId(data, Tables.LANGUAGE, languages.getLanguageId4()).getCode() : "language 4";
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)

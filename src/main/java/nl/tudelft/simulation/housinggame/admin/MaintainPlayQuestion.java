@@ -72,12 +72,12 @@ public class MaintainPlayQuestion
                 recordId = data.saveRecord(request, recordId, Tables.QUESTIONSCORE, "play-question");
             else if (click.startsWith("delete"))
             {
-                QuestionscoreRecord questionScore = SqlUtils.readRecordFromId(data, Tables.QUESTIONSCORE, recordId);
+                QuestionscoreRecord questionScore = AdminUtils.readRecordFromId(data, Tables.QUESTIONSCORE, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(questionScore, "play-question");
                 else
                 {
-                    QuestionRecord question = SqlUtils.readRecordFromId(data, Tables.QUESTION, questionScore.getQuestionId());
+                    QuestionRecord question = AdminUtils.readRecordFromId(data, Tables.QUESTION, questionScore.getQuestionId());
                     data.askDeleteRecord(questionScore, "PlayQuestion", question.getName(), "deletePlayQuestionOk",
                             "play-question");
                 }
@@ -247,10 +247,10 @@ public class MaintainPlayQuestion
         QuestionscoreRecord questionScore = questionScoreId == 0 ? dslContext.newRecord(Tables.QUESTIONSCORE)
                 : dslContext.selectFrom(Tables.QUESTIONSCORE).where(Tables.QUESTIONSCORE.ID.eq(questionScoreId)).fetchOne();
         int playerRoundId = questionScoreId == 0 ? data.getColumn(4).getSelectedRecordId() : questionScore.getPlayerroundId();
-        PlayerroundRecord playerRound = SqlUtils.readRecordFromId(data, Tables.PLAYERROUND, playerRoundId);
-        GrouproundRecord groupRound = SqlUtils.readRecordFromId(data, Tables.GROUPROUND, playerRound.getGrouproundId());
-        GroupRecord group = SqlUtils.readRecordFromId(data, Tables.GROUP, groupRound.getGroupId());
-        ScenarioRecord scenario = SqlUtils.readRecordFromId(data, Tables.SCENARIO, group.getScenarioId());
+        PlayerroundRecord playerRound = AdminUtils.readRecordFromId(data, Tables.PLAYERROUND, playerRoundId);
+        GrouproundRecord groupRound = AdminUtils.readRecordFromId(data, Tables.GROUPROUND, playerRound.getGrouproundId());
+        GroupRecord group = AdminUtils.readRecordFromId(data, Tables.GROUP, groupRound.getGroupId());
+        ScenarioRecord scenario = AdminUtils.readRecordFromId(data, Tables.SCENARIO, group.getScenarioId());
 
         //@formatter:off
         TableForm form = new TableForm()

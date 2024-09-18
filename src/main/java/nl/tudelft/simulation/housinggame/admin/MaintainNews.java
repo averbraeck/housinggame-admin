@@ -49,7 +49,7 @@ public class MaintainNews
                 recordId = data.saveRecord(request, recordId, Tables.NEWSITEM, "news");
             else if (click.startsWith("delete"))
             {
-                NewsitemRecord newsItem = SqlUtils.readRecordFromId(data, Tables.NEWSITEM, recordId);
+                NewsitemRecord newsItem = AdminUtils.readRecordFromId(data, Tables.NEWSITEM, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(newsItem, "news");
                 else
@@ -70,7 +70,7 @@ public class MaintainNews
                 recordId = data.saveRecord(request, recordId, Tables.NEWSEFFECTS, "news");
             else if (click.startsWith("delete"))
             {
-                NewseffectsRecord newsParameters = SqlUtils.readRecordFromId(data, Tables.NEWSEFFECTS, recordId);
+                NewseffectsRecord newsParameters = AdminUtils.readRecordFromId(data, Tables.NEWSEFFECTS, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(newsParameters, "news");
                 else
@@ -162,7 +162,7 @@ public class MaintainNews
         NewsitemRecord newsItem = newsItemId == 0 ? dslContext.newRecord(Tables.NEWSITEM)
                 : dslContext.selectFrom(Tables.NEWSITEM).where(Tables.NEWSITEM.ID.eq(newsItemId)).fetchOne();
         int scenarioId = newsItemId == 0 ? data.getColumn(1).getSelectedRecordId() : newsItem.getScenarioId();
-        ScenarioRecord scenario = SqlUtils.readRecordFromId(data, Tables.SCENARIO, scenarioId);
+        ScenarioRecord scenario = AdminUtils.readRecordFromId(data, Tables.SCENARIO, scenarioId);
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)

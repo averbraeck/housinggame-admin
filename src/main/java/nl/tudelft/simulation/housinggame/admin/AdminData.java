@@ -14,16 +14,11 @@ import org.jooq.impl.DSL;
 
 import nl.tudelft.simulation.housinggame.admin.column.FormColumn;
 import nl.tudelft.simulation.housinggame.admin.column.TableColumn;
+import nl.tudelft.simulation.housinggame.common.CommonData;
 import nl.tudelft.simulation.housinggame.data.tables.records.UserRecord;
 
-public class AdminData
+public class AdminData extends CommonData
 {
-
-    /**
-     * the SQL datasource representing the database's connection pool.<br>
-     * the datasource is shared among the servlets and stored as a ServletContext attribute.
-     */
-    private DataSource dataSource;
 
     /**
      * the name of the admin user logged in to this session. <br>
@@ -41,14 +36,15 @@ public class AdminData
      */
     private int userId;
 
+    /** the User record (static during session). */
+    protected UserRecord user;
+
     /**
      * the admin User record for the logged in user.<br>
      * this record has the USERNAME to display on the screen.<br>
      * filled by the UserLoginServlet.<br>
      * used by: server and in servlet.<br>
      */
-    private UserRecord user;
-
     private TableColumn[] tableColumns;
 
     private FormColumn formColumn;

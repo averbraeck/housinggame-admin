@@ -37,7 +37,7 @@ public class MaintainScenario
                 recordId = data.saveRecord(request, recordId, Tables.GAMEVERSION, "scenario");
             else if (click.startsWith("delete"))
             {
-                GameversionRecord gameVersion = SqlUtils.readRecordFromId(data, Tables.GAMEVERSION, recordId);
+                GameversionRecord gameVersion = AdminUtils.readRecordFromId(data, Tables.GAMEVERSION, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(gameVersion, "scenario");
                 else
@@ -46,10 +46,10 @@ public class MaintainScenario
             }
             else if (click.startsWith("clone"))
             {
-                GameversionRecord gameVersion = SqlUtils.readRecordFromId(data, Tables.GAMEVERSION, recordId);
+                GameversionRecord gameVersion = AdminUtils.readRecordFromId(data, Tables.GAMEVERSION, recordId);
                 try
                 {
-                    SqlUtils.cloneGameVersion(data, gameVersion);
+                    AdminUtils.cloneGameVersion(data, gameVersion);
                 }
                 catch (Exception e)
                 {
@@ -61,11 +61,11 @@ public class MaintainScenario
             }
             else if (click.startsWith("destroy"))
             {
-                GameversionRecord gameVersion = SqlUtils.readRecordFromId(data, Tables.GAMEVERSION, recordId);
+                GameversionRecord gameVersion = AdminUtils.readRecordFromId(data, Tables.GAMEVERSION, recordId);
                 try
                 {
                     if (click.endsWith("Ok"))
-                        SqlUtils.destroyGameVersion(data, gameVersion);
+                        AdminUtils.destroyGameVersion(data, gameVersion);
                     else
                         data.askDestroyRecord(gameVersion, "GameVersion", gameVersion.getName(), "destroyGameVersionOk",
                                 "scenario");
@@ -93,7 +93,7 @@ public class MaintainScenario
                 recordId = data.saveRecord(request, recordId, Tables.SCENARIO, "scenario");
             else if (click.startsWith("delete"))
             {
-                ScenarioRecord scenario = SqlUtils.readRecordFromId(data, Tables.SCENARIO, recordId);
+                ScenarioRecord scenario = AdminUtils.readRecordFromId(data, Tables.SCENARIO, recordId);
                 if (click.endsWith("Ok"))
                     data.deleteRecordOk(scenario, "scenario");
                 else
@@ -102,10 +102,10 @@ public class MaintainScenario
             }
             else if (click.startsWith("clone"))
             {
-                ScenarioRecord scenario = SqlUtils.readRecordFromId(data, Tables.SCENARIO, recordId);
+                ScenarioRecord scenario = AdminUtils.readRecordFromId(data, Tables.SCENARIO, recordId);
                 try
                 {
-                    SqlUtils.cloneScenario(data, scenario);
+                    AdminUtils.cloneScenario(data, scenario);
                 }
                 catch (Exception e)
                 {
@@ -117,11 +117,11 @@ public class MaintainScenario
             }
             else if (click.startsWith("destroy"))
             {
-                ScenarioRecord scenario = SqlUtils.readRecordFromId(data, Tables.SCENARIO, recordId);
+                ScenarioRecord scenario = AdminUtils.readRecordFromId(data, Tables.SCENARIO, recordId);
                 try
                 {
                     if (click.endsWith("Ok"))
-                        SqlUtils.destroyScenario(data, scenario);
+                        AdminUtils.destroyScenario(data, scenario);
                     else
                         data.askDestroyRecord(scenario, "Scenario", scenario.getName(), "destroyScenarioOk", "scenario");
                     recordId = 0;
