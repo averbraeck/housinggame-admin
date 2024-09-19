@@ -177,31 +177,7 @@ public final class AdminUtils extends SqlUtils
         newGameVersion.store();
         int newGameVersionId = newGameVersion.getId();
 
-        // 2a. For the gameversion, clone the measurecategories; make a map of old measurecategoryId to new measurecategoryId.
-        List<MeasurecategoryRecord> measureCategoryList = dslContext.selectFrom(Tables.MEASURECATEGORY)
-                .where(Tables.MEASURECATEGORY.GAMEVERSION_ID.eq(oldGameVersion.getId())).fetch();
-        Map<Integer, Integer> measureCategoryMap = new HashMap<>();
-        Map<Integer, Integer> measureTypeMap = new HashMap<>();
-        for (MeasurecategoryRecord oldMeasureCategory : measureCategoryList)
-        {
-            MeasurecategoryRecord newMeasureCategory = oldMeasureCategory.copy();
-            newMeasureCategory.setGameversionId(newGameVersionId);
-            newMeasureCategory.store();
-            measureCategoryMap.put(oldMeasureCategory.getId(), newMeasureCategory.getId());
-
-            // 2b. For each measurecategory, clone the measuretypes; make a map of old measuretypeId to new measuretypeId.
-            List<MeasuretypeRecord> measureTypeList = dslContext.selectFrom(Tables.MEASURETYPE)
-                    .where(Tables.MEASURETYPE.MEASURECATEGORY_ID.eq(oldMeasureCategory.getId())).fetch();
-            for (MeasuretypeRecord oldMeasureType : measureTypeList)
-            {
-                MeasuretypeRecord newMeasureType = oldMeasureType.copy();
-                newMeasureType.setMeasurecategoryId(newMeasureCategory.getId());
-                newMeasureType.store();
-                measureTypeMap.put(oldMeasureType.getId(), newMeasureType.getId());
-            }
-        }
-
-        // 3. For the gameversion, clone the communities, using the new gameversionId;
+        // 2. For the gameversion, clone the communities, using the new gameversionId;
         // make a map of old communityId to new communityId.
         List<CommunityRecord> communityList = dslContext.selectFrom(Tables.COMMUNITY)
                 .where(Tables.COMMUNITY.GAMEVERSION_ID.eq(oldGameVersion.getId())).fetch();
@@ -213,7 +189,7 @@ public final class AdminUtils extends SqlUtils
             newCommunity.store();
             communityMap.put(oldCommunity.getId(), newCommunity.getId());
 
-            // 4. For each community, clone the taxes, using the new communityId.
+            // 3. For each community, clone the taxes, using the new communityId.
             List<TaxRecord> taxList =
                     dslContext.selectFrom(Tables.TAX).where(Tables.TAX.COMMUNITY_ID.eq(oldCommunity.getId())).fetch();
             for (TaxRecord oldTax : taxList)
@@ -222,34 +198,13 @@ public final class AdminUtils extends SqlUtils
                 newTax.setCommunityId(newCommunity.getId());
                 newTax.store();
             }
-
-            // 5. For each community, clone the houses, using the new communityId.
-            List<HouseRecord> houseList =
-                    dslContext.selectFrom(Tables.HOUSE).where(Tables.HOUSE.COMMUNITY_ID.eq(oldCommunity.getId())).fetch();
-            for (HouseRecord oldHouse : houseList)
-            {
-                HouseRecord newHouse = oldHouse.copy();
-                newHouse.setCommunityId(newCommunity.getId());
-                newHouse.store();
-
-                // 6. For each house, clone the initialhousemeasures,
-                // use new communityId and new measuretypeId via the MAP.
-                List<InitialhousemeasureRecord> ihmList = dslContext.selectFrom(Tables.INITIALHOUSEMEASURE)
-                        .where(Tables.INITIALHOUSEMEASURE.HOUSE_ID.eq(oldHouse.getId())).fetch();
-                for (InitialhousemeasureRecord oldIhm : ihmList)
-                {
-                    InitialhousemeasureRecord newIhm = oldIhm.copy();
-                    newIhm.setHouseId(newHouse.getId());
-                    newIhm.setMeasuretypeId(measureTypeMap.get(oldIhm.getMeasuretypeId()));
-                    newIhm.store();
-                }
-            }
         }
 
-        // 7. For the gameversion, clone each scenario with new name and new gameversionId.
+        // 4. For the gameversion, clone each scenario with new name and new gameversionId.
         // scenarioparametersId stays the same.
         List<ScenarioRecord> scenarioList =
                 dslContext.selectFrom(Tables.SCENARIO).where(Tables.SCENARIO.GAMEVERSION_ID.eq(oldGameVersion.getId())).fetch();
+        Map<Integer, Integer> measureTypeMap = new HashMap<>();
         for (ScenarioRecord oldScenario : scenarioList)
         {
             ScenarioRecord newScenario = oldScenario.copy();
@@ -257,7 +212,7 @@ public final class AdminUtils extends SqlUtils
             newScenario.store();
             int newScenarioId = newScenario.getId();
 
-            // 8. For each scenario, clone the questions, using the new scenarioId.
+            // 5. For each scenario, clone the questions, using the new scenarioId.
             List<QuestionRecord> questionList =
                     dslContext.selectFrom(Tables.QUESTION).where(Tables.QUESTION.SCENARIO_ID.eq(oldScenario.getId())).fetch();
             for (QuestionRecord oldQuestion : questionList)
@@ -267,7 +222,7 @@ public final class AdminUtils extends SqlUtils
                 newQuestion.store();
             }
 
-            // 9. For each scenario, clone the welfaretypes, using the new scenarioId.
+            // 6. For each scenario, clone the welfaretypes, using the new scenarioId.
             List<WelfaretypeRecord> welfareTypeList = dslContext.selectFrom(Tables.WELFARETYPE)
                     .where(Tables.WELFARETYPE.SCENARIO_ID.eq(oldScenario.getId())).fetch();
             for (WelfaretypeRecord oldWelfareType : welfareTypeList)
@@ -277,7 +232,7 @@ public final class AdminUtils extends SqlUtils
                 newWelfareType.store();
             }
 
-            // 10. For each scenario, clone the newsitems using the new scenarioid.
+            // 7. For each scenario, clone the newsitems using the new scenarioid.
             List<NewsitemRecord> newsItemList =
                     dslContext.selectFrom(Tables.NEWSITEM).where(Tables.NEWSITEM.SCENARIO_ID.eq(oldScenario.getId())).fetch();
             for (NewsitemRecord oldNewsitem : newsItemList)
@@ -287,7 +242,7 @@ public final class AdminUtils extends SqlUtils
                 newNewsItem.store();
                 int newNewsItemId = newNewsItem.getId();
 
-                // 11. For each newsitem, clone the newseffects using the new newsitemId;
+                // 8. For each newsitem, clone the newseffects using the new newsitemId;
                 // use the MAP to set new communityId.
                 List<NewseffectsRecord> newsEffectsList = dslContext.selectFrom(Tables.NEWSEFFECTS)
                         .where(Tables.NEWSEFFECTS.NEWSITEM_ID.eq(oldNewsitem.getId())).fetch();
@@ -297,6 +252,55 @@ public final class AdminUtils extends SqlUtils
                     newNewsEffects.setNewsitemId(newNewsItemId);
                     newNewsEffects.setCommunityId(communityMap.get(oldNewsEffects.getCommunityId()));
                     newNewsEffects.store();
+                }
+            }
+
+            // 9. For the scenario, clone the measurecategories; make a map of old measurecategoryId to new measurecategoryId.
+            List<MeasurecategoryRecord> measureCategoryList = dslContext.selectFrom(Tables.MEASURECATEGORY)
+                    .where(Tables.MEASURECATEGORY.SCENARIO_ID.eq(oldScenario.getId())).fetch();
+            Map<Integer, Integer> measureCategoryMap = new HashMap<>();
+            for (MeasurecategoryRecord oldMeasureCategory : measureCategoryList)
+            {
+                MeasurecategoryRecord newMeasureCategory = oldMeasureCategory.copy();
+                newMeasureCategory.setScenarioId(newScenarioId);
+                newMeasureCategory.store();
+                measureCategoryMap.put(oldMeasureCategory.getId(), newMeasureCategory.getId());
+
+                // 10. For each measurecategory, clone the measuretypes; make a map of old measuretypeId to new measuretypeId.
+                List<MeasuretypeRecord> measureTypeList = dslContext.selectFrom(Tables.MEASURETYPE)
+                        .where(Tables.MEASURETYPE.MEASURECATEGORY_ID.eq(oldMeasureCategory.getId())).fetch();
+                for (MeasuretypeRecord oldMeasureType : measureTypeList)
+                {
+                    MeasuretypeRecord newMeasureType = oldMeasureType.copy();
+                    newMeasureType.setMeasurecategoryId(newMeasureCategory.getId());
+                    newMeasureType.store();
+                    measureTypeMap.put(oldMeasureType.getId(), newMeasureType.getId());
+                }
+            }
+        }
+
+        // 11. For each community, clone the houses, using the new communityId.
+        for (CommunityRecord oldCommunity : communityList)
+        {
+            int newCommunityId = communityMap.get(oldCommunity.getId());
+            List<HouseRecord> houseList =
+                    dslContext.selectFrom(Tables.HOUSE).where(Tables.HOUSE.COMMUNITY_ID.eq(oldCommunity.getId())).fetch();
+            for (HouseRecord oldHouse : houseList)
+            {
+                HouseRecord newHouse = oldHouse.copy();
+                newHouse.setCommunityId(newCommunityId);
+                newHouse.store();
+
+                // 12. For each house, clone the initialhousemeasures,
+                // use new communityId and new measuretypeId via the MAP.
+                List<InitialhousemeasureRecord> ihmList = dslContext.selectFrom(Tables.INITIALHOUSEMEASURE)
+                        .where(Tables.INITIALHOUSEMEASURE.HOUSE_ID.eq(oldHouse.getId())).fetch();
+                for (InitialhousemeasureRecord oldIhm : ihmList)
+                {
+                    InitialhousemeasureRecord newIhm = oldIhm.copy();
+                    newIhm.setHouseId(newHouse.getId());
+                    newIhm.setMeasuretypeId(measureTypeMap.get(oldIhm.getMeasuretypeId()));
+                    newIhm.store();
                 }
             }
         }
@@ -442,21 +446,6 @@ public final class AdminUtils extends SqlUtils
                 house.delete();
             }
             community.delete();
-        }
-
-        // 6. For the gameversion, for each measurecategory:
-        List<MeasurecategoryRecord> measureCategoryList = dslContext.selectFrom(Tables.MEASURECATEGORY)
-                .where(Tables.MEASURECATEGORY.GAMEVERSION_ID.eq(gameVersion.getId())).fetch();
-        for (var measureCategory : measureCategoryList)
-        {
-            // 7. For each measurecategory: delete the measuretypes
-            List<MeasuretypeRecord> measureTypeList = dslContext.selectFrom(Tables.MEASURETYPE)
-                    .where(Tables.MEASURETYPE.MEASURECATEGORY_ID.eq(measureCategory.getId())).fetch();
-            for (MeasuretypeRecord measureType : measureTypeList)
-            {
-                measureType.delete();
-            }
-            measureCategory.delete();
         }
 
         gameVersion.delete();
