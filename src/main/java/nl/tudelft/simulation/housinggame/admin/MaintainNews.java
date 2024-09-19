@@ -7,6 +7,7 @@ import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
+import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryBoolean;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryDouble;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecord;
@@ -269,6 +270,18 @@ public class MaintainNews
                         .setInitialValue(newsEffects.getHouseDiscountRound3(), 0)
                         .setLabel("Discount Round 3")
                         .setMin(0))
+                .addEntry(new TableEntryBoolean(Tables.NEWSEFFECTS.HOUSE_DISCOUNT_EFFECT_FLUVIAL)
+                        .setRequired()
+                        .setInitialValue(newsEffects.getHouseDiscountEffectFluvial(), (byte) 1)
+                        .setLabel("Discount effect fluvial"))
+                .addEntry(new TableEntryBoolean(Tables.NEWSEFFECTS.HOUSE_DISCOUNT_EFFECT_PLUVIAL)
+                        .setRequired()
+                        .setInitialValue(newsEffects.getHouseDiscountEffectPluvial(), (byte) 0)
+                        .setLabel("Discount effect pluvial"))
+                .addEntry(new TableEntryBoolean(Tables.NEWSEFFECTS.HOUSE_DISCOUNT_COMMUNITY)
+                        .setRequired()
+                        .setInitialValue(newsEffects.getHouseDiscountCommunity(), (byte) 1)
+                        .setLabel("Discount for community?"))
                 .addEntry(new TableEntryInt(Tables.NEWSEFFECTS.FLUVIAL_PROTECTION_CHANGE)
                         .setRequired()
                         .setInitialValue(newsEffects.getFluvialProtectionChange(), 0)
