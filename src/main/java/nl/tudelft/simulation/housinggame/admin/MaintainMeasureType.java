@@ -27,7 +27,7 @@ public class MaintainMeasureType
 
         if (click.equals("measuretype"))
         {
-            data.clearColumns("20%", "GameVersion", "20%", "MeasureCategory", "20%", "MeasureType");
+            data.clearColumns("15%", "GameVersion", "15%", "Scenario", "15%", "MeasureCategory", "15%", "MeasureType");
             data.clearFormColumn("40%", "Edit Properties");
             showGameVersion(session, data, 0);
         }
@@ -35,6 +35,11 @@ public class MaintainMeasureType
         else if (click.contains("MeasureTypeGameVersion"))
         {
             showGameVersion(session, data, recordId);
+        }
+
+        else if (click.contains("MeasureTypeGameScenario"))
+        {
+            showScenario(session, data, recordId);
         }
 
         else if (click.contains("MeasureCategory"))
@@ -96,11 +101,34 @@ public class MaintainMeasureType
                 false);
         data.resetColumn(1);
         data.resetColumn(2);
+        data.resetColumn(3);
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("MeasureCategory", 1, 0, true, Tables.MEASURECATEGORY, Tables.MEASURECATEGORY.NAME, "name",
-                    Tables.MEASURECATEGORY.GAMEVERSION_ID, true);
+            data.showDependentColumn("Scenario", 1, 0, false, Tables.SCENARIO, Tables.SCENARIO.NAME, "name",
+                    Tables.SCENARIO.GAMEVERSION_ID, false);
+        }
+    }
+
+    /*
+     * *********************************************************************************************************
+     * ******************************************** SCENARIO ***************************************************
+     * *********************************************************************************************************
+     */
+
+    public static void showScenario(final HttpSession session, final AdminData data, final int recordId)
+    {
+        data.showColumn("MeasureTypeGameVersion", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMEVERSION,
+                Tables.GAMEVERSION.NAME, "name", false);
+        data.showDependentColumn("Scenario", 1, recordId, false, Tables.SCENARIO, Tables.SCENARIO.NAME, "name",
+                Tables.SCENARIO.GAMEVERSION_ID, false);
+        data.resetColumn(2);
+        data.resetColumn(3);
+        data.resetFormColumn();
+        if (recordId != 0)
+        {
+            data.showDependentColumn("MeasureCategory", 2, 0, true, Tables.MEASURECATEGORY, Tables.MEASURECATEGORY.NAME, "name",
+                    Tables.MEASURECATEGORY.SCENARIO_ID, true);
         }
     }
 
@@ -115,13 +143,15 @@ public class MaintainMeasureType
     {
         data.showColumn("MeasureTypeGameVersion", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMEVERSION,
                 Tables.GAMEVERSION.NAME, "name", false);
-        data.showDependentColumn("MeasureCategory", 1, recordId, true, Tables.MEASURECATEGORY, Tables.MEASURECATEGORY.NAME,
-                "name", Tables.MEASURECATEGORY.GAMEVERSION_ID, true);
-        data.resetColumn(2);
+        data.showDependentColumn("Scenario", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.SCENARIO,
+                Tables.SCENARIO.NAME, "name", Tables.SCENARIO.GAMEVERSION_ID, false);
+        data.showDependentColumn("MeasureCategory", 2, recordId, true, Tables.MEASURECATEGORY, Tables.MEASURECATEGORY.NAME,
+                "name", Tables.MEASURECATEGORY.SCENARIO_ID, true);
+        data.resetColumn(3);
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("MeasureType", 2, 0, true, Tables.MEASURETYPE, Tables.MEASURETYPE.NAME, "name",
+            data.showDependentColumn("MeasureType", 3, 0, true, Tables.MEASURETYPE, Tables.MEASURETYPE.NAME, "name",
                     Tables.MEASURETYPE.MEASURECATEGORY_ID, true);
             editMeasureCategory(session, data, recordId, editRecord);
         }
@@ -134,8 +164,7 @@ public class MaintainMeasureType
         MeasurecategoryRecord measureCategory =
                 measureCategoryId == 0 ? dslContext.newRecord(Tables.MEASURECATEGORY) : dslContext
                         .selectFrom(Tables.MEASURECATEGORY).where(Tables.MEASURECATEGORY.ID.eq(measureCategoryId)).fetchOne();
-        int gameVersionId =
-                measureCategoryId == 0 ? data.getColumn(0).getSelectedRecordId() : measureCategory.getGameversionId();
+        int scenarioId = measureCategoryId == 0 ? data.getColumn(1).getSelectedRecordId() : measureCategory.getScenarioId();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -168,9 +197,9 @@ public class MaintainMeasureType
                         .setInitialValue(measureCategory.getExplanation(), "")
                         .setLabel("Explanation")
                         .setRows(10))
-                .addEntry(new TableEntryInt(Tables.MEASURECATEGORY.GAMEVERSION_ID)
-                        .setInitialValue(gameVersionId, 0)
-                        .setLabel("Game version id")
+                .addEntry(new TableEntryInt(Tables.MEASURECATEGORY.SCENARIO_ID)
+                        .setInitialValue(scenarioId, 0)
+                        .setLabel("Scenario id")
                         .setHidden(true))
                 .endForm();
         //@formatter:on
@@ -189,9 +218,11 @@ public class MaintainMeasureType
     {
         data.showColumn("MeasureTypeGameVersion", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMEVERSION,
                 Tables.GAMEVERSION.NAME, "name", false);
-        data.showDependentColumn("MeasureCategory", 1, data.getColumn(1).getSelectedRecordId(), true, Tables.MEASURECATEGORY,
-                Tables.MEASURECATEGORY.NAME, "name", Tables.MEASURECATEGORY.GAMEVERSION_ID, true);
-        data.showDependentColumn("MeasureType", 2, recordId, true, Tables.MEASURETYPE, Tables.MEASURETYPE.NAME, "name",
+        data.showDependentColumn("Scenario", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.SCENARIO,
+                Tables.SCENARIO.NAME, "name", Tables.SCENARIO.GAMEVERSION_ID, false);
+        data.showDependentColumn("MeasureCategory", 2, data.getColumn(2).getSelectedRecordId(), true, Tables.MEASURECATEGORY,
+                Tables.MEASURECATEGORY.NAME, "name", Tables.MEASURECATEGORY.SCENARIO_ID, true);
+        data.showDependentColumn("MeasureType", 3, recordId, true, Tables.MEASURETYPE, Tables.MEASURETYPE.NAME, "name",
                 Tables.MEASURETYPE.MEASURECATEGORY_ID, true);
         data.resetFormColumn();
         if (recordId != 0)
@@ -207,7 +238,7 @@ public class MaintainMeasureType
         MeasuretypeRecord measureType = measureTypeId == 0 ? dslContext.newRecord(Tables.MEASURETYPE)
                 : dslContext.selectFrom(Tables.MEASURETYPE).where(Tables.MEASURETYPE.ID.eq(measureTypeId)).fetchOne();
         int measureCategoryId =
-                measureTypeId == 0 ? data.getColumn(1).getSelectedRecordId() : measureType.getMeasurecategoryId();
+                measureTypeId == 0 ? data.getColumn(2).getSelectedRecordId() : measureType.getMeasurecategoryId();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)

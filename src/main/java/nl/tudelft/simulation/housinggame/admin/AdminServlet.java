@@ -152,6 +152,7 @@ public class AdminServlet extends HttpServlet
             // (GameVersion) - MeasureCategory - MeasureType
             case "measuretype":
             case "viewMeasureTypeGameVersion":
+            case "viewMeasureTypeScenario":
 
             case "measurecategory":
             case "viewMeasureCategory":
@@ -456,7 +457,7 @@ public class AdminServlet extends HttpServlet
         topmenu(data, s, "scenario", "Scenario", "#008000");
         // (GameVersion) - (Scenario) - WelfareType
         topmenu(data, s, "welfaretype", "WelfareType", "#008000");
-        // (GameVersion) - MeasureCategory - MeasureType
+        // (GameVersion) - (Scenario) - MeasureCategory - MeasureType
         topmenu(data, s, "measuretype", "MeasureType", "#008000");
         // (GameVersion) - MovingReason
         topmenu(data, s, "movingreason", "MovingReason", "#008000");
