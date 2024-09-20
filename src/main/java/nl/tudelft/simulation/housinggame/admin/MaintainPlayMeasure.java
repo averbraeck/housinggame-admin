@@ -15,7 +15,6 @@ import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableEntryPickRecord;
 import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.data.Tables;
-import nl.tudelft.simulation.housinggame.data.tables.records.GameversionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GrouproundRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.MeasuretypeRecord;
@@ -253,7 +252,6 @@ public class MaintainPlayMeasure
         GrouproundRecord groupRound = AdminUtils.readRecordFromId(data, Tables.GROUPROUND, playerRound.getGrouproundId());
         GroupRecord group = AdminUtils.readRecordFromId(data, Tables.GROUP, groupRound.getGroupId());
         ScenarioRecord scenario = AdminUtils.readRecordFromId(data, Tables.SCENARIO, group.getScenarioId());
-        GameversionRecord gameVersion = AdminUtils.readRecordFromId(data, Tables.GAMEVERSION, scenario.getGameversionId());
 
         //@formatter:off
         TableForm form = new TableForm()
@@ -269,7 +267,7 @@ public class MaintainPlayMeasure
                         .setRequired()
                         .setPickTable(data, Tables.MEASURETYPE.join(Tables.MEASURECATEGORY)
                                 .on(Tables.MEASURETYPE.MEASURECATEGORY_ID.eq(Tables.MEASURECATEGORY.ID))
-                                .and(Tables.MEASURECATEGORY.GAMEVERSION_ID.eq(gameVersion.getId()))
+                                .and(Tables.MEASURECATEGORY.SCENARIO_ID.eq(scenario.getId()))
                                 .and(Tables.MEASURETYPE.HOUSE_MEASURE.eq((byte) 0)),
                                 Tables.MEASURETYPE.ID, Tables.MEASURETYPE.NAME)
                         .setInitialValue(personalMeasure.getMeasuretypeId(), null)
