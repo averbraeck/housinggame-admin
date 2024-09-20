@@ -19,7 +19,6 @@ import nl.tudelft.simulation.housinggame.admin.form.table.TableForm;
 import nl.tudelft.simulation.housinggame.common.HouseGroupStatus;
 import nl.tudelft.simulation.housinggame.common.TransactionStatus;
 import nl.tudelft.simulation.housinggame.data.Tables;
-import nl.tudelft.simulation.housinggame.data.tables.records.GameversionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.HouseRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.HousegroupRecord;
@@ -93,7 +92,8 @@ public class MaintainHouseMeasure
                     data.deleteRecordOk(measure, "housemeasure");
                 else
                 {
-                    HousegroupRecord houseGroup = AdminUtils.readRecordFromId(data, Tables.HOUSEGROUP, measure.getHousegroupId());
+                    HousegroupRecord houseGroup =
+                            AdminUtils.readRecordFromId(data, Tables.HOUSEGROUP, measure.getHousegroupId());
                     HouseRecord house = AdminUtils.readRecordFromId(data, Tables.HOUSE, houseGroup.getHouseId());
                     MeasuretypeRecord measureType =
                             AdminUtils.readRecordFromId(data, Tables.MEASURETYPE, measure.getMeasuretypeId());
@@ -369,7 +369,6 @@ public class MaintainHouseMeasure
         HousegroupRecord houseGroup = AdminUtils.readRecordFromId(data, Tables.HOUSEGROUP, houseGroupId);
         GroupRecord group = AdminUtils.readRecordFromId(data, Tables.GROUP, houseGroup.getGroupId());
         ScenarioRecord scenario = AdminUtils.readRecordFromId(data, Tables.SCENARIO, group.getScenarioId());
-        GameversionRecord gameVersion = AdminUtils.readRecordFromId(data, Tables.GAMEVERSION, scenario.getGameversionId());
 
         //@formatter:off
         TableForm form = new TableForm()
@@ -384,7 +383,7 @@ public class MaintainHouseMeasure
                 .addEntry(new TableEntryPickRecord(Tables.HOUSEMEASURE.MEASURETYPE_ID)
                             .setPickTable(data, Tables.MEASURETYPE.join(Tables.MEASURECATEGORY)
                                     .on(Tables.MEASURETYPE.MEASURECATEGORY_ID.eq(Tables.MEASURECATEGORY.ID))
-                                    .and(Tables.MEASURECATEGORY.GAMEVERSION_ID.eq(gameVersion.getId()))
+                                    .and(Tables.MEASURECATEGORY.SCENARIO_ID.eq(scenario.getId()))
                                     .and(Tables.MEASURETYPE.HOUSE_MEASURE.ne((byte) 0)),
                                     Tables.MEASURETYPE.ID, Tables.MEASURETYPE.NAME)
                         .setRequired()
