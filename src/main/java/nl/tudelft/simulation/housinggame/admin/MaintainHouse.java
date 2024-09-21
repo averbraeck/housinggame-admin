@@ -242,11 +242,14 @@ public class MaintainHouse
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumnUnchecked("InitialHouseMeasure", 4, 0, true, Tables.INITIALHOUSEMEASURE
-                    .join(Tables.MEASURETYPE).on(Tables.INITIALHOUSEMEASURE.MEASURETYPE_ID.eq(Tables.MEASURETYPE.ID))
-                    .join(Tables.MEASURECATEGORY).on(Tables.MEASURETYPE.MEASURECATEGORY_ID.eq(Tables.MEASURECATEGORY.ID))
-                    .where(Tables.MEASURECATEGORY.SCENARIO_ID.eq(recordId)), Tables.INITIALHOUSEMEASURE.NAME, "name",
-                    Tables.INITIALHOUSEMEASURE.HOUSE_ID, true, 3, "InitialHouseMeasure");
+            data.showDependentColumnUnchecked("InitialHouseMeasure", 4, 0, true,
+                    Tables.INITIALHOUSEMEASURE.join(Tables.MEASURETYPE)
+                            .on(Tables.INITIALHOUSEMEASURE.MEASURETYPE_ID.eq(Tables.MEASURETYPE.ID))
+                            .join(Tables.MEASURECATEGORY)
+                            .on(Tables.MEASURETYPE.MEASURECATEGORY_ID.eq(Tables.MEASURECATEGORY.ID)
+                                    .and(Tables.INITIALHOUSEMEASURE.HOUSE_ID.eq(data.getColumn(2).getSelectedRecordId()))),
+                    Tables.INITIALHOUSEMEASURE.NAME, "name", Tables.MEASURECATEGORY.SCENARIO_ID, true, 3,
+                    "InitialHouseMeasure");
         }
     }
 
@@ -270,9 +273,9 @@ public class MaintainHouse
         data.showDependentColumnUnchecked("InitialHouseMeasure", 4, recordId, true,
                 Tables.INITIALHOUSEMEASURE.join(Tables.MEASURETYPE)
                         .on(Tables.INITIALHOUSEMEASURE.MEASURETYPE_ID.eq(Tables.MEASURETYPE.ID)).join(Tables.MEASURECATEGORY)
-                        .on(Tables.MEASURETYPE.MEASURECATEGORY_ID.eq(Tables.MEASURECATEGORY.ID))
-                        .where(Tables.MEASURECATEGORY.SCENARIO_ID.eq(recordId)),
-                Tables.INITIALHOUSEMEASURE.NAME, "name", Tables.INITIALHOUSEMEASURE.HOUSE_ID, true, 3, "InitialHouseMeasure");
+                        .on(Tables.MEASURETYPE.MEASURECATEGORY_ID.eq(Tables.MEASURECATEGORY.ID)
+                                .and(Tables.INITIALHOUSEMEASURE.HOUSE_ID.eq(data.getColumn(2).getSelectedRecordId()))),
+                Tables.INITIALHOUSEMEASURE.NAME, "name", Tables.MEASURECATEGORY.SCENARIO_ID, true, 3, "InitialHouseMeasure");
 
         data.resetFormColumn();
         if (recordId != 0)
