@@ -37,7 +37,7 @@ public class MaintainMeasureType
             showGameVersion(session, data, recordId);
         }
 
-        else if (click.contains("MeasureTypeGameScenario"))
+        else if (click.contains("MeasureTypeScenario"))
         {
             showScenario(session, data, recordId);
         }
@@ -105,7 +105,7 @@ public class MaintainMeasureType
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("Scenario", 1, 0, false, Tables.SCENARIO, Tables.SCENARIO.NAME, "name",
+            data.showDependentColumn("MeasureTypeScenario", 1, 0, false, Tables.SCENARIO, Tables.SCENARIO.NAME, "name",
                     Tables.SCENARIO.GAMEVERSION_ID, false);
         }
     }
@@ -120,7 +120,7 @@ public class MaintainMeasureType
     {
         data.showColumn("MeasureTypeGameVersion", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMEVERSION,
                 Tables.GAMEVERSION.NAME, "name", false);
-        data.showDependentColumn("Scenario", 1, recordId, false, Tables.SCENARIO, Tables.SCENARIO.NAME, "name",
+        data.showDependentColumn("MeasureTypeScenario", 1, recordId, false, Tables.SCENARIO, Tables.SCENARIO.NAME, "name",
                 Tables.SCENARIO.GAMEVERSION_ID, false);
         data.resetColumn(2);
         data.resetColumn(3);
@@ -143,7 +143,7 @@ public class MaintainMeasureType
     {
         data.showColumn("MeasureTypeGameVersion", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMEVERSION,
                 Tables.GAMEVERSION.NAME, "name", false);
-        data.showDependentColumn("Scenario", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.SCENARIO,
+        data.showDependentColumn("MeasureTypeScenario", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.SCENARIO,
                 Tables.SCENARIO.NAME, "name", Tables.SCENARIO.GAMEVERSION_ID, false);
         data.showDependentColumn("MeasureCategory", 2, recordId, true, Tables.MEASURECATEGORY, Tables.MEASURECATEGORY.NAME,
                 "name", Tables.MEASURECATEGORY.SCENARIO_ID, true);
@@ -218,7 +218,7 @@ public class MaintainMeasureType
     {
         data.showColumn("MeasureTypeGameVersion", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMEVERSION,
                 Tables.GAMEVERSION.NAME, "name", false);
-        data.showDependentColumn("Scenario", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.SCENARIO,
+        data.showDependentColumn("MeasureTypeScenario", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.SCENARIO,
                 Tables.SCENARIO.NAME, "name", Tables.SCENARIO.GAMEVERSION_ID, false);
         data.showDependentColumn("MeasureCategory", 2, data.getColumn(2).getSelectedRecordId(), true, Tables.MEASURECATEGORY,
                 Tables.MEASURECATEGORY.NAME, "name", Tables.MEASURECATEGORY.SCENARIO_ID, true);
