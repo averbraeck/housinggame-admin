@@ -159,7 +159,7 @@ public class MaintainScenario
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("Scenario", 1, 0, false, Tables.SCENARIO, Tables.SCENARIO.NAME, "name",
+            data.showDependentColumn("Scenario", 1, 0, true, Tables.SCENARIO, Tables.SCENARIO.NAME, "name",
                     Tables.SCENARIO.GAMEVERSION_ID, true);
             editGameVersion(session, data, recordId, editRecord);
         }
