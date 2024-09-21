@@ -284,13 +284,22 @@ public class AdminData extends CommonData
             final String nameField, final TableField<R, Integer> selectField, final boolean newButton, final int whereColumn,
             final String userColumnName)
     {
+        showDependentColumnUnchecked(
+                columnName, columnNr, recordId, editButton, table, sortField, nameField, selectField, newButton, whereColumn, userColumnName);
+    }
+    
+    public <T extends Comparable<? super T>> void showDependentColumnUnchecked(final String columnName,
+            final int columnNr, final int recordId, final boolean editButton, final Table<? extends org.jooq.Record> table, final Field<T> sortField,
+            final String nameField, final TableField<? extends org.jooq.Record, Integer> selectField, final boolean newButton, final int whereColumn,
+            final String userColumnName)
+    {
         StringBuilder s = new StringBuilder();
         DSLContext dslContext = DSL.using(getDataSource(), SQLDialect.MYSQL);
-        List<R> records = dslContext.selectFrom(table).where(selectField.eq(getColumn(whereColumn).getSelectedRecordId()))
+        List<? extends org.jooq.Record> records = dslContext.selectFrom(table).where(selectField.eq(getColumn(whereColumn).getSelectedRecordId()))
                 .fetch().sortAsc(sortField);
 
         s.append(AdminTable.startTable());
-        for (R record : records)
+        for (var record : records)
         {
             TableRow tableRow = new TableRow(IdProvider.getId(record), recordId, NameProvider.getName(record, nameField),
                     "view" + columnName);

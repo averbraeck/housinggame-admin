@@ -25,8 +25,9 @@ public class MaintainHouse
 
         if (click.equals("house"))
         {
-            data.clearColumns("12%", "GameVersion", "12%", "Community", "12%", "House", "14%", "HouseMeasures");
-            data.clearFormColumn("50%", "Edit Properties");
+            data.clearColumns("12%", "GameVersion", "12%", "Community", "12%", "House", "12%", "Scenario", "14%",
+                    "HouseMeasures");
+            data.clearFormColumn("40%", "Edit Properties");
             showGameVersion(session, data, 0);
         }
 
@@ -59,6 +60,11 @@ public class MaintainHouse
                 if (click.startsWith("new"))
                     editHouse(session, data, 0, true);
             }
+        }
+
+        else if (click.contains("HouseScenario"))
+        {
+            showScenario(session, data, recordId);
         }
 
         else if (click.contains("InitialHouseMeasure"))
@@ -99,6 +105,7 @@ public class MaintainHouse
         data.resetColumn(1);
         data.resetColumn(2);
         data.resetColumn(3);
+        data.resetColumn(4);
         data.resetFormColumn();
         if (recordId != 0)
         {
@@ -121,6 +128,7 @@ public class MaintainHouse
                 Tables.COMMUNITY.GAMEVERSION_ID, false);
         data.resetColumn(2);
         data.resetColumn(3);
+        data.resetColumn(4);
         data.resetFormColumn();
         if (recordId != 0)
         {
@@ -131,7 +139,7 @@ public class MaintainHouse
 
     /*
      * *********************************************************************************************************
-     * ************************************************* HOUSE ***************************************************
+     * ************************************************ HOUSE **************************************************
      * *********************************************************************************************************
      */
 
@@ -145,11 +153,12 @@ public class MaintainHouse
         data.showDependentColumn("House", 2, recordId, true, Tables.HOUSE, Tables.HOUSE.CODE, "code", Tables.HOUSE.COMMUNITY_ID,
                 true);
         data.resetColumn(3);
+        data.resetColumn(4);
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("InitialHouseMeasure", 3, 0, true, Tables.INITIALHOUSEMEASURE,
-                    Tables.INITIALHOUSEMEASURE.NAME, "name", Tables.INITIALHOUSEMEASURE.HOUSE_ID, true);
+            data.showDependentColumn("HouseScenario", 3, 0, false, Tables.SCENARIO, Tables.SCENARIO.NAME, "name",
+                    Tables.SCENARIO.GAMEVERSION_ID, false, 0); // last parameter = whereColumn [gameVersion]
             editHouse(session, data, recordId, editRecord);
         }
     }
@@ -215,6 +224,34 @@ public class MaintainHouse
 
     /*
      * *********************************************************************************************************
+     * *********************************************** SCENARIO ************************************************
+     * *********************************************************************************************************
+     */
+
+    public static void showScenario(final HttpSession session, final AdminData data, final int recordId)
+    {
+        data.showColumn("HouseGameVersion", 0, data.getColumn(0).getSelectedRecordId(), false, Tables.GAMEVERSION,
+                Tables.GAMEVERSION.NAME, "name", false);
+        data.showDependentColumn("HouseCommunity", 1, data.getColumn(1).getSelectedRecordId(), false, Tables.COMMUNITY,
+                Tables.COMMUNITY.NAME, "name", Tables.COMMUNITY.GAMEVERSION_ID, false);
+        data.showDependentColumn("House", 2, data.getColumn(2).getSelectedRecordId(), true, Tables.HOUSE, Tables.HOUSE.CODE,
+                "code", Tables.HOUSE.COMMUNITY_ID, true);
+        data.showDependentColumn("HouseScenario", 3, recordId, false, Tables.SCENARIO, Tables.SCENARIO.NAME, "name",
+                Tables.SCENARIO.GAMEVERSION_ID, false, 0); // last parameter = whereColumn [gameVersion]
+        data.resetColumn(4);
+        data.resetFormColumn();
+        if (recordId != 0)
+        {
+            data.showDependentColumnUnchecked("InitialHouseMeasure", 4, 0, true, Tables.INITIALHOUSEMEASURE
+                    .join(Tables.MEASURETYPE).on(Tables.INITIALHOUSEMEASURE.MEASURETYPE_ID.eq(Tables.MEASURETYPE.ID))
+                    .join(Tables.MEASURECATEGORY).on(Tables.MEASURETYPE.MEASURECATEGORY_ID.eq(Tables.MEASURECATEGORY.ID))
+                    .where(Tables.MEASURECATEGORY.SCENARIO_ID.eq(recordId)), Tables.INITIALHOUSEMEASURE.NAME, "name",
+                    Tables.INITIALHOUSEMEASURE.HOUSE_ID, true, 3, "InitialHouseMeasure");
+        }
+    }
+
+    /*
+     * *********************************************************************************************************
      * ***************************************** INITIALHOUSEMEASURE *******************************************
      * *********************************************************************************************************
      */
@@ -228,8 +265,15 @@ public class MaintainHouse
                 Tables.COMMUNITY.NAME, "name", Tables.COMMUNITY.GAMEVERSION_ID, false);
         data.showDependentColumn("House", 2, data.getColumn(2).getSelectedRecordId(), true, Tables.HOUSE, Tables.HOUSE.CODE,
                 "code", Tables.HOUSE.COMMUNITY_ID, true);
-        data.showDependentColumn("InitialHouseMeasure", 3, recordId, true, Tables.INITIALHOUSEMEASURE,
-                Tables.INITIALHOUSEMEASURE.NAME, "name", Tables.INITIALHOUSEMEASURE.HOUSE_ID, true);
+        data.showDependentColumn("HouseScenario", 3, data.getColumn(3).getSelectedRecordId(), false, Tables.SCENARIO,
+                Tables.SCENARIO.NAME, "name", Tables.SCENARIO.GAMEVERSION_ID, false, 0);
+        data.showDependentColumnUnchecked("InitialHouseMeasure", 4, recordId, true,
+                Tables.INITIALHOUSEMEASURE.join(Tables.MEASURETYPE)
+                        .on(Tables.INITIALHOUSEMEASURE.MEASURETYPE_ID.eq(Tables.MEASURETYPE.ID)).join(Tables.MEASURECATEGORY)
+                        .on(Tables.MEASURETYPE.MEASURECATEGORY_ID.eq(Tables.MEASURECATEGORY.ID))
+                        .where(Tables.MEASURECATEGORY.SCENARIO_ID.eq(recordId)),
+                Tables.INITIALHOUSEMEASURE.NAME, "name", Tables.INITIALHOUSEMEASURE.HOUSE_ID, true, 3, "InitialHouseMeasure");
+
         data.resetFormColumn();
         if (recordId != 0)
         {
@@ -245,7 +289,7 @@ public class MaintainHouse
                 ? dslContext.newRecord(Tables.INITIALHOUSEMEASURE) : dslContext.selectFrom(Tables.INITIALHOUSEMEASURE)
                         .where(Tables.INITIALHOUSEMEASURE.ID.eq(initialHouseMeasureId)).fetchOne();
         int houseId = initialHouseMeasureId == 0 ? data.getColumn(2).getSelectedRecordId() : initialHouseMeasure.getHouseId();
-        int gameVersionId = data.getColumn(0).getSelectedRecordId();
+        int scenarioId = data.getColumn(3).getSelectedRecordId();
         //@formatter:off
         TableForm form = new TableForm()
                 .setEdit(edit)
@@ -270,7 +314,7 @@ public class MaintainHouse
                         .setRequired()
                         .setPickTable(data, Tables.MEASURETYPE.join(Tables.MEASURECATEGORY)
                                 .on(Tables.MEASURETYPE.MEASURECATEGORY_ID.eq(Tables.MEASURECATEGORY.ID))
-                                .and(Tables.MEASURECATEGORY.GAMEVERSION_ID.eq(gameVersionId))
+                                .and(Tables.MEASURECATEGORY.SCENARIO_ID.eq(scenarioId))
                                 .and(Tables.MEASURETYPE.HOUSE_MEASURE.ne((byte) 0)),
                                 Tables.MEASURETYPE.ID, Tables.MEASURETYPE.NAME)
                         .setInitialValue(initialHouseMeasure.getMeasuretypeId(), 0)

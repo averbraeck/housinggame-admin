@@ -229,7 +229,7 @@ public class AdminServlet extends HttpServlet
                 MaintainCommunity.handleMenu(request, click, recordNr);
                 break;
 
-            // (GameVersion) - (Community) - House - InitialHouseMeasure
+            // (GameVersion) - (Community) - House - (Scenario) - InitialHouseMeasure
             case "house":
             case "viewHouseGameVersion":
             case "viewHouseCommunity":
@@ -240,6 +240,8 @@ public class AdminServlet extends HttpServlet
             case "deleteHouse":
             case "deleteHouseOk":
             case "newHouse":
+
+            case "viewHouseScenario":
 
             case "viewInitialHouseMeasure":
             case "editInitialHouseMeasure":
@@ -463,7 +465,7 @@ public class AdminServlet extends HttpServlet
         topmenu(data, s, "movingreason", "MovingReason", "#008000");
         // (GameVersion) - Community - Tax
         topmenu(data, s, "community", "Community-Tax", "#008000");
-        // (GameVersion) - (Community) - House - InitialHouseMeasure
+        // (GameVersion) - (Community) - House - (Scenario) - InitialHouseMeasure
         topmenu(data, s, "house", "House", "#008000");
         // (GameVersion) - (Scenario) - NewsItem - NewsEffects
         topmenu(data, s, "news", "News-Effects", "#008000");
