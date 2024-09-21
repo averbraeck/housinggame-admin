@@ -437,6 +437,7 @@ public final class AdminUtils extends SqlUtils
             for (HouseRecord house : houseList)
             {
                 // 5. For each house, for each initialhousemeasure: delete the initialhousemeasure
+                // By the way, these should not exist when there is no scenario for the gameversion.
                 List<InitialhousemeasureRecord> ihmList = dslContext.selectFrom(Tables.INITIALHOUSEMEASURE)
                         .where(Tables.INITIALHOUSEMEASURE.HOUSE_ID.eq(house.getId())).fetch();
                 for (InitialhousemeasureRecord ihm : ihmList)
