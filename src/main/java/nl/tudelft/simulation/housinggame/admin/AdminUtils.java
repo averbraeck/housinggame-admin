@@ -83,7 +83,8 @@ public final class AdminUtils extends SqlUtils
         {
             QuestionRecord newQuestion = oldQuestion.copy();
             newQuestion.setScenarioId(newScenarioId);
-            int newQuestionId = newQuestion.store();
+            newQuestion.store();
+            int newQuestionId = newQuestion.getId();
 
             // 3. For each question, clone the questionitems, using the new questionId.
             List<QuestionitemRecord> questionItemList = dslContext.selectFrom(Tables.QUESTIONITEM)
@@ -144,7 +145,8 @@ public final class AdminUtils extends SqlUtils
             {
                 MeasuretypeRecord newMeasureType = oldMeasureType.copy();
                 newMeasureType.setMeasurecategoryId(newMeasureCategoryId);
-                int newMeasureTypeId = newMeasureType.store();
+                newMeasureType.store();
+                int newMeasureTypeId = newMeasureType.getId();
 
                 // 9. For each measuretype, clone the initialhousemeasures using the new measuretypeId (and the same houseId).
                 List<InitialhousemeasureRecord> initialHouseMeasureList = dslContext.selectFrom(Tables.INITIALHOUSEMEASURE)
@@ -234,7 +236,8 @@ public final class AdminUtils extends SqlUtils
         {
             CommunityRecord newCommunity = oldCommunity.copy();
             newCommunity.setGameversionId(newGameVersionId);
-            int newCommunityId = newCommunity.store();
+            newCommunity.store();
+            int newCommunityId = newCommunity.getId();
             communityMap.put(oldCommunity.getId(), newCommunity.getId());
 
             // 3. For each community, clone the taxes, using the new communityId.
@@ -277,7 +280,8 @@ public final class AdminUtils extends SqlUtils
         {
             ScenarioRecord newScenario = oldScenario.copy();
             newScenario.setGameversionId(newGameVersionId);
-            int newScenarioId = newScenario.store();
+            newScenario.store();
+            int newScenarioId = newScenario.getId();
             cloneScenarioTables(data, oldScenario.getId(), newScenarioId);
 
             // 7. for each cloned newseffects record with a communityId, update the communityId.
