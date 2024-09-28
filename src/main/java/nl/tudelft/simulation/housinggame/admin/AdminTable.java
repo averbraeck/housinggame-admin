@@ -13,7 +13,7 @@ public class AdminTable
         return "      </div>\n"; // hg-admin-line-table
     }
 
-    public static String finalButton(String text, String method)
+    public static String finalButton(final String text, final String method)
     {
         StringBuilder s = new StringBuilder();
         s.append("      <div class=\"hg-admin-table-button\">");
@@ -21,7 +21,7 @@ public class AdminTable
         s.append(method);
         s.append("',0); return false;\">");
         s.append(text);
-        s.append("</a>");
+        s.append("</a><br>");
         s.append("</div>\n");
         return s.toString();
     }
