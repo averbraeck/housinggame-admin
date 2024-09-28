@@ -155,7 +155,7 @@ public class MaintainPlayGroup
         {
             data.showDependentColumn("PlayGroupGroupRound", 2, 0, true, Tables.GROUPROUND, Tables.GROUPROUND.ROUND_NUMBER,
                     "round_number", Tables.GROUPROUND.GROUP_ID, true, "GroupRound");
-            data.getColumn(1).addContent(AdminTable.finalButton("DEL GAMEPLAY", "destroyGamePlayGroup"));
+            data.getColumn(1).addContent(AdminTable.finalButton("DESTROY GAMEPLAY<br>FOR WHOLE GROUP", "destroyGamePlayGroup"));
         }
     }
 

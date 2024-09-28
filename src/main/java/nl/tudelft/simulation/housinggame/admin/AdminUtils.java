@@ -513,8 +513,24 @@ public final class AdminUtils extends SqlUtils
     {
         var dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         var group = AdminUtils.readRecordFromId(data, Tables.GROUP, groupId);
+
         // The gamesession, group and players stay. We delete groupround, playerround, measure, bid, questionscore,
         // as well as groupstate and playerstate
+
+        // remove house ownership of player
+        List<PlayerRecord> playerList =
+                dslContext.selectFrom(Tables.PLAYER).where(Tables.PLAYER.GROUP_ID.eq(group.getId())).fetch();
+        for (var player : playerList)
+        {
+            List<HousegroupRecord> hgList =
+                    dslContext.selectFrom(Tables.HOUSEGROUP).where(Tables.HOUSEGROUP.OWNER_ID.eq(player.getId())).fetch();
+            for (var houseGroup : hgList)
+            {
+                houseGroup.setOwnerId(null);
+                houseGroup.store();
+            }
+        }
+
         List<GrouproundRecord> groupRoundList =
                 dslContext.selectFrom(Tables.GROUPROUND).where(Tables.GROUPROUND.GROUP_ID.eq(group.getId())).fetch();
         for (var groupRound : groupRoundList)
@@ -600,6 +616,17 @@ public final class AdminUtils extends SqlUtils
     {
         var dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         var player = AdminUtils.readRecordFromId(data, Tables.PLAYER, playerId);
+
+        // remove house ownership of player
+        List<HousegroupRecord> hgList =
+                dslContext.selectFrom(Tables.HOUSEGROUP).where(Tables.HOUSEGROUP.OWNER_ID.eq(player.getId())).fetch();
+        for (var houseGroup : hgList)
+        {
+            houseGroup.setOwnerId(null);
+            houseGroup.store();
+        }
+
+        // delete play rounds and associated data
         List<PlayerroundRecord> playerRoundList =
                 dslContext.selectFrom(Tables.PLAYERROUND).where(Tables.PLAYERROUND.PLAYER_ID.eq(player.getId())).fetch();
         for (var playerRound : playerRoundList)

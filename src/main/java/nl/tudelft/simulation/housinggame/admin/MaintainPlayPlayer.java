@@ -240,8 +240,8 @@ public class MaintainPlayPlayer
         data.resetFormColumn();
         if (recordId != 0)
         {
-            data.showDependentColumn("PlayPlayerState", 5, 0, true, Tables.PLAYERSTATE, Tables.PLAYERSTATE.TIMESTAMP, "player_state",
-                    Tables.PLAYERSTATE.PLAYERROUND_ID, true, "PlayerState");
+            data.showDependentColumn("PlayPlayerState", 5, 0, true, Tables.PLAYERSTATE, Tables.PLAYERSTATE.TIMESTAMP,
+                    "player_state", Tables.PLAYERSTATE.PLAYERROUND_ID, true, "PlayerState");
             editPlayPlayerRound(session, data, recordId, editRecord);
         }
     }
@@ -501,8 +501,8 @@ public class MaintainPlayPlayer
                 Tables.GROUPROUND.ROUND_NUMBER, "round_number", Tables.GROUPROUND.GROUP_ID, false);
         showPlayerColumn(data, "PlayPlayer", 3, data.getColumn(3).getSelectedRecordId());
         showPlayerRoundColumn(data, "PlayPlayerRound", 4, data.getColumn(4).getSelectedRecordId());
-        data.showDependentColumn("PlayPlayerState", 5, recordId, true, Tables.PLAYERSTATE, Tables.PLAYERSTATE.TIMESTAMP, "player_state",
-                Tables.PLAYERSTATE.PLAYERROUND_ID, true, "PlayerState");
+        data.showDependentColumn("PlayPlayerState", 5, recordId, true, Tables.PLAYERSTATE, Tables.PLAYERSTATE.TIMESTAMP,
+                "player_state", Tables.PLAYERSTATE.PLAYERROUND_ID, true, "PlayerState");
         data.resetFormColumn();
         if (recordId != 0)
         {

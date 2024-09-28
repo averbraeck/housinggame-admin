@@ -275,6 +275,8 @@ public class AdminServlet extends HttpServlet
             case "deleteGameSession":
             case "deleteGameSessionOk":
             case "newGameSession":
+            case "destroyGameSession":
+            case "destroyGameSessionOk":
 
             case "viewGroup":
             case "editGroup":
@@ -284,6 +286,8 @@ public class AdminServlet extends HttpServlet
             case "newGroup":
             case "generateGroups":
             case "generateGroupsParams":
+            case "destroyGroup":
+            case "destroyGroupOk":
 
             case "viewPlayer":
             case "editPlayer":
@@ -291,6 +295,10 @@ public class AdminServlet extends HttpServlet
             case "deletePlayer":
             case "deletePlayerOk":
             case "newPlayer":
+            case "destroyPlayer":
+            case "destroyPlayerOk":
+            case "destroyPlayPlayer":
+            case "destroyPlayPlayerOk":
                 data.setMenuChoice("gamesession");
                 MaintainGameSession.handleMenu(request, click, recordNr);
                 break;

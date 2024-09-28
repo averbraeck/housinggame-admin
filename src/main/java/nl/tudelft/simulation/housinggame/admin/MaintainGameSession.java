@@ -50,6 +50,23 @@ public class MaintainGameSession
             showGameVersion(session, data, recordId);
         }
 
+        else if (click.contains("destroyGameSession"))
+        {
+            GamesessionRecord gameSession =
+                    AdminUtils.readRecordFromId(data, Tables.GAMESESSION, data.getColumn(1).getSelectedRecordId());
+            if (click.endsWith("Ok"))
+            {
+                AdminUtils.destroyGameSession(data, data.getColumn(1).getSelectedRecordId());
+                showGameVersion(session, data, 0);
+            }
+            else
+            {
+                data.askDestroyRecord(gameSession, "Groups, players, game Session", gameSession.getName(),
+                        "destroyGameSessionOk", "gamesession");
+            }
+            recordId = 0;
+        }
+
         else if (click.contains("GameSession"))
         {
             if (click.startsWith("save"))
@@ -82,6 +99,21 @@ public class MaintainGameSession
             generateGroups(request, data);
         }
 
+        else if (click.contains("destroyGroup"))
+        {
+            GroupRecord group = AdminUtils.readRecordFromId(data, Tables.GROUP, data.getColumn(2).getSelectedRecordId());
+            if (click.endsWith("Ok"))
+            {
+                AdminUtils.destroyGroup(data, data.getColumn(2).getSelectedRecordId());
+                showGameSession(session, data, 0, true, false);
+            }
+            else
+            {
+                data.askDestroyRecord(group, "Players, game play, group", group.getName(), "destroyGroupOk", "gamesession");
+            }
+            recordId = 0;
+        }
+
         else if (click.contains("Group"))
         {
             if (click.startsWith("save"))
@@ -101,6 +133,36 @@ public class MaintainGameSession
                 if (click.startsWith("new"))
                     editGroup(session, data, 0, true);
             }
+        }
+
+        else if (click.contains("destroyPlayPlayer"))
+        {
+            PlayerRecord player = AdminUtils.readRecordFromId(data, Tables.PLAYER, data.getColumn(3).getSelectedRecordId());
+            if (click.endsWith("Ok"))
+            {
+                AdminUtils.destroyPlayerPlay(data, data.getColumn(3).getSelectedRecordId());
+                showGroup(session, data, 0, true, false);
+            }
+            else
+            {
+                data.askDestroyRecord(player, "Game play of player", player.getCode(), "destroyPlayPlayerOk", "gamesession");
+            }
+            recordId = 0;
+        }
+
+        else if (click.contains("destroyPlayer"))
+        {
+            PlayerRecord player = AdminUtils.readRecordFromId(data, Tables.PLAYER, data.getColumn(3).getSelectedRecordId());
+            if (click.endsWith("Ok"))
+            {
+                AdminUtils.destroyPlayerPlusPlay(data, data.getColumn(3).getSelectedRecordId());
+                showGroup(session, data, 0, true, false);
+            }
+            else
+            {
+                data.askDestroyRecord(player, "Game play AND player", player.getCode(), "destroyPlayerOk", "gamesession");
+            }
+            recordId = 0;
         }
 
         else if (click.contains("Player"))
@@ -168,6 +230,7 @@ public class MaintainGameSession
         {
             data.showDependentColumn("Group", 2, 0, true, Tables.GROUP, Tables.GROUP.NAME, "name", Tables.GROUP.GAMESESSION_ID,
                     true);
+            data.getColumn(1).addContent(AdminTable.finalButton("DESTROY GAMESESSION AND ALL GAMEPLAY", "destroyGameSession"));
             editGameSession(session, data, recordId, editRecord);
         }
         if (editButton && recordId != 0)
@@ -255,6 +318,7 @@ public class MaintainGameSession
         {
             data.showDependentColumn("Player", 3, 0, true, Tables.PLAYER, Tables.PLAYER.CODE, "code", Tables.PLAYER.GROUP_ID,
                     true);
+            data.getColumn(2).addContent(AdminTable.finalButton("DESTROY GROUP AND GAMEPLAY", "destroyGroup"));
             editGroup(session, data, recordId, editRecord);
         }
     }
@@ -326,6 +390,8 @@ public class MaintainGameSession
         data.resetFormColumn();
         if (recordId != 0)
         {
+            data.getColumn(3).addContent(AdminTable.finalButton("DESTROY GAMEPLAY OF PLAYER", "destroyPlayPlayer"));
+            data.getColumn(3).addContent(AdminTable.finalButton("DESTROY PLAYER AND GAMEPLAY", "destroyPlayer"));
             editPlayer(session, data, recordId, editRecord);
         }
     }
