@@ -19,15 +19,25 @@ import nl.tudelft.simulation.housinggame.data.tables.records.CommunityRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GamesessionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GameversionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.GrouproundRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.GroupstateRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.HouseRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.HousegroupRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.HousemeasureRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.HousetransactionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.InitialhousemeasureRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.MeasurecategoryRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.MeasuretypeRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.MovingreasonRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.NewseffectsRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.NewsitemRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.PersonalmeasureRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.PlayerRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.PlayerroundRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.PlayerstateRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.QuestionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.QuestionitemRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.QuestionscoreRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.ScenarioRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.ScenarioparametersRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.TaxRecord;
@@ -497,6 +507,133 @@ public final class AdminUtils extends SqlUtils
         }
 
         gameVersion.delete();
+    }
+
+    public static void destroyGamePlay(final AdminData data, final int groupId)
+    {
+        var dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
+        var group = AdminUtils.readRecordFromId(data, Tables.GROUP, groupId);
+        // The gamesession, group and players stay. We delete groupround, playerround, measure, bid, questionscore,
+        // as well as groupstate and playerstate
+        List<GrouproundRecord> groupRoundList =
+                dslContext.selectFrom(Tables.GROUPROUND).where(Tables.GROUPROUND.GROUP_ID.eq(group.getId())).fetch();
+        for (var groupRound : groupRoundList)
+        {
+            List<PlayerroundRecord> playerRoundList = dslContext.selectFrom(Tables.PLAYERROUND)
+                    .where(Tables.PLAYERROUND.GROUPROUND_ID.eq(groupRound.getId())).fetch();
+            for (var playerRound : playerRoundList)
+            {
+                playerRound.setStartHousegroupId(null); // avoid circular reference
+                playerRound.setFinalHousegroupId(null); // avoid circular reference
+                playerRound.setActiveTransactionId(null); // avoid circular reference
+                playerRound.store();
+            }
+
+            List<HousetransactionRecord> transactionList = dslContext.selectFrom(Tables.HOUSETRANSACTION)
+                    .where(Tables.HOUSETRANSACTION.GROUPROUND_ID.eq(groupRound.getId())).fetch();
+            for (var transaction : transactionList)
+                transaction.delete();
+
+            List<GroupstateRecord> groupStateList = dslContext.selectFrom(Tables.GROUPSTATE)
+                    .where(Tables.GROUPSTATE.GROUPROUND_ID.eq(groupRound.getId())).fetch();
+            for (var groupState : groupStateList)
+                groupState.delete();
+
+            for (var playerRound : playerRoundList)
+            {
+                List<QuestionscoreRecord> questionScoreList = dslContext.selectFrom(Tables.QUESTIONSCORE)
+                        .where(Tables.QUESTIONSCORE.PLAYERROUND_ID.eq(playerRound.getId())).fetch();
+                for (var questionScore : questionScoreList)
+                    questionScore.delete();
+                List<PlayerstateRecord> playerStateList = dslContext.selectFrom(Tables.PLAYERSTATE)
+                        .where(Tables.PLAYERSTATE.PLAYERROUND_ID.eq(playerRound.getId())).fetch();
+                for (var playerState : playerStateList)
+                    playerState.delete();
+                List<PersonalmeasureRecord> personalMeasureList = dslContext.selectFrom(Tables.PERSONALMEASURE)
+                        .where(Tables.PERSONALMEASURE.PLAYERROUND_ID.eq(playerRound.getId())).fetch();
+                for (var personalMeasure : personalMeasureList)
+                    personalMeasure.delete();
+                playerRound.delete();
+            }
+        }
+
+        for (var groupRound : groupRoundList)
+        {
+            List<HousegroupRecord> houseGroupList =
+                    dslContext.selectFrom(Tables.HOUSEGROUP).where(Tables.HOUSEGROUP.GROUP_ID.eq(group.getId())).fetch();
+            for (var houseGroup : houseGroupList)
+            {
+                List<HousemeasureRecord> measureList = dslContext.selectFrom(Tables.HOUSEMEASURE)
+                        .where(Tables.HOUSEMEASURE.HOUSEGROUP_ID.eq(houseGroup.getId())).fetch();
+                for (var measure : measureList)
+                    measure.delete();
+                houseGroup.delete();
+            }
+            groupRound.delete();
+        }
+    }
+
+    public static void destroyGroup(final AdminData data, final int groupId)
+    {
+        var dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
+        var group = AdminUtils.readRecordFromId(data, Tables.GROUP, groupId);
+        destroyGamePlay(data, groupId);
+        List<PlayerRecord> playerList =
+                dslContext.selectFrom(Tables.PLAYER).where(Tables.PLAYER.GROUP_ID.eq(group.getId())).fetch();
+        for (var player : playerList)
+            player.delete();
+        group.delete();
+    }
+
+    public static void destroyGameSession(final AdminData data, final int gameSessionId)
+    {
+        var dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
+        var gameSession = AdminUtils.readRecordFromId(data, Tables.GAMESESSION, gameSessionId);
+        List<GroupRecord> groupList =
+                dslContext.selectFrom(Tables.GROUP).where(Tables.GROUP.GAMESESSION_ID.eq(gameSession.getId())).fetch();
+        for (var group : groupList)
+            destroyGroup(data, group.getId());
+        gameSession.delete();
+    }
+
+    public static void destroyPlayerPlay(final AdminData data, final int playerId)
+    {
+        var dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
+        var player = AdminUtils.readRecordFromId(data, Tables.PLAYER, playerId);
+        List<PlayerroundRecord> playerRoundList =
+                dslContext.selectFrom(Tables.PLAYERROUND).where(Tables.PLAYERROUND.PLAYER_ID.eq(player.getId())).fetch();
+        for (var playerRound : playerRoundList)
+        {
+            playerRound.setStartHousegroupId(null); // avoid circular reference
+            playerRound.setFinalHousegroupId(null); // avoid circular reference
+            playerRound.setActiveTransactionId(null); // avoid circular reference
+            playerRound.store();
+
+            List<HousetransactionRecord> transactionList = dslContext.selectFrom(Tables.HOUSETRANSACTION)
+                    .where(Tables.HOUSETRANSACTION.PLAYERROUND_ID.eq(playerRound.getId())).fetch();
+            for (var transaction : transactionList)
+                transaction.delete();
+            List<QuestionscoreRecord> questionScoreList = dslContext.selectFrom(Tables.QUESTIONSCORE)
+                    .where(Tables.QUESTIONSCORE.PLAYERROUND_ID.eq(playerRound.getId())).fetch();
+            for (var questionScore : questionScoreList)
+                questionScore.delete();
+            List<PlayerstateRecord> playerStateList = dslContext.selectFrom(Tables.PLAYERSTATE)
+                    .where(Tables.PLAYERSTATE.PLAYERROUND_ID.eq(playerRound.getId())).fetch();
+            for (var playerState : playerStateList)
+                playerState.delete();
+            List<PersonalmeasureRecord> personalMeasureList = dslContext.selectFrom(Tables.PERSONALMEASURE)
+                    .where(Tables.PERSONALMEASURE.PLAYERROUND_ID.eq(playerRound.getId())).fetch();
+            for (var personalMeasure : personalMeasureList)
+                personalMeasure.delete();
+            playerRound.delete();
+        }
+    }
+
+    public static void destroyPlayerPlusPlay(final AdminData data, final int playerId)
+    {
+        var player = AdminUtils.readRecordFromId(data, Tables.PLAYER, playerId);
+        destroyPlayerPlay(data, playerId);
+        player.delete();
     }
 
     private static String makeUniqueScenarioParametersName(final AdminData data,
