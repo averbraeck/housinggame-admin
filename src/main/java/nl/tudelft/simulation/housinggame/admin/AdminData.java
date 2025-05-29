@@ -2,7 +2,6 @@ package nl.tudelft.simulation.housinggame.admin;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
 import org.jooq.DSLContext;
@@ -12,6 +11,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.impl.DSL;
 
+import jakarta.servlet.http.HttpServletRequest;
 import nl.tudelft.simulation.housinggame.admin.column.FormColumn;
 import nl.tudelft.simulation.housinggame.admin.column.TableColumn;
 import nl.tudelft.simulation.housinggame.common.CommonData;

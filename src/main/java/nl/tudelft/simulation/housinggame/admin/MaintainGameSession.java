@@ -6,14 +6,13 @@ import java.util.Random;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import nl.tudelft.simulation.housinggame.admin.form.FormEntryInt;
 import nl.tudelft.simulation.housinggame.admin.form.FormEntryPickRecord;
 import nl.tudelft.simulation.housinggame.admin.form.FormEntryString;
