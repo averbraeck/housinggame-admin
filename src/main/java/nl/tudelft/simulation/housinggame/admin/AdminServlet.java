@@ -416,6 +416,15 @@ public class AdminServlet extends HttpServlet
                 MaintainHouseMeasure.handleMenu(request, click, recordNr);
                 break;
 
+            // (GameSession) - (Group) - Player - Result
+            case "results":
+            case "resultsGameSession":
+            case "resultsGroup":
+            case "resultsPlayer":
+                data.setMenuChoice("results");
+                MaintainResults.handleMenu(request, click, recordNr);
+                break;
+
             default:
                 System.err.println("Unknown menu choice: " + click);
                 break;
