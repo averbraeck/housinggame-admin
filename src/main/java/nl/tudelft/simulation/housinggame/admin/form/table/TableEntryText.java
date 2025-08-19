@@ -101,7 +101,7 @@ public class TableEntryText extends AbstractTableEntry<TableEntryText, String>
             s.append("\"");
         if (!getTableField().getDataType().nullable())
         {
-            s.append("/>");
+            s.append(">");
         }
         else
         {

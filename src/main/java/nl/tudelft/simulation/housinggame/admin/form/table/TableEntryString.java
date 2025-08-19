@@ -86,7 +86,7 @@ public class TableEntryString extends AbstractTableEntry<TableEntryString, Strin
 
         if (!getTableField().getDataType().nullable())
         {
-            s.append("/>");
+            s.append(">");
         }
         else
         {
@@ -94,7 +94,7 @@ public class TableEntryString extends AbstractTableEntry<TableEntryString, Strin
             s.append("&nbsp;&nbsp;<input type=\"checkbox\" name=\"");
             s.append(getTableField().getName() + "-null\" value=\"null\"");
             s.append(getLastEnteredValue() == null ? " checked" : "");
-            s.append(" onchange=\"nullToggle('" + getTableField().getName() + "', this)\"/>\n");
+            s.append(" onchange=\"nullToggle('" + getTableField().getName() + "', this)\">\n");
             s.append("<span class=\"null-badge\">NULL</span>\n");
         }
 
