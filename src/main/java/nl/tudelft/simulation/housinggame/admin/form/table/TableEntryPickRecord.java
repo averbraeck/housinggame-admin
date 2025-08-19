@@ -105,9 +105,19 @@ public class TableEntryPickRecord extends AbstractTableEntry<TableEntryPickRecor
             s.append(" name=\"");
         s.append(getTableField().getName());
         if (isReadOnly())
-            s.append("\" style=\"pointer-events: none;\">\n");
+            s.append("\" style=\"pointer-events: none;\"");
         else
-            s.append("\">\n");
+            s.append("\"");
+
+        if (!getTableField().getDataType().nullable())
+        {
+            s.append(">\n");
+        }
+        else
+        {
+            s.append(" onchange=\"fieldEdited('" + getTableField().getName() + "', this)\">\n");
+        }
+
         for (String name : this.records.keySet())
         {
             Integer id = this.records.get(name); // TODO: int is not possible here -- could be null?
@@ -130,7 +140,8 @@ public class TableEntryPickRecord extends AbstractTableEntry<TableEntryPickRecor
             s.append("&nbsp;&nbsp;<input type=\"checkbox\" name=\"");
             s.append(getTableField().getName() + "-null\" value=\"null\"");
             s.append(getLastEnteredValue() == null ? " checked" : "");
-            s.append(" />");
+            s.append(" onchange=\"nullToggle('" + getTableField().getName() + "', this)\">\n");
+            s.append("<span class=\"null-badge\">NULL</span>\n");
         }
 
         s.append("      </td>\n");

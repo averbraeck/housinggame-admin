@@ -90,9 +90,19 @@ public class TableEntryPickList extends AbstractTableEntry<TableEntryPickList, S
             s.append(" name=\"");
         s.append(getTableField().getName());
         if (isReadOnly())
-            s.append("\" readonly>\n");
+            s.append("\" readonly");
         else
-            s.append("\">\n");
+            s.append("\"");
+
+        if (!getTableField().getDataType().nullable())
+        {
+            s.append(">\n");
+        }
+        else
+        {
+            s.append(" onchange=\"fieldEdited('" + getTableField().getName() + "', this)\">\n");
+        }
+
         for (String entry : getPickListEntries())
         {
             s.append("        <option value=\"");
@@ -113,7 +123,8 @@ public class TableEntryPickList extends AbstractTableEntry<TableEntryPickList, S
             s.append("&nbsp;&nbsp;<input type=\"checkbox\" name=\"");
             s.append(getTableField().getName() + "-null\" value=\"null\"");
             s.append(getLastEnteredValue() == null ? " checked" : "");
-            s.append(" />");
+            s.append(" onchange=\"nullToggle('" + getTableField().getName() + "', this)\">\n");
+            s.append("<span class=\"null-badge\">NULL</span>\n");
         }
 
         s.append("      </td>\n");
