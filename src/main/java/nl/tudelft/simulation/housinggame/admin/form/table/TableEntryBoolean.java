@@ -56,16 +56,20 @@ public class TableEntryBoolean extends AbstractTableEntry<TableEntryBoolean, Byt
         s.append(getLastEnteredValue() == null || "0".equals(getLastEnteredValue()) ? "" : "checked");
         s.append(" value=\"1\"");
         if (isReadOnly())
-            s.append(" readonly />");
-        else
-            s.append(" />");
+            s.append(" readonly");
 
-        if (getTableField().getDataType().nullable())
+        if (!getTableField().getDataType().nullable())
         {
+            s.append(">");
+        }
+        else
+        {
+            s.append(" oninput=\"fieldEdited('" + getTableField().getName() + "', this)\">\n");
             s.append("&nbsp;&nbsp;<input type=\"checkbox\" name=\"");
             s.append(getTableField().getName() + "-null\" value=\"null\"");
             s.append(getLastEnteredValue() == null ? " checked" : "");
-            s.append(" />");
+            s.append(" onchange=\"nullToggle('" + getTableField().getName() + "', this)\">\n");
+            s.append("<span class=\"null-badge\">NULL</span>\n");
         }
 
         s.append("</td>\n");

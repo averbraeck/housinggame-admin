@@ -126,16 +126,22 @@ public class TableEntryDouble extends AbstractTableEntry<TableEntryDouble, Doubl
         s.append("\" value=\"");
         s.append(getLastEnteredValue() == null ? "" : getLastEnteredValue());
         if (isReadOnly())
-            s.append("\" readonly />");
+            s.append("\" readonly");
         else
-            s.append("\" />");
+            s.append("\"");
 
-        if (getTableField().getDataType().nullable())
+        if (!getTableField().getDataType().nullable())
         {
+            s.append(">");
+        }
+        else
+        {
+            s.append(" oninput=\"fieldEdited('" + getTableField().getName() + "', this)\">\n");
             s.append("&nbsp;&nbsp;<input type=\"checkbox\" name=\"");
             s.append(getTableField().getName() + "-null\" value=\"null\"");
             s.append(getLastEnteredValue() == null ? " checked" : "");
-            s.append(" />");
+            s.append(" onchange=\"nullToggle('" + getTableField().getName() + "', this)\">\n");
+            s.append("<span class=\"null-badge\">NULL</span>\n");
         }
 
         s.append("</td>\n");
