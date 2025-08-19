@@ -418,9 +418,9 @@ public class AdminServlet extends HttpServlet
 
             // (GameSession) - (Group) - Player - Result
             case "results":
-            case "resultsGameSession":
-            case "resultsGroup":
-            case "resultsPlayer":
+            case "viewResultsGameSession":
+            case "viewResultsGroup":
+            case "viewResultsPlayer":
                 data.setMenuChoice("results");
                 MaintainResults.handleMenu(request, click, recordNr);
                 break;

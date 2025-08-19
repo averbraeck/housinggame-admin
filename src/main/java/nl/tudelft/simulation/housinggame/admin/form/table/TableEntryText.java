@@ -96,11 +96,27 @@ public class TableEntryText extends AbstractTableEntry<TableEntryText, String>
             s.append("\" name=\"");
         s.append(getTableField().getName());
         if (isReadOnly())
-            s.append("\" readonly>\n");
+            s.append("\" readonly");
         else
-            s.append("\">\n");
+            s.append("\"");
+        if (!getTableField().getDataType().nullable())
+        {
+            s.append("/>");
+        }
+        else
+        {
+            s.append(" oninput=\"fieldEdited('" + getTableField().getName() + "', this)\">");
+        }
         s.append(getLastEnteredValue() == null ? "" : getLastEnteredValue());
         s.append("\n</textarea>\n");
+        if (getTableField().getDataType().nullable())
+        {
+            s.append("&nbsp;&nbsp;<input type=\"checkbox\" name=\"");
+            s.append(getTableField().getName() + "-null\" value=\"null\"");
+            s.append(getLastEnteredValue() == null ? " checked" : "");
+            s.append(" onchange=\"nullToggle('" + getTableField().getName() + "', this)\"/>\n");
+            s.append("<span class=\"null-badge\">NULL</span>\n");
+        }
         s.append("</td>\n");
         s.append("    </tr>\n");
         return s.toString();
