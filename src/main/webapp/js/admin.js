@@ -30,11 +30,9 @@ function submitEditForm(click, recordNr) {
 
 
 /* create the preview for the image when a file is selected */
-function previewImage(event, imageId) 
-{
+function previewImage(event, imageId) {
   var reader = new FileReader();
-  reader.onload = function()
-  {
+  reader.onload = function() {
     var output = document.getElementById(imageId);
     output.src = reader.result;
   }
@@ -43,8 +41,7 @@ function previewImage(event, imageId)
   image_reset.value = 'normal';
 }
 
-function resetImage(imageId) 
-{
+function resetImage(imageId) {
   var image = document.getElementById(imageId);
   image.src = '';
   image.value = '';
@@ -94,3 +91,66 @@ function dragElement(elmnt) {
     document.onmousemove = null;
   }
 }
+
+/* Functions for nullable fields (Issue #65) */
+function applyNullStyle(field, makeNull) {
+  if (!field) return;
+
+  // Toggle the visual class only; do not dispatch events here.
+  if (makeNull) field.classList.add('is-null');
+  else field.classList.remove('is-null');
+
+  if (!makeNull) return;
+
+  const tag = field.tagName;
+  const type = (field.getAttribute('type') || '').toLowerCase();
+
+  if (tag === 'SELECT') {
+    const opt = field.querySelector('option[value="null"], option[value=""]');
+    if (opt) field.value = opt.value;
+    else field.selectedIndex = -1; // no selection
+  } else if (tag === 'INPUT' && type === 'file') {
+    field.value = ''; // clear chosen file
+  } else if (tag === 'TEXTAREA') {
+    field.value = '';
+  } else if (tag === 'INPUT' &&
+    (type === 'text' || type === 'email' || type === 'number' ||
+      type === 'date' || type === 'datetime-local' ||
+      type === 'tel' || type === 'url' || type === 'search')) {
+    field.value = '';
+  } else if (tag === 'INPUT' && type === 'checkbox') {
+    // 3-state boolean: null means visually grey, unchecked value
+    field.checked = false;
+  }
+}
+
+function nullToggle(base, checkboxEl) {
+  const form = checkboxEl.form || document;
+  const field = form.elements[base];
+  if (!field) return;
+
+  if (checkboxEl.checked) {
+    applyNullStyle(field, true);
+  } else {
+    applyNullStyle(field, false);
+  }
+}
+
+function fieldEdited(base, fieldEl) {
+  const form = fieldEl.form || document;
+  const cb = form.elements[base + '-null'];
+  if (cb && cb.checked) cb.checked = false;
+  applyNullStyle(fieldEl, false);
+}
+
+// if some -null boxes are initially checked, sync visuals on load
+window.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('input[type="checkbox"][name$="-null"]').forEach(function(cb) {
+    const base = cb.name.slice(0, -5);
+    const form = cb.form || document;
+    const field = form.elements[base];
+    if (!field) return;
+    if (cb.checked) applyNullStyle(field, true);
+    else applyNullStyle(field, false); // ensures removal if server prefilled value
+  });
+});
