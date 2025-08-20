@@ -421,6 +421,10 @@ public class AdminServlet extends HttpServlet
             case "viewResultsGameSession":
             case "viewResultsGroup":
             case "viewResultsPlayer":
+            case "resultExportGroupsCSV":
+            case "resultExportGroupsTSV":
+            case "resultExportPlayersCSV":
+            case "resultExportPlayersTSV":
                 data.setMenuChoice("results");
                 MaintainResults.handleMenu(request, click, recordNr);
                 break;
