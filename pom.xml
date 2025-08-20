@@ -107,7 +107,12 @@
     <dependency>
       <groupId>nl.tudelft.simulation</groupId>
       <artifactId>housinggame-common</artifactId>
-      <version>1.7.0</version>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>de.siegmar</groupId>
+      <artifactId>fastcsv</artifactId>
+      <version>4.0.0</version>
     </dependency>
   </dependencies>
 
