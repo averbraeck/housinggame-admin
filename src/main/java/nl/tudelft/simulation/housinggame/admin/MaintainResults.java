@@ -350,7 +350,7 @@ public class MaintainResults
                 }
                 if (moved)
                 {
-                    reportPlayerLine(s, "Spent savings for buying house", finalHouseGroup, pr.getSpentSavingsForBuyingHouse(),
+                    reportPlayerLine(s, "Spent savings for buying house", finalHouseGroup, -pr.getSpentSavingsForBuyingHouse(),
                             null, false);
                 }
                 if (pr.getMortgagePayment() != 0)
