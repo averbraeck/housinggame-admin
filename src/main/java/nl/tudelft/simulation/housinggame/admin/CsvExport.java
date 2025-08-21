@@ -32,10 +32,12 @@ import org.jooq.impl.DSL;
 
 import de.siegmar.fastcsv.writer.CsvWriter;
 import nl.tudelft.simulation.housinggame.data.Tables;
+import nl.tudelft.simulation.housinggame.data.tables.records.CommunityRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GamesessionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GameversionRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GrouproundRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.HouseRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.HousegroupRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.MeasurecategoryRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.NewsitemRecord;
@@ -305,6 +307,35 @@ public class CsvExport
                         Tables.MOVINGREASON.GAMEVERSION_ID.eq(gameVersion.getId()), Tables.MOVINGREASON.ID);
                 closeTableCsv(Tables.MOVINGREASON, session);
 
+                // community
+                dumpTableCsvHeader(data, session, Tables.COMMUNITY);
+                List<CommunityRecord> communityList = dumpTableCsvLines(data, session, Tables.COMMUNITY,
+                        Tables.COMMUNITY.GAMEVERSION_ID.eq(gameVersion.getId()), Tables.COMMUNITY.ID);
+                closeTableCsv(Tables.COMMUNITY, session);
+
+                // tax
+                dumpTableCsvHeader(data, session, Tables.TAX);
+                for (var community : communityList)
+                    dumpTableCsvLines(data, session, Tables.TAX, Tables.TAX.COMMUNITY_ID.eq(community.getId()), Tables.TAX.ID);
+                closeTableCsv(Tables.TAX, session);
+
+                // house
+                dumpTableCsvHeader(data, session, Tables.HOUSE);
+                List<HouseRecord> houseList = new ArrayList<>();
+                for (var community : communityList)
+                {
+                    var houses = dumpTableCsvLines(data, session, Tables.HOUSE, Tables.HOUSE.COMMUNITY_ID.eq(community.getId()),
+                            Tables.HOUSE.ID);
+                    houseList.addAll(houses);
+                }
+                closeTableCsv(Tables.HOUSE, session);
+
+                // initialhousemeasure
+                dumpTableCsvHeader(data, session, Tables.INITIALHOUSEMEASURE);
+                for (var house : houseList)
+                    dumpTableCsvLines(data, session, Tables.INITIALHOUSEMEASURE,
+                            Tables.INITIALHOUSEMEASURE.HOUSE_ID.eq(house.getId()), Tables.INITIALHOUSEMEASURE.ID);
+                closeTableCsv(Tables.INITIALHOUSEMEASURE, session);
             }
         }
         catch (IOException e)
