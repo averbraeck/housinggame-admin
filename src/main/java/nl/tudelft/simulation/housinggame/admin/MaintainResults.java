@@ -1,5 +1,14 @@
 package nl.tudelft.simulation.housinggame.admin;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.SortedMap;
@@ -9,7 +18,9 @@ import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import nl.tudelft.simulation.housinggame.common.SqlUtils;
 import nl.tudelft.simulation.housinggame.data.Tables;
@@ -22,7 +33,8 @@ import nl.tudelft.simulation.housinggame.data.tables.records.PlayerroundRecord;
 public class MaintainResults
 {
 
-    public static void handleMenu(final HttpServletRequest request, final String click, final int recordId)
+    public static void handleMenu(final HttpServletRequest request, final HttpServletResponse response, final String click,
+            final int recordId)
     {
         HttpSession session = request.getSession();
         AdminData data = SessionUtils.getData(session);
@@ -51,7 +63,14 @@ public class MaintainResults
 
         else if (click.endsWith("ExportGroupsCSV"))
         {
-            exportGroupsCsv(session, data, recordId, ',');
+            exportGroups(response, data, false);
+            return;
+        }
+
+        else if (click.endsWith("ExportGroupsTSV"))
+        {
+            exportGroups(response, data, true);
+            return;
         }
 
         AdminServlet.makeColumnContent(data);
@@ -125,10 +144,62 @@ public class MaintainResults
         data.getColumn(2).addContent(AdminTable.finalButton("TSV export all players", "resultExportPlayersTSV"));
     }
 
-    public static void exportGroupsCsv(final HttpSession session, final AdminData data, final int gammeSessionRecordId,
-            final char separator)
+    /*
+     * *********************************************************************************************************
+     * ***************************************** EXPORT GROUP RESULTS ******************************************
+     * *********************************************************************************************************
+     */
+
+    public static void exportGroups(final HttpServletResponse response, final AdminData data, final boolean tab)
     {
-        CsvExport.test(data);
+        try
+        {
+            File tempFile = File.createTempFile("housinggame_session_", ".zip");
+            tempFile.deleteOnExit();
+
+            int gameSessionRecordId = data.getColumn(0).getSelectedRecordId();
+            CsvExport.exportGameSession(data, tempFile, gameSessionRecordId);
+
+            // stream the results for download
+            String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("uuuuMMdd_HHmmss"));
+            String baseName = "housinggame_session_" + gameSessionRecordId + "_" + date + ".zip";
+
+            // Set headers (with RFC 5987 for UTF-8 safety)
+            response.setContentType("application/zip");
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + baseName + "\"; filename*=UTF-8''"
+                    + URLEncoder.encode(baseName, StandardCharsets.UTF_8));
+
+            try
+            {
+                long size = Files.size(tempFile.toPath());
+                // Optional but nice for clients:
+                response.setContentLengthLong(size);
+            }
+            catch (IOException ignore)
+            {
+                // If size can't be determined, skip content length
+            }
+
+            try (InputStream in = new BufferedInputStream(Files.newInputStream(tempFile.toPath()));
+                    ServletOutputStream out = response.getOutputStream())
+            {
+
+                byte[] buffer = new byte[8192];
+                int n;
+                while ((n = in.read(buffer)) != -1)
+                {
+                    out.write(buffer, 0, n);
+                }
+                out.flush(); // ensure everything is sent
+                response.flushBuffer();
+            }
+        }
+        catch (IOException exception)
+        {
+            exception.printStackTrace();
+            ModalWindowUtils.popup(data, "Error creating temporary file", "<p>" + exception.getMessage() + "</p>",
+                    "clickMenu('logging')");
+        }
     }
 
     /*

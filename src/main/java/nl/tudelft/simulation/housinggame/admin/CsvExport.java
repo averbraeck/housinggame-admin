@@ -2,6 +2,7 @@ package nl.tudelft.simulation.housinggame.admin;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -9,7 +10,6 @@ import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,6 +32,17 @@ import org.jooq.impl.DSL;
 
 import de.siegmar.fastcsv.writer.CsvWriter;
 import nl.tudelft.simulation.housinggame.data.Tables;
+import nl.tudelft.simulation.housinggame.data.tables.records.GamesessionRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.GameversionRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.GrouproundRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.HousegroupRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.MeasurecategoryRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.NewsitemRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.PlayerRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.PlayerroundRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.QuestionRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.ScenarioRecord;
 
 /**
  * ExportUtils.java.
@@ -99,27 +110,202 @@ public class CsvExport
         session.closeTable(table);
     }
 
-    public static void test(final AdminData data)
+    public static void exportGameSession(final AdminData data, final File tempFile, final int gameSessionRecordId)
     {
         try
         {
-            Path zipPath = Files.createTempFile("tables-", ".zip");
-
-            try (OutputStream fos = Files.newOutputStream(zipPath); ZipCsvDumpSession session = new ZipCsvDumpSession(fos))
+            try (OutputStream fos = Files.newOutputStream(tempFile.toPath());
+                    ZipCsvDumpSession session = new ZipCsvDumpSession(fos))
             {
-                // welfare type
-                CsvExport.dumpTableCsvHeader(data, session, Tables.WELFARETYPE);
-                CsvExport.dumpTableCsvLines(data, session, Tables.WELFARETYPE, null, Tables.WELFARETYPE.NAME);
-                CsvExport.closeTableCsv(Tables.WELFARETYPE, session);
+                // game session
+                dumpTableCsvHeader(data, session, Tables.GAMESESSION);
+                List<GamesessionRecord> gameSessionList = dumpTableCsvLines(data, session, Tables.GAMESESSION,
+                        Tables.GAMESESSION.ID.eq(gameSessionRecordId), Tables.GAMESESSION.NAME);
+                var gameSession = gameSessionList.get(0);
+                closeTableCsv(Tables.GAMESESSION, session);
 
-                // measure type
-                CsvExport.dumpTableCsvHeader(data, session, Tables.MEASURETYPE);
-                CsvExport.dumpTableCsvLines(data, session, Tables.MEASURETYPE, null, Tables.MEASURETYPE.NAME);
-                CsvExport.closeTableCsv(Tables.MEASURETYPE, session);
+                // group
+                dumpTableCsvHeader(data, session, Tables.GROUP);
+                List<GroupRecord> groupList = dumpTableCsvLines(data, session, Tables.GROUP,
+                        Tables.GROUP.GAMESESSION_ID.eq(gameSessionRecordId), Tables.GROUP.NAME);
+                closeTableCsv(Tables.GROUP, session);
+
+                // player
+                List<PlayerRecord> playerList = new ArrayList<>();
+                dumpTableCsvHeader(data, session, Tables.PLAYER);
+                for (var group : groupList)
+                {
+                    var players = dumpTableCsvLines(data, session, Tables.PLAYER, Tables.PLAYER.GROUP_ID.eq(group.getId()),
+                            Tables.PLAYER.CODE);
+                    playerList.addAll(players);
+                }
+                closeTableCsv(Tables.PLAYER, session);
+
+                // groupround
+                List<GrouproundRecord> groupRoundList = new ArrayList<>();
+                dumpTableCsvHeader(data, session, Tables.GROUPROUND);
+                for (var group : groupList)
+                {
+                    var groupRounds = dumpTableCsvLines(data, session, Tables.GROUPROUND,
+                            Tables.GROUPROUND.GROUP_ID.eq(group.getId()), Tables.GROUPROUND.TIMESTAMP);
+                    groupRoundList.addAll(groupRounds);
+                }
+                closeTableCsv(Tables.GROUPROUND, session);
+
+                // playerround
+                List<PlayerroundRecord> playerRoundList = new ArrayList<>();
+                dumpTableCsvHeader(data, session, Tables.PLAYERROUND);
+                for (var player : playerList)
+                {
+                    var playerRounds = dumpTableCsvLines(data, session, Tables.PLAYERROUND,
+                            Tables.PLAYERROUND.PLAYER_ID.eq(player.getId()), Tables.PLAYERROUND.CREATE_TIME);
+                    playerRoundList.addAll(playerRounds);
+                }
+                closeTableCsv(Tables.PLAYERROUND, session);
+
+                // groupstate
+                dumpTableCsvHeader(data, session, Tables.GROUPSTATE);
+                for (var groupRound : groupRoundList)
+                    dumpTableCsvLines(data, session, Tables.GROUPSTATE, Tables.GROUPSTATE.GROUPROUND_ID.eq(groupRound.getId()),
+                            Tables.GROUPSTATE.TIMESTAMP);
+                closeTableCsv(Tables.GROUPSTATE, session);
+
+                // playerstate
+                dumpTableCsvHeader(data, session, Tables.PLAYERSTATE);
+                for (var playerRound : playerRoundList)
+                    dumpTableCsvLines(data, session, Tables.PLAYERSTATE,
+                            Tables.PLAYERSTATE.PLAYERROUND_ID.eq(playerRound.getId()), Tables.PLAYERSTATE.TIMESTAMP);
+                closeTableCsv(Tables.PLAYERSTATE, session);
+
+                // housegroup
+                List<HousegroupRecord> houseGroupList = new ArrayList<>();
+                dumpTableCsvHeader(data, session, Tables.HOUSEGROUP);
+                for (var group : groupList)
+                {
+                    var houseGroups = dumpTableCsvLines(data, session, Tables.HOUSEGROUP,
+                            Tables.HOUSEGROUP.GROUP_ID.eq(group.getId()), Tables.HOUSEGROUP.ID);
+                    houseGroupList.addAll(houseGroups);
+                }
+                closeTableCsv(Tables.HOUSEGROUP, session);
+
+                // housetransaction
+                dumpTableCsvHeader(data, session, Tables.HOUSETRANSACTION);
+                for (var houseGroup : houseGroupList)
+                    dumpTableCsvLines(data, session, Tables.HOUSETRANSACTION,
+                            Tables.HOUSETRANSACTION.HOUSEGROUP_ID.eq(houseGroup.getId()), Tables.HOUSETRANSACTION.TIMESTAMP);
+                closeTableCsv(Tables.HOUSETRANSACTION, session);
+
+                // housemeasure
+                dumpTableCsvHeader(data, session, Tables.HOUSEMEASURE);
+                for (var houseGroup : houseGroupList)
+                    dumpTableCsvLines(data, session, Tables.HOUSEMEASURE,
+                            Tables.HOUSEMEASURE.HOUSEGROUP_ID.eq(houseGroup.getId()), Tables.HOUSEMEASURE.ID);
+                closeTableCsv(Tables.HOUSEMEASURE, session);
+
+                // personalmeasure
+                dumpTableCsvHeader(data, session, Tables.PERSONALMEASURE);
+                for (var playerRound : playerRoundList)
+                    dumpTableCsvLines(data, session, Tables.PERSONALMEASURE,
+                            Tables.PERSONALMEASURE.PLAYERROUND_ID.eq(playerRound.getId()), Tables.PERSONALMEASURE.ID);
+                closeTableCsv(Tables.PERSONALMEASURE, session);
+
+                // questionscore
+                dumpTableCsvHeader(data, session, Tables.QUESTIONSCORE);
+                for (var playerRound : playerRoundList)
+                    dumpTableCsvLines(data, session, Tables.QUESTIONSCORE,
+                            Tables.QUESTIONSCORE.PLAYERROUND_ID.eq(playerRound.getId()), Tables.QUESTIONSCORE.ID);
+                closeTableCsv(Tables.QUESTIONSCORE, session);
+
+                // ------------------------------------- DEFINITION TABLES -------------------------------------------
+
+                // gameversion
+                dumpTableCsvHeader(data, session, Tables.GAMEVERSION);
+                List<GameversionRecord> gameVersionList = dumpTableCsvLines(data, session, Tables.GAMEVERSION,
+                        Tables.GAMEVERSION.ID.eq(gameSession.getGameversionId()), Tables.GAMEVERSION.NAME);
+                var gameVersion = gameVersionList.get(0);
+                closeTableCsv(Tables.GAMEVERSION, session);
+
+                // scenario
+                dumpTableCsvHeader(data, session, Tables.SCENARIO);
+                List<ScenarioRecord> scenarioList = dumpTableCsvLines(data, session, Tables.SCENARIO,
+                        Tables.SCENARIO.GAMEVERSION_ID.eq(gameVersion.getId()), Tables.SCENARIO.NAME);
+                closeTableCsv(Tables.SCENARIO, session);
+
+                // scenarioparameters
+                dumpTableCsvHeader(data, session, Tables.SCENARIOPARAMETERS);
+                for (var scenario : scenarioList)
+                    dumpTableCsvLines(data, session, Tables.SCENARIOPARAMETERS,
+                            Tables.SCENARIOPARAMETERS.ID.eq(scenario.getScenarioparametersId()), Tables.SCENARIOPARAMETERS.ID);
+                closeTableCsv(Tables.SCENARIOPARAMETERS, session);
+
+                // welfaretype
+                dumpTableCsvHeader(data, session, Tables.WELFARETYPE);
+                for (var scenario : scenarioList)
+                    dumpTableCsvLines(data, session, Tables.WELFARETYPE, Tables.WELFARETYPE.SCENARIO_ID.eq(scenario.getId()),
+                            Tables.WELFARETYPE.ID);
+                closeTableCsv(Tables.WELFARETYPE, session);
+
+                // question
+                dumpTableCsvHeader(data, session, Tables.QUESTION);
+                List<QuestionRecord> questionList = new ArrayList<>();
+                for (var scenario : scenarioList)
+                {
+                    var questions = dumpTableCsvLines(data, session, Tables.QUESTION,
+                            Tables.QUESTION.SCENARIO_ID.eq(scenario.getId()), Tables.QUESTION.ID);
+                    questionList.addAll(questions);
+                }
+                closeTableCsv(Tables.QUESTION, session);
+
+                // questionitem
+                dumpTableCsvHeader(data, session, Tables.QUESTIONITEM);
+                for (var question : questionList)
+                    dumpTableCsvLines(data, session, Tables.QUESTIONITEM, Tables.QUESTIONITEM.QUESTION_ID.eq(question.getId()),
+                            Tables.QUESTIONITEM.ID);
+                closeTableCsv(Tables.QUESTIONITEM, session);
+
+                // newsitem
+                dumpTableCsvHeader(data, session, Tables.NEWSITEM);
+                List<NewsitemRecord> newsItemList = new ArrayList<>();
+                for (var scenario : scenarioList)
+                {
+                    var newsItems = dumpTableCsvLines(data, session, Tables.NEWSITEM,
+                            Tables.NEWSITEM.SCENARIO_ID.eq(scenario.getId()), Tables.NEWSITEM.ID);
+                    newsItemList.addAll(newsItems);
+                }
+                closeTableCsv(Tables.NEWSITEM, session);
+
+                // newseffects
+                dumpTableCsvHeader(data, session, Tables.NEWSEFFECTS);
+                for (var newsItem : newsItemList)
+                    dumpTableCsvLines(data, session, Tables.NEWSEFFECTS, Tables.NEWSEFFECTS.NEWSITEM_ID.eq(newsItem.getId()),
+                            Tables.NEWSEFFECTS.ID);
+                closeTableCsv(Tables.NEWSEFFECTS, session);
+
+                // measurecategory
+                dumpTableCsvHeader(data, session, Tables.MEASURECATEGORY);
+                List<MeasurecategoryRecord> measureCategoryList = new ArrayList<>();
+                for (var scenario : scenarioList)
+                {
+                    var mcs = dumpTableCsvLines(data, session, Tables.MEASURECATEGORY,
+                            Tables.MEASURECATEGORY.SCENARIO_ID.eq(scenario.getId()), Tables.MEASURECATEGORY.ID);
+                    measureCategoryList.addAll(mcs);
+                }
+                closeTableCsv(Tables.MEASURECATEGORY, session);
+
+                // measuretype
+                dumpTableCsvHeader(data, session, Tables.MEASURETYPE);
+                for (var measureCategory : measureCategoryList)
+                    dumpTableCsvLines(data, session, Tables.MEASURETYPE,
+                            Tables.MEASURETYPE.MEASURECATEGORY_ID.eq(measureCategory.getId()), Tables.MEASURETYPE.ID);
+                closeTableCsv(Tables.MEASURETYPE, session);
+
+                // movingreason
+                dumpTableCsvHeader(data, session, Tables.MOVINGREASON);
+                dumpTableCsvLines(data, session, Tables.MOVINGREASON,
+                        Tables.MOVINGREASON.GAMEVERSION_ID.eq(gameVersion.getId()), Tables.MOVINGREASON.ID);
+                closeTableCsv(Tables.MOVINGREASON, session);
+
             }
-
-            // Hand off zipPath to your servlet for streaming
-            System.out.println("ZIP ready at: " + zipPath);
         }
         catch (IOException e)
         {

@@ -421,13 +421,18 @@ public class AdminServlet extends HttpServlet
             case "viewResultsGameSession":
             case "viewResultsGroup":
             case "viewResultsPlayer":
+                data.setMenuChoice("results");
+                MaintainResults.handleMenu(request, response, click, recordNr);
+                break;
+
+            // (GameSession) - (Group) - Player - Result - Export
             case "resultExportGroupsCSV":
             case "resultExportGroupsTSV":
             case "resultExportPlayersCSV":
             case "resultExportPlayersTSV":
                 data.setMenuChoice("results");
-                MaintainResults.handleMenu(request, click, recordNr);
-                break;
+                MaintainResults.handleMenu(request, response, click, recordNr);
+                return;
 
             default:
                 System.err.println("Unknown menu choice: " + click);
