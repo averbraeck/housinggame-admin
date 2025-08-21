@@ -46,7 +46,7 @@ public class MaintainResults
             showGameSession(session, data, 0);
         }
 
-        else if (click.contains("GameSession"))
+        else if (click.endsWith("GameSession"))
         {
             showGameSession(session, data, recordId);
         }
@@ -61,15 +61,27 @@ public class MaintainResults
             showPlayer(session, data, recordId);
         }
 
-        else if (click.endsWith("ExportGroupsCSV"))
+        else if (click.endsWith("ExportGameSessionCSV"))
         {
-            exportGroups(response, data, false);
+            exportGameSession(response, data, false);
             return;
         }
 
-        else if (click.endsWith("ExportGroupsTSV"))
+        else if (click.endsWith("ExportGameSessionTSV"))
         {
-            exportGroups(response, data, true);
+            exportGameSession(response, data, true);
+            return;
+        }
+
+        else if (click.endsWith("ExportGroupCSV"))
+        {
+            exportGroup(response, data, false);
+            return;
+        }
+
+        else if (click.endsWith("ExportGroupTSV"))
+        {
+            exportGroup(response, data, true);
             return;
         }
 
@@ -93,8 +105,8 @@ public class MaintainResults
             data.showDependentColumn("ResultsGroup", 1, 0, false, Tables.GROUP, Tables.GROUP.NAME, "name",
                     Tables.GROUP.GAMESESSION_ID, false);
             showSessionScores(data, recordId);
-            data.getColumn(1).addContent(AdminTable.finalButton("CSV export all groups", "resultExportGroupsCSV"));
-            data.getColumn(1).addContent(AdminTable.finalButton("TSV export all groups", "resultExportGroupsTSV"));
+            data.getColumn(1).addContent(AdminTable.finalButton("CSV export all groups", "resultExportGameSessionCSV"));
+            data.getColumn(1).addContent(AdminTable.finalButton("TSV export all groups", "resultExportGameSessionTSV"));
         }
     }
 
@@ -117,11 +129,11 @@ public class MaintainResults
             data.showDependentColumn("ResultsPlayer", 2, 0, false, Tables.PLAYER, Tables.PLAYER.CODE, "code",
                     Tables.PLAYER.GROUP_ID, false);
             showGroupScores(data, recordId);
-            data.getColumn(2).addContent(AdminTable.finalButton("CSV export all players", "resultExportPlayersCSV"));
-            data.getColumn(2).addContent(AdminTable.finalButton("TSV export all players", "resultExportPlayersTSV"));
+            data.getColumn(2).addContent(AdminTable.finalButton("CSV export all players", "resultExportGroupCSV"));
+            data.getColumn(2).addContent(AdminTable.finalButton("TSV export all players", "resultExportGroupTSV"));
         }
-        data.getColumn(1).addContent(AdminTable.finalButton("CSV export all groups", "resultExportGroupsCSV"));
-        data.getColumn(1).addContent(AdminTable.finalButton("TSV export all groups", "resultExportGroupsTSV"));
+        data.getColumn(1).addContent(AdminTable.finalButton("CSV export all groups", "resultExportGameSessionCSV"));
+        data.getColumn(1).addContent(AdminTable.finalButton("TSV export all groups", "resultExportGameSessionTSV"));
     }
 
     /*
@@ -138,19 +150,19 @@ public class MaintainResults
                 Tables.GROUP.NAME, "name", Tables.GROUP.GAMESESSION_ID, false);
         showPlayerColumn(data, "ResultsPlayer", 2, recordId);
         showPlayerScores(data, recordId);
-        data.getColumn(1).addContent(AdminTable.finalButton("CSV export all groups", "resultExportGroupsCSV"));
-        data.getColumn(1).addContent(AdminTable.finalButton("TSV export all groups", "resultExportGroupsTSV"));
-        data.getColumn(2).addContent(AdminTable.finalButton("CSV export all players", "resultExportPlayersCSV"));
-        data.getColumn(2).addContent(AdminTable.finalButton("TSV export all players", "resultExportPlayersTSV"));
+        data.getColumn(1).addContent(AdminTable.finalButton("CSV export all groups", "resultExportGameSessionCSV"));
+        data.getColumn(1).addContent(AdminTable.finalButton("TSV export all groups", "resultExportGameSessionTSV"));
+        data.getColumn(2).addContent(AdminTable.finalButton("CSV export all players", "resultExportGroupCSV"));
+        data.getColumn(2).addContent(AdminTable.finalButton("TSV export all players", "resultExportGroupTSV"));
     }
 
     /*
      * *********************************************************************************************************
-     * ***************************************** EXPORT GROUP RESULTS ******************************************
+     * ************************************** EXPORT GAME SESSION RESULTS **************************************
      * *********************************************************************************************************
      */
 
-    public static void exportGroups(final HttpServletResponse response, final AdminData data, final boolean tab)
+    public static void exportGameSession(final HttpServletResponse response, final AdminData data, final boolean tab)
     {
         try
         {
@@ -158,7 +170,17 @@ public class MaintainResults
             tempFile.deleteOnExit();
 
             int gameSessionRecordId = data.getColumn(0).getSelectedRecordId();
-            CsvExport.exportGameSession(data, tempFile, gameSessionRecordId);
+            try
+            {
+                CsvExport.exportGameSession(data, tempFile, gameSessionRecordId);
+            }
+            catch (Exception exception)
+            {
+                exception.printStackTrace();
+                ModalWindowUtils.popup(data, "Error exporting game session", "<p>" + exception.getMessage() + "</p>",
+                        "clickMenu('results')");
+                return;
+            }
 
             // stream the results for download
             String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("uuuuMMdd_HHmmss"));
@@ -198,7 +220,75 @@ public class MaintainResults
         {
             exception.printStackTrace();
             ModalWindowUtils.popup(data, "Error creating temporary file", "<p>" + exception.getMessage() + "</p>",
-                    "clickMenu('logging')");
+                    "clickMenu('results')");
+        }
+    }
+
+    /*
+     * *********************************************************************************************************
+     * ****************************************** EXPORT GROUP RESULTS *****************************************
+     * *********************************************************************************************************
+     */
+
+    public static void exportGroup(final HttpServletResponse response, final AdminData data, final boolean tab)
+    {
+        try
+        {
+            File tempFile = File.createTempFile("housinggame_group_", ".zip");
+            tempFile.deleteOnExit();
+
+            int groupRecordId = data.getColumn(1).getSelectedRecordId();
+            try
+            {
+                CsvExport.exportGroupResults(data, tempFile, groupRecordId);
+            }
+            catch (Exception exception)
+            {
+                exception.printStackTrace();
+                ModalWindowUtils.popup(data, "Error exporting group results", "<p>" + exception.getMessage() + "</p>",
+                        "clickMenu('results')");
+                return;
+            }
+
+            // stream the results for download
+            String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("uuuuMMdd_HHmmss"));
+            String baseName = "housinggame_group_" + groupRecordId + "_" + date + ".zip";
+
+            // Set headers (with RFC 5987 for UTF-8 safety)
+            response.setContentType("application/zip");
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + baseName + "\"; filename*=UTF-8''"
+                    + URLEncoder.encode(baseName, StandardCharsets.UTF_8));
+
+            try
+            {
+                long size = Files.size(tempFile.toPath());
+                // Optional but nice for clients:
+                response.setContentLengthLong(size);
+            }
+            catch (IOException ignore)
+            {
+                // If size can't be determined, skip content length
+            }
+
+            try (InputStream in = new BufferedInputStream(Files.newInputStream(tempFile.toPath()));
+                    ServletOutputStream out = response.getOutputStream())
+            {
+
+                byte[] buffer = new byte[8192];
+                int n;
+                while ((n = in.read(buffer)) != -1)
+                {
+                    out.write(buffer, 0, n);
+                }
+                out.flush(); // ensure everything is sent
+                response.flushBuffer();
+            }
+        }
+        catch (IOException exception)
+        {
+            exception.printStackTrace();
+            ModalWindowUtils.popup(data, "Error creating temporary file", "<p>" + exception.getMessage() + "</p>",
+                    "clickMenu('results')");
         }
     }
 

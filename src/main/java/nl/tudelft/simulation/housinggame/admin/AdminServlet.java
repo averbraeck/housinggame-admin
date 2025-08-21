@@ -426,13 +426,13 @@ public class AdminServlet extends HttpServlet
                 break;
 
             // (GameSession) - (Group) - Player - Result - Export
-            case "resultExportGroupsCSV":
-            case "resultExportGroupsTSV":
-            case "resultExportPlayersCSV":
-            case "resultExportPlayersTSV":
+            case "resultExportGameSessionCSV":
+            case "resultExportGameSessionTSV":
+            case "resultExportGroupCSV":
+            case "resultExportGroupTSV":
                 data.setMenuChoice("results");
                 MaintainResults.handleMenu(request, response, click, recordNr);
-                return;
+                return; // note: very important
 
             default:
                 System.err.println("Unknown menu choice: " + click);
