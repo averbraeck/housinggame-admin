@@ -49,6 +49,11 @@ public class MaintainResults
             showPlayer(session, data, recordId);
         }
 
+        else if (click.endsWith("ExportGroupsCSV"))
+        {
+            exportGroupsCsv(session, data, recordId, ',');
+        }
+
         AdminServlet.makeColumnContent(data);
     }
 
@@ -118,6 +123,12 @@ public class MaintainResults
         data.getColumn(1).addContent(AdminTable.finalButton("TSV export all groups", "resultExportGroupsTSV"));
         data.getColumn(2).addContent(AdminTable.finalButton("CSV export all players", "resultExportPlayersCSV"));
         data.getColumn(2).addContent(AdminTable.finalButton("TSV export all players", "resultExportPlayersTSV"));
+    }
+
+    public static void exportGroupsCsv(final HttpSession session, final AdminData data, final int gammeSessionRecordId,
+            final char separator)
+    {
+        CsvExport.test(data);
     }
 
     /*
