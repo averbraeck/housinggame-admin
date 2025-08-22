@@ -11,8 +11,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
@@ -312,40 +310,6 @@ public class MaintainResults
             s.append(tableRow.process());
         }
         s.append(AdminTable.endTable());
-
-        data.getColumn(columnNr).setSelectedRecordId(recordId);
-        data.getColumn(columnNr).setContent(s.toString());
-    }
-
-    public static void showPlayerRoundColumn(final AdminData data, final String columnName, final int columnNr,
-            final int recordId)
-    {
-        // there is maximally ONE playerround record for the selection of a player and a groupround
-        StringBuilder s = new StringBuilder();
-        DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        List<PlayerroundRecord> records = dslContext.selectFrom(Tables.PLAYERROUND)
-                .where(Tables.PLAYERROUND.GROUPROUND_ID.eq(data.getColumn(2).getSelectedRecordId())
-                        .and(Tables.PLAYERROUND.PLAYER_ID.eq(data.getColumn(3).getSelectedRecordId())))
-                .fetch();
-        SortedMap<String, PlayerroundRecord> sorted = new TreeMap<>();
-        for (PlayerroundRecord record : records)
-        {
-            PlayerRecord player =
-                    dslContext.selectFrom(Tables.PLAYER.where(Tables.PLAYER.ID.eq(record.getPlayerId()))).fetchOne();
-            sorted.put(player.getCode(), record);
-        }
-
-        s.append(AdminTable.startTable());
-        for (String code : sorted.keySet())
-        {
-            PlayerroundRecord record = sorted.get(code);
-            TableRow tableRow = new TableRow(IdProvider.getId(record), recordId, code, "view" + columnName);
-            tableRow.addButton("Edit", "edit" + columnName);
-            s.append(tableRow.process());
-        }
-        s.append(AdminTable.endTable());
-
-        s.append(AdminTable.finalButton("New PlayerRound", "new" + columnName));
 
         data.getColumn(columnNr).setSelectedRecordId(recordId);
         data.getColumn(columnNr).setContent(s.toString());
