@@ -434,6 +434,15 @@ public class AdminServlet extends HttpServlet
                 MaintainResults.handleMenu(request, response, click, recordNr);
                 return; // note: very important
 
+            // (GameSession) - (Group) - Player - Timeline
+            case "timeline":
+            case "viewTimelineGameSession":
+            case "viewTimelineGroup":
+            case "viewTimelinePlayer":
+                data.setMenuChoice("timeline");
+                MaintainPlayerTimeline.handleMenu(request, response, click, recordNr);
+                break;
+
             default:
                 System.err.println("Unknown menu choice: " + click);
                 break;
@@ -517,12 +526,10 @@ public class AdminServlet extends HttpServlet
         topmenu(data, s, "play-measure", "Play-Measure", "#0040ff");
         // (GameSession) - (Group) - HouseGroup - Measure - HouseTransaction
         topmenu(data, s, "housemeasure", "House-Measure", "#0040ff");
-        //
+        // (GameSession) - (Group) - Player - Result - Export
         topmenu(data, s, "results", "Results", "#ff00ff");
-        //
-        topmenu(data, s, "grouptimeline", "GroupTimeline", "#ff00ff");
-        //
-        topmenu(data, s, "playertimeline", "PlayerTimeline", "#ff00ff");
+        // (GameSession) - (Group) - Player - Timeline
+        topmenu(data, s, "timeline", "PlayerTimeline", "#ff00ff");
         return s.toString();
     }
 
