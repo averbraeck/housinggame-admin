@@ -215,7 +215,7 @@ public class MaintainPlayerTimeline
                             .where(Tables.GROUPSTATE.GROUPROUND_ID.eq(this.groupRound.getId())).fetch()
                             .sortAsc(Tables.GROUPSTATE.TIMESTAMP);
                     LocalDateTime time = null;
-                    while (!playerStateList.isEmpty() && !groupStateList.isEmpty())
+                    while (!playerStateList.isEmpty() || !groupStateList.isEmpty())
                     {
                         if (playerStateList.isEmpty())
                             reportGroupState(groupStateList.remove(0));
@@ -265,16 +265,6 @@ public class MaintainPlayerTimeline
                     reportPlayerLine(groupState.getTimestamp(), "G:" + groupState.getGroupState(), "Rolled dice", "P="
                             + this.groupRound.getPluvialFloodIntensity() + ", F=" + this.groupRound.getFluvialFloodIntensity(),
                             null, null, null, true);
-                    String protP = "B:" + this.finalHouseGroup.getPluvialBaseProtection() + ", H:"
-                            + this.finalHouseGroup.getPluvialHouseProtection();
-                    reportPlayerLine(groupState.getTimestamp(), "G:" + groupState.getGroupState(), "Pluvial damage", protP,
-                            this.finalHouseGroup, -this.pr.getCostPluvialDamage(), -this.pr.getSatisfactionPluvialPenalty(),
-                            true);
-                    String protF = "B:" + this.finalHouseGroup.getFluvialBaseProtection() + ", H:"
-                            + this.finalHouseGroup.getFluvialHouseProtection();
-                    reportPlayerLine(groupState.getTimestamp(), "G:" + groupState.getGroupState(), "Fluvial damage", protF,
-                            this.finalHouseGroup, -this.pr.getCostFluvialDamage(), -this.pr.getSatisfactionFluvialPenalty(),
-                            true);
                 }
 
                 default -> reportPlayerLine(groupState.getTimestamp(), "G:" + groupState.getGroupState(), "FACILITATOR", "",
@@ -298,9 +288,11 @@ public class MaintainPlayerTimeline
                         reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
                                 "Debt satisfaction change", "", null, null, -this.pr.getSatisfactionDebtPenalty(), false);
                 }
-                case "STAY_HOUSE_WAIT" -> reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
-                        "stayed in house, total mortgage", k(this.pr.getMortgageHouseEnd()), this.finalHouseGroup, null, null,
-                        true);
+                case "STAY_HOUSE_WAIT" -> {
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
+                            "stayed in house, total mortgage", k(this.pr.getMortgageHouseEnd()), this.finalHouseGroup, null,
+                            null, true);
+                }
                 case "STAYED_HOUSE" -> {
                     reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "Mortgage start of round",
                             k(this.pr.getMortgageLeftStart()), this.finalHouseGroup, null, null, true);
@@ -343,8 +335,10 @@ public class MaintainPlayerTimeline
                             "House rating satisfaction", "", this.finalHouseGroup, null,
                             this.pr.getSatisfactionHouseRatingDelta(), true);
                 }
-                case "VIEW_TAXES" -> reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
-                        "Paid taxes", "", this.finalHouseGroup, -this.pr.getCostTaxes(), null, true);
+                case "VIEW_TAXES" -> {
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "Paid taxes", "",
+                            this.finalHouseGroup, -this.pr.getCostTaxes(), null, true);
+                }
                 case "VIEW_IMPROVEMENTS" -> {
                     reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "House measures bought",
                             "", this.finalHouseGroup, -this.pr.getCostHouseMeasuresBought(),
@@ -352,6 +346,23 @@ public class MaintainPlayerTimeline
                     reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
                             "Personal measures bought", "", null, -this.pr.getCostPersonalMeasuresBought(),
                             this.pr.getSatisfactionPersonalMeasures(), true);
+                }
+                case "VIEW_DAMAGE" -> {
+                    String protP = "B:" + this.finalHouseGroup.getPluvialBaseProtection() + ", H:"
+                            + this.finalHouseGroup.getPluvialHouseProtection();
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "Pluvial damage", protP,
+                            this.finalHouseGroup, -this.pr.getCostPluvialDamage(), -this.pr.getSatisfactionPluvialPenalty(),
+                            true);
+                    String protF = "B:" + this.finalHouseGroup.getFluvialBaseProtection() + ", H:"
+                            + this.finalHouseGroup.getFluvialHouseProtection();
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "Fluvial damage", protF,
+                            this.finalHouseGroup, -this.pr.getCostFluvialDamage(), -this.pr.getSatisfactionFluvialPenalty(),
+                            true);
+                }
+                case "VIEW_SUMMARY" -> {
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
+                            "End of round " + this.groupRound.getRoundNumber(), "", this.finalHouseGroup,
+                            this.pr.getSpendableIncome(), this.pr.getSatisfactionTotal(), false);
                 }
 
                 default -> reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "PLAYER", "", null,
@@ -369,9 +380,6 @@ public class MaintainPlayerTimeline
                     - this.pr.getSatisfactionMovePenalty() + this.pr.getSatisfactionHouseMeasures()
                     + this.pr.getSatisfactionPersonalMeasures() - this.pr.getSatisfactionPluvialPenalty()
                     - this.pr.getSatisfactionFluvialPenalty();
-
-            reportPlayerLine(time, "P:VIEW_SUMMARY", "End of round " + this.groupRound.getRoundNumber(), "",
-                    this.finalHouseGroup, this.pr.getSpendableIncome(), this.pr.getSatisfactionTotal(), false);
             if (this.pr.getSpendableIncome() != incCheck || this.pr.getSatisfactionTotal() != satCheck)
                 reportPlayerLine(time, "P:VIEW_SUMMARY", "CHECK end of round " + this.groupRound.getRoundNumber(), "",
                         this.finalHouseGroup, incCheck, satCheck, false, "red");
