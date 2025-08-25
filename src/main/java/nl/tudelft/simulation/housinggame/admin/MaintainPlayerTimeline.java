@@ -1,6 +1,9 @@
 package nl.tudelft.simulation.housinggame.admin;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
@@ -30,7 +33,7 @@ public class MaintainPlayerTimeline
 
         if (click.equals("timeline"))
         {
-            data.clearColumns("15%", "GameSession", "15%", "Group", "15%", "Player", "55%", "Timeline");
+            data.clearColumns("15%", "GameSession", "10%", "Group", "10%", "Player", "65%", "Timeline");
             data.setFormColumn(null);
             showGameSession(session, data, 0);
         }
@@ -152,6 +155,12 @@ public class MaintainPlayerTimeline
 
         PlayerroundRecord pr;
 
+        HousegroupRecord startHouseGroup;
+
+        HousegroupRecord finalHouseGroup;
+
+        boolean moved;
+
         public void showTimeline(final AdminData data, final int playerRecordId)
         {
             DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
@@ -193,12 +202,19 @@ public class MaintainPlayerTimeline
                     this.s.append("          </thead>\n");
                     this.s.append("          <tbody>\n");
 
-                    List<PlayerstateRecord> playerStateList =
-                            dslContext.selectFrom(Tables.PLAYERSTATE).where(Tables.PLAYERSTATE.PLAYERROUND_ID.eq(this.pr.getId()))
-                                    .fetch().sortAsc(Tables.PLAYERSTATE.TIMESTAMP);
+                    this.startHouseGroup = this.pr.getStartHousegroupId() != null
+                            ? SqlUtils.readRecordFromId(data, Tables.HOUSEGROUP, this.pr.getStartHousegroupId()) : null;
+                    this.finalHouseGroup = this.pr.getFinalHousegroupId() != null
+                            ? SqlUtils.readRecordFromId(data, Tables.HOUSEGROUP, this.pr.getFinalHousegroupId()) : null;
+                    this.moved = !Objects.equals(this.pr.getStartHousegroupId(), this.pr.getFinalHousegroupId());
+
+                    List<PlayerstateRecord> playerStateList = dslContext.selectFrom(Tables.PLAYERSTATE)
+                            .where(Tables.PLAYERSTATE.PLAYERROUND_ID.eq(this.pr.getId())).fetch()
+                            .sortAsc(Tables.PLAYERSTATE.TIMESTAMP);
                     List<GroupstateRecord> groupStateList = dslContext.selectFrom(Tables.GROUPSTATE)
                             .where(Tables.GROUPSTATE.GROUPROUND_ID.eq(this.groupRound.getId())).fetch()
                             .sortAsc(Tables.GROUPSTATE.TIMESTAMP);
+                    LocalDateTime time = null;
                     while (!playerStateList.isEmpty() && !groupStateList.isEmpty())
                     {
                         if (playerStateList.isEmpty())
@@ -210,11 +226,18 @@ public class MaintainPlayerTimeline
                             var gTime = groupStateList.get(0).getTimestamp();
                             var pTime = playerStateList.get(0).getTimestamp();
                             if (gTime.isBefore(pTime))
+                            {
+                                time = groupStateList.get(0).getTimestamp();
                                 reportGroupState(groupStateList.remove(0));
+                            }
                             else
+                            {
+                                time = playerStateList.get(0).getTimestamp();
                                 reportPlayerState(playerStateList.remove(0));
+                            }
                         }
                     }
+                    reportLastPlayerState(time);
 
                     this.s.append("          </tbody>\n");
                     this.s.append("        </table>\n");
@@ -231,33 +254,152 @@ public class MaintainPlayerTimeline
             data.getColumn(3).setContent(this.s.toString());
         }
 
-        protected static void reportGroupState(final GroupstateRecord groupState)
+        protected void reportGroupState(final GroupstateRecord groupState)
         {
+            switch (groupState.getGroupState())
+            {
+                case "NEW_ROUND" -> reportPlayerLine(groupState.getTimestamp(), "G:" + groupState.getGroupState(),
+                        "Facilitator starts new round", "Round " + String.valueOf(this.groupRound.getRoundNumber()), null, null,
+                        null, true);
+                case "ROLLED_DICE" -> {
+                    reportPlayerLine(groupState.getTimestamp(), "G:" + groupState.getGroupState(), "Rolled dice", "P="
+                            + this.groupRound.getPluvialFloodIntensity() + ", F=" + this.groupRound.getFluvialFloodIntensity(),
+                            null, null, null, true);
+                    String protP = "B:" + this.finalHouseGroup.getPluvialBaseProtection() + ", H:"
+                            + this.finalHouseGroup.getPluvialHouseProtection();
+                    reportPlayerLine(groupState.getTimestamp(), "G:" + groupState.getGroupState(), "Pluvial damage", protP,
+                            this.finalHouseGroup, -this.pr.getCostPluvialDamage(), -this.pr.getSatisfactionPluvialPenalty(),
+                            true);
+                    String protF = "B:" + this.finalHouseGroup.getFluvialBaseProtection() + ", H:"
+                            + this.finalHouseGroup.getFluvialHouseProtection();
+                    reportPlayerLine(groupState.getTimestamp(), "G:" + groupState.getGroupState(), "Fluvial damage", protF,
+                            this.finalHouseGroup, -this.pr.getCostFluvialDamage(), -this.pr.getSatisfactionFluvialPenalty(),
+                            true);
+                }
 
+                default -> reportPlayerLine(groupState.getTimestamp(), "G:" + groupState.getGroupState(), "FACILITATOR", "",
+                        null, null, null, true);
+            }
         }
 
-        protected static void reportPlayerState(final PlayerstateRecord playerState)
+        protected void reportPlayerState(final PlayerstateRecord playerState)
         {
+            switch (playerState.getPlayerState())
+            {
+                case "READ_BUDGET" -> {
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "Player starts new round",
+                            "Round " + String.valueOf(this.groupRound.getRoundNumber()), this.startHouseGroup,
+                            this.incPrevRound, this.satPrevRound, false);
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "Round income", "", null,
+                            this.pr.getRoundIncome(), null, true);
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "Living costs", "", null,
+                            -this.pr.getLivingCosts(), null, true);
+                    if (this.pr.getPaidDebt() != 0)
+                        reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
+                                "Debt satisfaction change", "", null, null, -this.pr.getSatisfactionDebtPenalty(), false);
+                }
+                case "STAY_HOUSE_WAIT" -> reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
+                        "stayed in house, total mortgage", k(this.pr.getMortgageHouseEnd()), this.finalHouseGroup, null, null,
+                        true);
+                case "STAYED_HOUSE" -> {
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "Mortgage start of round",
+                            k(this.pr.getMortgageLeftStart()), this.finalHouseGroup, null, null, true);
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "Mortgage payment", "",
+                            this.finalHouseGroup, -this.pr.getMortgagePayment(), null, true);
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "Mortgage end of round",
+                            k(this.pr.getMortgageLeftEnd()), this.finalHouseGroup, null, null, true);
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
+                            "House rating satisfaction", "", this.finalHouseGroup, null,
+                            this.pr.getSatisfactionHouseRatingDelta(), true);
+                }
+                case "SELL_HOUSE_WAIT" -> {
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
+                            "Sold house, total mortgage", k(this.pr.getMortgageHouseStart()), this.startHouseGroup, null, null,
+                            true);
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
+                            "Sold house, left mortgage", k(this.pr.getMortgageLeftStart()), this.startHouseGroup, null, null,
+                            true);
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "Profit sold house", "",
+                            this.startHouseGroup, this.pr.getProfitSoldHouse(), null, false);
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "Penalty for moving", "",
+                            this.finalHouseGroup, null, -this.pr.getSatisfactionMovePenalty(), false);
+                }
+                case "BUY_HOUSE_WAIT" -> {
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
+                            "bought house, total mortgage", k(this.pr.getMortgageHouseEnd()), this.finalHouseGroup, null, null,
+                            true);
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
+                            "Spent savings for buying house", "", this.finalHouseGroup,
+                            -this.pr.getSpentSavingsForBuyingHouse(), null, false);
+                }
+                case "BOUGHT_HOUSE" -> {
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "Mortgage start of round",
+                            k(this.pr.getMortgageLeftStart()), this.finalHouseGroup, null, null, true);
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "Mortgage payment", "",
+                            this.finalHouseGroup, -this.pr.getMortgagePayment(), null, true);
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "Mortgage end of round",
+                            k(this.pr.getMortgageLeftEnd()), this.finalHouseGroup, null, null, true);
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
+                            "House rating satisfaction", "", this.finalHouseGroup, null,
+                            this.pr.getSatisfactionHouseRatingDelta(), true);
+                }
+                case "VIEW_TAXES" -> reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
+                        "Paid taxes", "", this.finalHouseGroup, -this.pr.getCostTaxes(), null, true);
+                case "VIEW_IMPROVEMENTS" -> {
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "House measures bought",
+                            "", this.finalHouseGroup, -this.pr.getCostHouseMeasuresBought(),
+                            this.pr.getSatisfactionHouseMeasures(), true);
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
+                            "Personal measures bought", "", null, -this.pr.getCostPersonalMeasuresBought(),
+                            this.pr.getSatisfactionPersonalMeasures(), true);
+                }
 
+                default -> reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "PLAYER", "", null,
+                        null, null, true);
+            }
         }
 
-        protected static void reportPlayerLine(final StringBuilder s, final String activity, final HousegroupRecord houseGroup,
-                final Integer income, final Integer satisfaction, final boolean nullIsDash)
+        protected void reportLastPlayerState(final LocalDateTime time)
         {
-            reportPlayerLine(s, activity, houseGroup, income, satisfaction, nullIsDash, "black");
+            int incCheck = this.incPrevRound + this.pr.getRoundIncome() - this.pr.getLivingCosts()
+                    - this.pr.getMortgagePayment() + this.pr.getProfitSoldHouse() - this.pr.getSpentSavingsForBuyingHouse()
+                    - this.pr.getCostTaxes() - this.pr.getCostHouseMeasuresBought() - this.pr.getCostPersonalMeasuresBought()
+                    - this.pr.getCostPluvialDamage() - this.pr.getCostFluvialDamage();
+            int satCheck = this.satPrevRound - this.pr.getSatisfactionDebtPenalty() + this.pr.getSatisfactionHouseRatingDelta()
+                    - this.pr.getSatisfactionMovePenalty() + this.pr.getSatisfactionHouseMeasures()
+                    + this.pr.getSatisfactionPersonalMeasures() - this.pr.getSatisfactionPluvialPenalty()
+                    - this.pr.getSatisfactionFluvialPenalty();
+
+            reportPlayerLine(time, "P:VIEW_SUMMARY", "End of round " + this.groupRound.getRoundNumber(), "",
+                    this.finalHouseGroup, this.pr.getSpendableIncome(), this.pr.getSatisfactionTotal(), false);
+            if (this.pr.getSpendableIncome() != incCheck || this.pr.getSatisfactionTotal() != satCheck)
+                reportPlayerLine(time, "P:VIEW_SUMMARY", "CHECK end of round " + this.groupRound.getRoundNumber(), "",
+                        this.finalHouseGroup, incCheck, satCheck, false, "red");
         }
 
-        protected static void reportPlayerLine(final StringBuilder s, final String activity, final HousegroupRecord houseGroup,
-                final Integer income, final Integer satisfaction, final boolean nullIsDash, final String color)
+        protected void reportPlayerLine(final LocalDateTime timestamp, final String state, final String activity,
+                final String value, final HousegroupRecord houseGroup, final Integer income, final Integer satisfaction,
+                final boolean nullIsDash)
         {
-            s.append("            <tr style=\"color:" + color + ";\">\n");
-            s.append("              <td width=\"55%\" align=\"left\">" + activity + "</td>\n");
-            s.append("              <td width=\"15%\" align=\"left\">" + (houseGroup == null ? "" : houseGroup.getCode())
+            reportPlayerLine(timestamp, state, activity, value, houseGroup, income, satisfaction, nullIsDash, "black");
+        }
+
+        protected void reportPlayerLine(final LocalDateTime timestamp, final String state, final String activity,
+                final String value, final HousegroupRecord houseGroup, final Integer income, final Integer satisfaction,
+                final boolean nullIsDash, final String color)
+        {
+            this.s.append("            <tr style=\"color:" + color + ";\">\n");
+            this.s.append("              <td width=\"15%\" align=\"left\">"
+                    + timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + "</td>\n");
+            this.s.append("              <td width=\"20%\" align=\"left\">" + (state == null ? "" : state) + "</td>\n");
+            this.s.append("              <td width=\"25%\" align=\"left\">" + (activity == null ? "" : activity) + "</td>\n");
+            this.s.append("              <td width=\"10%\" align=\"left\">" + (value == null ? "" : value) + "</td>\n");
+            this.s.append("              <td width=\"10%\" align=\"left\">" + (houseGroup == null ? "" : houseGroup.getCode())
                     + "</td>\n");
-            s.append("              <td width=\"15%\" align=\"center\">" + fmtMoney(income, nullIsDash) + "</td>\n");
-            s.append("              <td width=\"15%\" align=\"center\">" + fmtSatisfaction(satisfaction, nullIsDash)
+            this.s.append("              <td width=\"10%\" align=\"center\">" + fmtMoney(income, nullIsDash) + "</td>\n");
+            this.s.append("              <td width=\"10%\" align=\"center\">" + fmtSatisfaction(satisfaction, nullIsDash)
                     + "</td>\n");
-            s.append("            </tr>\n");
+            this.s.append("            </tr>\n");
         }
 
         protected static String fmtMoney(final Integer nr, final boolean nullIsDash)
@@ -291,53 +433,4 @@ public class MaintainPlayerTimeline
         }
     }
 
-    /*-
-    HousegroupRecord startHouseGroup = pr.getStartHousegroupId() != null
-            ? SqlUtils.readRecordFromId(data, Tables.HOUSEGROUP, pr.getStartHousegroupId()) : null;
-    HousegroupRecord finalHouseGroup = pr.getFinalHousegroupId() != null
-            ? SqlUtils.readRecordFromId(data, Tables.HOUSEGROUP, pr.getFinalHousegroupId()) : null;
-    boolean moved = !Objects.equals(pr.getStartHousegroupId(), pr.getFinalHousegroupId());
-    reportPlayerLine(s, "Start of round " + round, startHouseGroup, incPrevRound, satPrevRound, false);
-    reportPlayerLine(s, "Round income " + round, null, pr.getRoundIncome(), null, false);
-    reportPlayerLine(s, "Living costs", null, -pr.getLivingCosts(), null, false);
-    if (pr.getPaidDebt() != 0)
-        reportPlayerLine(s, "Debt", null, null, -pr.getSatisfactionDebtPenalty(), false);
-    if (moved && startHouseGroup != null)
-    {
-        reportPlayerLine(s, "Profit sold house", startHouseGroup, pr.getProfitSoldHouse(), null, false);
-        reportPlayerLine(s, "Penalty for moving", finalHouseGroup, null, -pr.getSatisfactionMovePenalty(), false);
-    }
-    if (moved)
-    {
-        reportPlayerLine(s, "Spent savings for buying house", finalHouseGroup, -pr.getSpentSavingsForBuyingHouse(),
-                null, false);
-    }
-    if (pr.getMortgagePayment() != 0)
-        reportPlayerLine(s, "Mortgage payment", finalHouseGroup, -pr.getMortgagePayment(), null, false);
-    reportPlayerLine(s, "House rating satisfaction", finalHouseGroup, null, pr.getSatisfactionHouseRatingDelta(),
-            false);
-    reportPlayerLine(s, "Taxes", finalHouseGroup, -pr.getCostTaxes(), null, false);
-    reportPlayerLine(s, "House measures bought", finalHouseGroup, -pr.getCostHouseMeasuresBought(),
-            pr.getSatisfactionHouseMeasures(), true);
-    reportPlayerLine(s, "Personal measures bought", finalHouseGroup, -pr.getCostPersonalMeasuresBought(),
-            pr.getSatisfactionPersonalMeasures(), true);
-    reportPlayerLine(s, "Pluvial damage", finalHouseGroup, -pr.getCostPluvialDamage(),
-            -pr.getSatisfactionPluvialPenalty(), true);
-    reportPlayerLine(s, "Fluvial damage", finalHouseGroup, -pr.getCostFluvialDamage(),
-            -pr.getSatisfactionFluvialPenalty(), true);
-
-    int incCheck = incPrevRound + pr.getRoundIncome() - pr.getLivingCosts() - pr.getMortgagePayment()
-            + pr.getProfitSoldHouse() - pr.getSpentSavingsForBuyingHouse() - pr.getCostTaxes()
-            - pr.getCostHouseMeasuresBought() - pr.getCostPersonalMeasuresBought() - pr.getCostPluvialDamage()
-            - pr.getCostFluvialDamage();
-    int satCheck = satPrevRound - pr.getSatisfactionDebtPenalty() + pr.getSatisfactionHouseRatingDelta()
-            - pr.getSatisfactionMovePenalty() + pr.getSatisfactionHouseMeasures()
-            + pr.getSatisfactionPersonalMeasures() - pr.getSatisfactionPluvialPenalty()
-            - pr.getSatisfactionFluvialPenalty();
-
-    reportPlayerLine(s, "End of round " + round, finalHouseGroup, pr.getSpendableIncome(),
-            pr.getSatisfactionTotal(), false);
-    if (pr.getSpendableIncome() != incCheck || pr.getSatisfactionTotal() != satCheck)
-        reportPlayerLine(s, "CHECK end of round " + round, finalHouseGroup, incCheck, satCheck, false, "red");
-     */
 }
