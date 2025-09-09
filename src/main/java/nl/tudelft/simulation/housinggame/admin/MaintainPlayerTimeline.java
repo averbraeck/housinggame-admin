@@ -218,9 +218,15 @@ public class MaintainPlayerTimeline
                     while (!playerStateList.isEmpty() || !groupStateList.isEmpty())
                     {
                         if (playerStateList.isEmpty())
+                        {
+                            time = groupStateList.get(0).getTimestamp();
                             reportGroupState(groupStateList.remove(0));
-                        else if (playerStateList.isEmpty())
+                        }
+                        else if (groupStateList.isEmpty())
+                        {
+                            time = playerStateList.get(0).getTimestamp();
                             reportPlayerState(playerStateList.remove(0));
+                        }
                         else
                         {
                             var gTime = groupStateList.get(0).getTimestamp();
