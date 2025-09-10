@@ -37,7 +37,7 @@
       <div class="hg-header-right">
         <img src="images/tudelft.png" />
         <p><a href="/housinggame-admin">LOGOUT</a></p>
-        <span style="font-size: 12px; padding-left: 20px; position:relative; top:-4px; color:black;">v1.7.1</span>
+        <span style="font-size: 12px; padding-left: 20px; position:relative; top:-4px; color:black;">v1.7.2</span>
       </div>
       <div class="hg-header-game-user">
         <p>&nbsp;</p>
