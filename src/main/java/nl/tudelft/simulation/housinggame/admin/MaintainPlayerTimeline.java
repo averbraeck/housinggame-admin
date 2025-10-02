@@ -12,15 +12,23 @@ import org.jooq.impl.DSL;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import nl.tudelft.simulation.housinggame.common.CumulativeNewsEffects;
 import nl.tudelft.simulation.housinggame.common.SqlUtils;
 import nl.tudelft.simulation.housinggame.data.Tables;
+import nl.tudelft.simulation.housinggame.data.tables.records.CommunityRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GroupRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GrouproundRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.GroupstateRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.HouseRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.HousegroupRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.HousemeasureRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.MeasuretypeRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.PersonalmeasureRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.PlayerRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.PlayerroundRecord;
 import nl.tudelft.simulation.housinggame.data.tables.records.PlayerstateRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.ScenarioRecord;
+import nl.tudelft.simulation.housinggame.data.tables.records.TaxRecord;
 
 public class MaintainPlayerTimeline
 {
@@ -161,8 +169,13 @@ public class MaintainPlayerTimeline
 
         boolean moved;
 
+        AdminData data;
+
+        int paidTax;
+
         public void showTimeline(final AdminData data, final int playerRecordId)
         {
+            this.data = data;
             DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
 
             PlayerRecord player = SqlUtils.readRecordFromId(data, Tables.PLAYER, playerRecordId);
@@ -264,16 +277,16 @@ public class MaintainPlayerTimeline
         {
             switch (groupState.getGroupState())
             {
-                case "NEW_ROUND" -> reportPlayerLine(groupState.getTimestamp(), "G:" + groupState.getGroupState(),
+                case "NEW_ROUND" -> reportPlayerLine(groupState.getTimestamp(), "F:" + groupState.getGroupState(),
                         "Facilitator starts new round", "Round " + String.valueOf(this.groupRound.getRoundNumber()), null, null,
                         null, true);
                 case "ROLLED_DICE" -> {
-                    reportPlayerLine(groupState.getTimestamp(), "G:" + groupState.getGroupState(), "Rolled dice", "P="
+                    reportPlayerLine(groupState.getTimestamp(), "F:" + groupState.getGroupState(), "Rolled dice", "P="
                             + this.groupRound.getPluvialFloodIntensity() + ", F=" + this.groupRound.getFluvialFloodIntensity(),
                             null, null, null, true);
                 }
 
-                default -> reportPlayerLine(groupState.getTimestamp(), "G:" + groupState.getGroupState(), "FACILITATOR", "",
+                default -> reportPlayerLine(groupState.getTimestamp(), "F:" + groupState.getGroupState(), "FACILITATOR", "",
                         null, null, null, true);
             }
         }
@@ -293,10 +306,14 @@ public class MaintainPlayerTimeline
                     if (this.pr.getPaidDebt() != 0)
                         reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
                                 "Debt satisfaction change", "", null, null, -this.pr.getSatisfactionDebtPenalty(), false);
+                    // valid personal measures
+
+                    // valid house measures
+
                 }
                 case "STAY_HOUSE_WAIT" -> {
                     reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
-                            "stayed in house, total mortgage", k(this.pr.getMortgageHouseEnd()), this.finalHouseGroup, null,
+                            "Stayed in house, total mortgage", k(this.pr.getMortgageHouseEnd()), this.finalHouseGroup, null,
                             null, true);
                 }
                 case "STAYED_HOUSE" -> {
@@ -324,7 +341,7 @@ public class MaintainPlayerTimeline
                 }
                 case "BUY_HOUSE_WAIT" -> {
                     reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
-                            "bought house, total mortgage", k(this.pr.getMortgageHouseEnd()), this.finalHouseGroup, null, null,
+                            "Bought house, total mortgage", k(this.pr.getMortgageHouseEnd()), this.finalHouseGroup, null, null,
                             true);
                     reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
                             "Spent savings for buying house", "", this.finalHouseGroup,
@@ -342,16 +359,21 @@ public class MaintainPlayerTimeline
                             this.pr.getSatisfactionHouseRatingDelta(), true);
                 }
                 case "VIEW_TAXES" -> {
-                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "Paid taxes", "",
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "Paid taxes ", "",
                             this.finalHouseGroup, -this.pr.getCostTaxes(), null, true);
+                    String taxes = calcTaxes();
+                    reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "Tax calc: " + taxes,
+                            k(this.paidTax), this.finalHouseGroup, null, null, true);
                 }
                 case "VIEW_IMPROVEMENTS" -> {
                     reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "House measures bought",
                             "", this.finalHouseGroup, -this.pr.getCostHouseMeasuresBought(),
                             this.pr.getSatisfactionHouseMeasures(), true);
+                    reportHouseMeasuresBought(playerState);
                     reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
                             "Personal measures bought", "", null, -this.pr.getCostPersonalMeasuresBought(),
                             this.pr.getSatisfactionPersonalMeasures(), true);
+                    reportPersonalMeasuresBought(playerState);
                 }
                 case "VIEW_DAMAGE" -> {
                     String protP = "B:" + this.finalHouseGroup.getPluvialBaseProtection() + ", H:"
@@ -445,6 +467,126 @@ public class MaintainPlayerTimeline
                 return "+" + String.valueOf(nr);
             return nullIsDash ? "-" : "0";
         }
+
+        protected String calcTaxes()
+        {
+            // get the focal player's data
+            DSLContext dslContext = DSL.using(this.data.getDataSource(), SQLDialect.MYSQL);
+            HousegroupRecord houseGroup =
+                    AdminUtils.readRecordFromId(this.data, Tables.HOUSEGROUP, this.pr.getFinalHousegroupId());
+            HouseRecord house = AdminUtils.readRecordFromId(this.data, Tables.HOUSE, houseGroup.getHouseId());
+            CommunityRecord community = AdminUtils.readRecordFromId(this.data, Tables.COMMUNITY, house.getCommunityId());
+
+            // count the number of players in this community
+            int nrInCommunity = 0;
+            List<PlayerroundRecord> players = dslContext.selectFrom(Tables.PLAYERROUND)
+                    .where(Tables.PLAYERROUND.GROUPROUND_ID.eq(this.groupRound.getId())).fetch();
+            for (var playerRound : players)
+            {
+                if (playerRound.getFinalHousegroupId() != null)
+                {
+                    HousegroupRecord playerHouseGroup =
+                            AdminUtils.readRecordFromId(this.data, Tables.HOUSEGROUP, playerRound.getFinalHousegroupId());
+                    HouseRecord playerHouse =
+                            AdminUtils.readRecordFromId(this.data, Tables.HOUSE, playerHouseGroup.getHouseId());
+                    if (playerHouse.getCommunityId().equals(community.getId()))
+                        nrInCommunity += 1;
+                }
+            }
+
+            // tax measures?
+            GroupRecord group = AdminUtils.readRecordFromId(this.data, Tables.GROUP, this.groupRound.getGroupId());
+            ScenarioRecord scenario = AdminUtils.readRecordFromId(this.data, Tables.SCENARIO, group.getScenarioId());
+            var cumulativeNewsEffects = CumulativeNewsEffects.readCumulativeNewsEffects(this.data.getDataSource(), scenario,
+                    this.groupRound.getRoundNumber());
+
+            // get the tax brackets
+            List<TaxRecord> taxList =
+                    dslContext.selectFrom(Tables.TAX).where(Tables.TAX.COMMUNITY_ID.eq(community.getId())).fetch();
+
+            // tax change based on measures
+            int txc = (int) cumulativeNewsEffects.get(community.getId()).getTaxChange();
+            int tax = 0;
+            for (TaxRecord taxRecord : taxList)
+            {
+                if (nrInCommunity >= taxRecord.getMinimumInhabitants() && nrInCommunity <= taxRecord.getMaximumInhabitants())
+                {
+                    tax = taxRecord.getTaxCost().intValue();
+                    break;
+                }
+            }
+
+            // return result
+            this.paidTax = tax + txc;
+            return "nr=" + nrInCommunity + ", tax=" + k(tax) + ", measure=" + k(txc);
+        }
+
+        protected void reportPersonalMeasuresBought(final PlayerstateRecord playerState)
+        {
+            DSLContext dslContext = DSL.using(this.data.getDataSource(), SQLDialect.MYSQL);
+            List<PersonalmeasureRecord> measures = dslContext.selectFrom(Tables.PERSONALMEASURE)
+                    .where(Tables.PERSONALMEASURE.PLAYERROUND_ID.eq(this.pr.getId())).fetch();
+            for (var measure : measures)
+            {
+                MeasuretypeRecord mt = AdminUtils.readRecordFromId(this.data, Tables.MEASURETYPE, measure.getMeasuretypeId());
+                String md1 = "";
+                if (mt.getSatisfactionDeltaOnce() != 0)
+                    md1 += " sat:1x=" + mt.getSatisfactionDeltaOnce();
+                if (mt.getSatisfactionDeltaPermanent() != 0)
+                    md1 += " sat:perm=" + mt.getSatisfactionDeltaPermanent();
+                if (mt.getValidOneRound() != 0)
+                    md1 += " valid:1x";
+                if (mt.getCostAbsolute() > 0)
+                    md1 += " cost=" + k(mt.getCostAbsolute());
+                if (mt.getCostPercentageIncome() > 0)
+                    md1 += " cost:" + mt.getCostPercentageIncome() + "%inc="
+                            + k((int) (0.01 * mt.getCostPercentageIncome() * this.pr.getRoundIncome()));
+                if (mt.getCostPercentageHouse() > 0)
+                    md1 += " cost:" + mt.getCostPercentageHouse() + "%hs="
+                            + k((int) (0.01 * mt.getCostPercentageHouse() * this.finalHouseGroup.getMarketValue()));
+                String md2 = "";
+                if (mt.getPluvialProtectionDelta() > 0 || mt.getFluvialProtectionDelta() > 0)
+                    md2 += "P:" + mt.getPluvialProtectionDelta() + ", F=" + mt.getFluvialProtectionDelta();
+                reportPlayerLine(playerState.getTimestamp(), "PM:" + mt.getShortAlias(), md1, md2, null, null, null, true);
+            }
+        }
+
+        protected void reportHouseMeasuresBought(final PlayerstateRecord playerState)
+        {
+            if (this.finalHouseGroup == null)
+                return;
+            DSLContext dslContext = DSL.using(this.data.getDataSource(), SQLDialect.MYSQL);
+            List<HousemeasureRecord> measures = dslContext.selectFrom(Tables.HOUSEMEASURE)
+                    .where(Tables.HOUSEMEASURE.HOUSEGROUP_ID.eq(this.finalHouseGroup.getId())).fetch();
+            for (var measure : measures)
+            {
+                if (measure.getBoughtInRound() == this.groupRound.getRoundNumber())
+                {
+                    MeasuretypeRecord mt =
+                            AdminUtils.readRecordFromId(this.data, Tables.MEASURETYPE, measure.getMeasuretypeId());
+                    String md1 = "";
+                    if (mt.getSatisfactionDeltaOnce() != 0)
+                        md1 += " sat:1x=" + mt.getSatisfactionDeltaOnce();
+                    if (mt.getSatisfactionDeltaPermanent() != 0)
+                        md1 += " sat:perm=" + mt.getSatisfactionDeltaPermanent();
+                    if (mt.getValidOneRound() != 0)
+                        md1 += " valid:1x";
+                    if (mt.getCostAbsolute() > 0)
+                        md1 += " cost=" + k(mt.getCostAbsolute());
+                    if (mt.getCostPercentageIncome() > 0)
+                        md1 += " cost:" + mt.getCostPercentageIncome() + "%inc="
+                                + k((int) (0.01 * mt.getCostPercentageIncome() * this.pr.getRoundIncome()));
+                    if (mt.getCostPercentageHouse() > 0)
+                        md1 += " cost:" + mt.getCostPercentageHouse() + "%hs="
+                                + k((int) (0.01 * mt.getCostPercentageHouse() * this.finalHouseGroup.getMarketValue()));
+                    String md2 = "";
+                    if (mt.getPluvialProtectionDelta() > 0 || mt.getFluvialProtectionDelta() > 0)
+                        md2 += "P=" + mt.getPluvialProtectionDelta() + ", F=" + mt.getFluvialProtectionDelta();
+                    reportPlayerLine(playerState.getTimestamp(), "HM:" + mt.getShortAlias(), md1, md2, null, null, null, true);
+                }
+            }
+        }
+
     }
 
 }
