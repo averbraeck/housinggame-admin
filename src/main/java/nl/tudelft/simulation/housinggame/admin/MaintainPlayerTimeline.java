@@ -281,8 +281,8 @@ public class MaintainPlayerTimeline
                         "Facilitator starts new round", "Round " + String.valueOf(this.groupRound.getRoundNumber()), null, null,
                         null, true);
                 case "ROLLED_DICE" -> {
-                    reportPlayerLine(groupState.getTimestamp(), "F:" + groupState.getGroupState(), "Rolled dice", "P="
-                            + this.groupRound.getPluvialFloodIntensity() + ", F=" + this.groupRound.getFluvialFloodIntensity(),
+                    reportPlayerLine(groupState.getTimestamp(), "F:" + groupState.getGroupState(), "Rolled dice", "F="
+                            + this.groupRound.getFluvialFloodIntensity() + ", P=" + this.groupRound.getPluvialFloodIntensity(),
                             null, null, null, true);
                 }
 
@@ -546,7 +546,7 @@ public class MaintainPlayerTimeline
                             + k((int) (0.01 * mt.getCostPercentageHouse() * this.finalHouseGroup.getMarketValue()));
                 String md2 = "";
                 if (mt.getPluvialProtectionDelta() > 0 || mt.getFluvialProtectionDelta() > 0)
-                    md2 += "P:" + mt.getPluvialProtectionDelta() + ", F=" + mt.getFluvialProtectionDelta();
+                    md2 += "F=" + mt.getFluvialProtectionDelta() + ", P=" + mt.getPluvialProtectionDelta();
                 reportPlayerLine(playerState.getTimestamp(), "PM:" + mt.getShortAlias(), md1, md2, null, null, null, true);
             }
         }
@@ -581,7 +581,7 @@ public class MaintainPlayerTimeline
                                 + k((int) (0.01 * mt.getCostPercentageHouse() * this.finalHouseGroup.getMarketValue()));
                     String md2 = "";
                     if (mt.getPluvialProtectionDelta() > 0 || mt.getFluvialProtectionDelta() > 0)
-                        md2 += "P=" + mt.getPluvialProtectionDelta() + ", F=" + mt.getFluvialProtectionDelta();
+                        md2 += "F=" + mt.getFluvialProtectionDelta() + ", P=" + mt.getPluvialProtectionDelta();
                     reportPlayerLine(playerState.getTimestamp(), "HM:" + mt.getShortAlias(), md1, md2, null, null, null, true);
                 }
             }
