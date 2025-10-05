@@ -12,7 +12,9 @@ import org.jooq.impl.DSL;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import nl.tudelft.simulation.housinggame.common.CalcPlayerState;
 import nl.tudelft.simulation.housinggame.common.CumulativeNewsEffects;
+import nl.tudelft.simulation.housinggame.common.NewsSatisfactionDelta;
 import nl.tudelft.simulation.housinggame.common.SqlUtils;
 import nl.tudelft.simulation.housinggame.data.Tables;
 import nl.tudelft.simulation.housinggame.data.tables.records.CommunityRecord;
@@ -326,6 +328,15 @@ public class MaintainPlayerTimeline
                     reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
                             "House rating satisfaction", "", this.finalHouseGroup, null,
                             this.pr.getSatisfactionHouseRatingDelta(), true);
+                    NewsSatisfactionDelta effects = CalcPlayerState.calcNewsSatisfactionEffects(this.data, this.pr);
+                    if (effects.satisfactionLivingBonus() > 0)
+                        reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
+                                "Satisfaction living bonus", "", this.finalHouseGroup, null, effects.satisfactionLivingBonus(),
+                                true);
+                    if (effects.satisfactionMoveChange() > 0)
+                        reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
+                                "Satisfaction move change", "", this.finalHouseGroup, null, effects.satisfactionMoveChange(),
+                                true);
                 }
                 case "SELL_HOUSE_WAIT" -> {
                     reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
@@ -357,6 +368,15 @@ public class MaintainPlayerTimeline
                     reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
                             "House rating satisfaction", "", this.finalHouseGroup, null,
                             this.pr.getSatisfactionHouseRatingDelta(), true);
+                    NewsSatisfactionDelta effects = CalcPlayerState.calcNewsSatisfactionEffects(this.data, this.pr);
+                    if (effects.satisfactionLivingBonus() > 0)
+                        reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
+                                "Satisfaction living bonus", "", this.finalHouseGroup, null, effects.satisfactionLivingBonus(),
+                                true);
+                    if (effects.satisfactionMoveChange() > 0)
+                        reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(),
+                                "Satisfaction move change", "", this.finalHouseGroup, null, effects.satisfactionMoveChange(),
+                                true);
                 }
                 case "VIEW_TAXES" -> {
                     reportPlayerLine(playerState.getTimestamp(), "P:" + playerState.getPlayerState(), "Paid taxes ", "",
@@ -404,10 +424,12 @@ public class MaintainPlayerTimeline
                     - this.pr.getMortgagePayment() + this.pr.getProfitSoldHouse() - this.pr.getSpentSavingsForBuyingHouse()
                     - this.pr.getCostTaxes() - this.pr.getCostHouseMeasuresBought() - this.pr.getCostPersonalMeasuresBought()
                     - this.pr.getCostPluvialDamage() - this.pr.getCostFluvialDamage();
+            NewsSatisfactionDelta effects = CalcPlayerState.calcNewsSatisfactionEffects(this.data, this.pr);
             int satCheck = this.satPrevRound - this.pr.getSatisfactionDebtPenalty() + this.pr.getSatisfactionHouseRatingDelta()
                     - this.pr.getSatisfactionMovePenalty() + this.pr.getSatisfactionHouseMeasures()
                     + this.pr.getSatisfactionPersonalMeasures() - this.pr.getSatisfactionPluvialPenalty()
-                    - this.pr.getSatisfactionFluvialPenalty();
+                    - this.pr.getSatisfactionFluvialPenalty() + effects.satisfactionLivingBonus()
+                    + effects.satisfactionMoveChange();
             if (this.pr.getSpendableIncome() != incCheck || this.pr.getSatisfactionTotal() != satCheck)
                 reportPlayerLine(time, "P:VIEW_SUMMARY", "CHECK end of round " + this.groupRound.getRoundNumber(), "",
                         this.finalHouseGroup, incCheck, satCheck, false, "red");
